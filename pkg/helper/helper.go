@@ -8,7 +8,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/twilio/twilio-go"
 	"golang.org/x/crypto/bcrypt"
+
+	twilioApi "github.com/twilio/twilio-go/rest/verify/v2"
 )
 
 type helper struct {
@@ -20,6 +23,8 @@ func NewHelper(config cfg.Config) *helper {
 		cfg: config,
 	}
 }
+
+var client *twilio.RestClient
 
 type AuthcustomClaims struct {
 	Id int `json:"id"`
@@ -100,4 +105,43 @@ func (helper *helper) GenerateTokenAdmin(admin models.AdminDetailsResponse) (str
 
 	fmt.Println("accegshshjskl;", accessTokenString)
 	return accessTokenString, refreshTokenString, nil
+}
+
+func (h *helper) TwilioSetup(username string, password string) {
+	client = twilio.NewRestClientWithParams(twilio.ClientParams{
+		Username: username,
+		Password: password,
+	})
+
+}
+
+func (h *helper) TwilioSendOTP(phone string, serviceID string) (string, error) {
+	to := "+91" + phone
+	params := &twilioApi.CreateVerificationParams{}
+	params.SetTo(to)
+	params.SetChannel("sms")
+
+	resp, err := client.VerifyV2.CreateVerification(serviceID, params)
+	if err != nil {
+		return " ", err
+	}
+	return *resp.Sid, nil
+}
+
+func (h *helper) TwilioVerifyOTP(serviceID string, code string, phone string) error {
+
+	params := &twilioApi.CreateVerificationCheckParams{}
+	params.SetTo("+91" + phone)
+	params.SetCode(code)
+	resp, err := client.VerifyV2.CreateVerificationCheck(serviceID, params)
+
+	if err != nil {
+		return err
+	}
+
+	if *resp.Status == "approved" {
+		return nil
+	}
+
+	return errors.New("failed to validate otp")
 }

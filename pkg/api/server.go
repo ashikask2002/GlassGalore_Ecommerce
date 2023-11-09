@@ -14,14 +14,15 @@ type ServerHTTP struct {
 
 func NewServerHTTP(userHandler *handler.UserHandler,
 	adminHandler *handler.AdminHandler,
-	categoryHandler *handler.CategoryHandler) *ServerHTTP {
+	categoryHandler *handler.CategoryHandler,
+	otpHandler *handler.OtpHandler) *ServerHTTP {
 	engine := gin.New()
 
 	engine.Use(gin.Logger())
 
 	engine.GET("/validate-token", adminHandler.ValidateRefreshTokenAndCreateNewAccess)
 
-	routes.UserRoutes(engine.Group("/users"), userHandler)
+	routes.UserRoutes(engine.Group("/users"), userHandler, otpHandler)
 	routes.AdminRoutes(engine.Group("/admin"), adminHandler, categoryHandler)
 
 	return &ServerHTTP{engine: engine}

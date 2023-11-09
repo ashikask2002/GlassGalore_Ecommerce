@@ -29,7 +29,11 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	categoryUseCase := usecase.NewCategoryUseCase(categoryRepository)
 	categoryHandler := handler.NewCategoryHandler(categoryUseCase)
 
-	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler)
+	otpRepository := repository.NewOtpRepository(gormDB)
+	otpUseCase := usecase.NewOtpUseCase(cfg, otpRepository, Helper)
+	otpHandler := handler.NewOtpHandler(otpUseCase)
+
+	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler, otpHandler)
 
 	return serverHTTP, nil
 
