@@ -2,6 +2,7 @@ package routes
 
 import (
 	"GlassGalore/pkg/api/handler"
+	"GlassGalore/pkg/api/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,4 +16,14 @@ func UserRoutes(engine *gin.RouterGroup,
 
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
+	engine.Use(middleware.UserAuthMiddleware)
+	{
+		profile := engine.Group("/profile")
+		{
+			profile.GET("/details", userHandler.GetUserDetails)
+			profile.GET("", userHandler.GetAddresses)
+			profile.POST("/add", userHandler.AddAddress)
+		}
+
+	}
 }

@@ -1,9 +1,12 @@
 package usecase
 
 import (
+	"GlassGalore/pkg/domain"
 	helper_interface "GlassGalore/pkg/helper/interfaces"
 	interfaces "GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
+	"fmt"
+
 	"errors"
 )
 
@@ -24,7 +27,6 @@ var ErrorHashingPassword = "Error In Hashing Password"
 
 func (u *UserUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
 
-	//Check whether the user already exist. If yes , show th error message, since this is signUp
 	userExist := u.userRepo.CheckUserAvailability(user.Email)
 	if userExist {
 		return models.TokenUsers{}, errors.New("user already exist, sign in")
@@ -34,21 +36,17 @@ func (u *UserUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 		return models.TokenUsers{}, errors.New("password does not match")
 	}
 
-	//Hash password since details are validated
-
 	hashedPassword, err := u.helper.PasswordHashing(user.Password)
 	if err != nil {
 		return models.TokenUsers{}, errors.New(ErrorHashingPassword)
 	}
 	user.Password = hashedPassword
 
-	//add user details to the database
 	userData, err := u.userRepo.UserSignUp(user)
 	if err != nil {
 		return models.TokenUsers{}, errors.New("could not add the user")
 	}
 
-	//create a JWT token string for the user
 	tokenString, err := u.helper.GenerateTokenClients(userData)
 	if err != nil {
 		return models.TokenUsers{}, errors.New("could not create token due to some internal error")
@@ -63,7 +61,6 @@ func (u *UserUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 
 func (u *UserUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, error) {
 
-	// checking if a usernaem exist with this email address
 	ok := u.userRepo.CheckUserAvailability(user.Email)
 	if !ok {
 		return models.TokenUsers{}, errors.New("the user does not exist")
@@ -104,5 +101,41 @@ func (u *UserUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 		Users: userDetails,
 		Token: tokenString,
 	}, nil
+
+}
+
+func (i *UserUseCase) GetUserDetails(id int) (models.UserDetailsResponse, error) {
+	details, err := i.userRepo.GetUserDetails(id)
+	if err != nil {
+		return models.UserDetailsResponse{}, errors.New("error in getting details")
+	}
+	fmt.Println("qqqqqqqqqqqq", details)
+	return details, nil
+}
+
+func (i *UserUseCase) GetAddresses(id int) ([]domain.Address, error) {
+	addresses, err := i.userRepo.GetAddresses(id)
+	if err != nil {
+		return []domain.Address{}, errors.New("error in getting addresses")
+	}
+
+	return addresses, nil
+}
+
+func (i *UserUseCase) AddAddress(id int, address models.AddAddress) error {
+	rslt := i.userRepo.CheckIfFirstAddress(id)
+	var result bool
+
+	if !rslt {
+		result = true
+	} else {
+		result = false
+	}
+
+	err := i.userRepo.AddAddress(id, address, result)
+	if err != nil {
+		return errors.New("error in adding address")
+	}
+	return nil
 
 }

@@ -4,6 +4,7 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"GlassGalore/pkg/utils/response"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -28,20 +29,20 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 
 func (u *UserHandler) UserSignUp(c *gin.Context) {
 	var user models.UserDetails
-	//bind the user details into struct
+
 	if err := c.BindJSON(&user); err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "fields provided in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	//checking whether the data sent by the user has all the correct constraints specified by the Users struct
+
 	err := validator.New().Struct(user)
 	if err != nil {
 		errRes := response.ClientResponse(http.StatusBadRequest, "constraints not satisfied", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errRes)
 		return
 	}
-	//busineass logic goes inside this function
+
 	userCreated, err := u.userUseCase.UserSignUp(user)
 	if err != nil {
 
@@ -80,4 +81,68 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "User successfully logged in", user_details, nil)
 	c.JSON(http.StatusOK, successRes)
 
+}
+
+func (i *UserHandler) GetUserDetails(c *gin.Context) {
+	idString, _ := c.Get("id")
+	id, _ := idString.(int)
+
+	fmt.Println("zzzz", id)
+
+	details, err := i.userUseCase.GetUserDetails(id)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "Successfully got all records", details, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (i *UserHandler) GetAddresses(c *gin.Context) {
+
+	idString, _ := c.Get("id")
+	// id, err := strconv.Atoi(idString)
+	// if err != nil {
+	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "Check yout id again", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errorRes)
+	// 	return
+	// }
+
+	addresses, err := i.userUseCase.GetAddresses(idString.(int))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "didnt get the records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	succesRes := response.ClientResponse(http.StatusOK, "Successfully got all records", addresses, nil)
+	c.JSON(http.StatusOK, succesRes)
+}
+
+func (i *UserHandler) AddAddress(c *gin.Context) {
+
+	id, _ := c.Get("id")
+	// id, err := strconv.Atoi(c.Query("id"))
+	// if err != nil {
+	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errorRes)
+	// 	return
+	// }
+
+	var address models.AddAddress
+	if err := c.BindJSON(&address); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	if err := i.userUseCase.AddAddress(id.(int), address); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not added the address", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "Successfully added the address", nil, nil)
+	c.JSON(http.StatusOK, successRes)
 }

@@ -43,3 +43,12 @@ type UserDetailsAtAdmin struct {
 	Phone   string `json:"phone"`
 	Blocked string `json:"blocked"`
 }
+type AddAddress struct {
+	Name      string `json:"name" validate:"required"`
+	HouseName string `json:"house_name" validate:"required"`
+	Street    string `json:"street" validate:"required"`
+	City      string `json:"city" validate:"required"`
+	State     string `json:"state" validate:"required"`
+	Phone     string `json:"Phone" validate:"required"`
+	Pin       string `json:"pin" validate:"required"`
+}

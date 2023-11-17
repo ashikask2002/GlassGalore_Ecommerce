@@ -35,7 +35,8 @@ func UserAuthMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	fmt.Println("Claims", claims)
+
+	fmt.Println("claims", claims)
 
 	role, ok := claims["role"].(string)
 	if !ok || role != "client" {
@@ -50,6 +51,8 @@ func UserAuthMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	fmt.Println("id ", id)
 
 	c.Set("role", role)
 	c.Set("id", int(id))

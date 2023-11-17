@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"GlassGalore/pkg/domain"
 	interfaces "GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -56,4 +58,42 @@ func (c *userDatabase) FindUserByEmail(user models.UserLogin) (models.UserSignIn
 	}
 
 	return user_details, nil
+}
+
+func (c *userDatabase) GetUserDetails(id int) (models.UserDetailsResponse, error) {
+	fmt.Println("hhhhhhhhhh", id)
+	var details models.UserDetailsResponse
+
+	if err := c.DB.Raw("select id,name,email,phone from users where id=?", id).Scan(&details).Error; err != nil {
+		return models.UserDetailsResponse{}, errors.New("could not get the user details")
+	}
+	fmt.Println("hhhhhhhhhh", details)
+
+	return details, nil
+}
+
+func (c *userDatabase) GetAddresses(id int) ([]domain.Address, error) {
+	var addresses []domain.Address
+	if err := c.DB.Raw("select * from addresses where user_id = ?", id).Scan(&addresses).Error; err != nil {
+		return []domain.Address{}, errors.New("could not get the address")
+	}
+	return addresses, nil
+}
+
+func (c *userDatabase) CheckIfFirstAddress(id int) bool {
+	var count int
+
+	if err := c.DB.Raw("select count(*) from addresses where user_id = ?", id).Scan(&count).Error; err != nil {
+		return false
+	}
+	return count > 0
+}
+
+func (c *userDatabase) AddAddress(id int, address models.AddAddress, result bool) error {
+	err := c.DB.Exec(`INSERT INTO addresses(user_id, name, house_name, street, city, state, phone, pin,"default")
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, id, address.Name, address.HouseName, address.Street, address.City, address.State, address.Phone, address.Pin, result).Error
+	if err != nil {
+		return errors.New("could not add address")
+	}
+	return nil
 }

@@ -27,9 +27,9 @@ func NewHelper(config cfg.Config) *helper {
 var client *twilio.RestClient
 
 type AuthcustomClaims struct {
-	Id int `json:"id"`
-	//Email string `json:"email"`
-	Role string `json:"role"`
+	Id    int    `json:"id"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -45,9 +45,9 @@ func (h *helper) PasswordHashing(password string) (string, error) {
 
 func (h *helper) GenerateTokenClients(user models.UserDetailsResponse) (string, error) {
 	claims := &AuthcustomClaims{
-		Id: user.Id,
-		//Email: user.Email,
-		Role: "client",
+		Id:    user.Id,
+		Email: user.Email,
+		Role:  "client",
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
 			IssuedAt:  time.Now().Unix(),
