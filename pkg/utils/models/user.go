@@ -52,3 +52,15 @@ type AddAddress struct {
 	Phone     string `json:"Phone" validate:"required"`
 	Pin       string `json:"pin" validate:"required"`
 }
+
+type EditName struct {
+	Name string `json:"name"`
+}
+
+type EditEmail struct {
+	Email string `json:"email"`
+}
+
+type EditPhone struct {
+	Phone string `json:"phone"`
+}

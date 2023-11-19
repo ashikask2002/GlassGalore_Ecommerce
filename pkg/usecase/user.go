@@ -139,3 +139,29 @@ func (i *UserUseCase) AddAddress(id int, address models.AddAddress) error {
 	return nil
 
 }
+
+func (i *UserUseCase) EditName(id int, name string) error {
+
+	err := i.userRepo.EditName(id, name)
+	if err != nil {
+		return errors.New("could not change name")
+	}
+	return nil
+}
+
+func (i *UserUseCase) EditEmail(id int, email string) error {
+
+	err := i.userRepo.EditEmail(id, email)
+	if err != nil {
+		return errors.New("could not change email")
+	}
+	return nil
+}
+
+func (i *UserUseCase) EditPhone(id int, Phone string) error {
+	err := i.userRepo.EditPhone(id, Phone)
+	if err != nil {
+		return errors.New("could not change phone")
+	}
+	return nil
+}

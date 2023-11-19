@@ -23,6 +23,14 @@ func UserRoutes(engine *gin.RouterGroup,
 			profile.GET("/details", userHandler.GetUserDetails)
 			profile.GET("", userHandler.GetAddresses)
 			profile.POST("/add", userHandler.AddAddress)
+
+			edit := profile.Group("/edit")
+			{
+				edit.PUT("/name", userHandler.EditName)
+				edit.PUT("/email", userHandler.EditEmail)
+				edit.PUT("/phone", userHandler.EditPhone)
+			}
+
 		}
 
 	}

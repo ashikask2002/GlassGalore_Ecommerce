@@ -14,4 +14,7 @@ type UserRepository interface {
 	GetAddresses(id int) ([]domain.Address, error)
 	CheckIfFirstAddress(id int) bool
 	AddAddress(id int, address models.AddAddress, result bool) error
+	EditName(id int, name string) error
+	EditEmail(id int, Email string) error
+	EditPhone(id int, Phone string) error
 }
