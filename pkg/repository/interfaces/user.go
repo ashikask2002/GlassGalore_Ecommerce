@@ -17,4 +17,6 @@ type UserRepository interface {
 	EditName(id int, name string) error
 	EditEmail(id int, Email string) error
 	EditPhone(id int, Phone string) error
+	ChangePassword(id int, password string) error
+	GetPassword(id int) (string, error)
 }

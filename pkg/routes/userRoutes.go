@@ -31,6 +31,11 @@ func UserRoutes(engine *gin.RouterGroup,
 				edit.PUT("/phone", userHandler.EditPhone)
 			}
 
+			secutiry := profile.Group("/security")
+			{
+				secutiry.PUT("password", userHandler.ChangePassword)
+			}
+
 		}
 
 	}

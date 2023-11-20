@@ -165,3 +165,25 @@ func (i *UserUseCase) EditPhone(id int, Phone string) error {
 	}
 	return nil
 }
+
+func (i *UserUseCase) ChangePassword(id int, old string, password string, repassword string) error {
+	userPassword, err := i.userRepo.GetPassword(id)
+	if err != nil {
+		return errors.New(IntenalError)
+	}
+
+	err = i.helper.CompareHashAndPassword(userPassword, old)
+	if err != nil {
+		return errors.New("password incorrect")
+	}
+
+	if password != repassword {
+		return errors.New("password does not match")
+	}
+	newPassword, err := i.helper.PasswordHashing(password)
+	if err != nil {
+		return errors.New("error in Hashing password")
+	}
+
+	return i.userRepo.ChangePassword(id, string(newPassword))
+}

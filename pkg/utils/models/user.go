@@ -64,3 +64,8 @@ type EditEmail struct {
 type EditPhone struct {
 	Phone string `json:"phone"`
 }
+type ChangePassword struct {
+	OldPassword string `json:"old_password"`
+	Password    string `json:"password"`
+	RePassword  string `json:"re_password"`
+}

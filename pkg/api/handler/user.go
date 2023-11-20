@@ -236,3 +236,34 @@ func (i *UserHandler) EditPhone(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "phone edited successfully", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (i *UserHandler) ChangePassword(c *gin.Context) {
+
+	idString, _ := c.Get("id")
+	id, _ := idString.(int)
+
+	// id, err := strconv.Atoi(c.Query("id"))
+	// if err != nil {
+	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
+	// 	c.JSON(http.StatusBadRequest, errorRes)
+	// 	return
+	// }
+
+	var ChangePassword models.ChangePassword
+
+	if err := c.BindJSON(&ChangePassword); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields are provided in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	if err := i.userUseCase.ChangePassword(id, ChangePassword.OldPassword, ChangePassword.Password, ChangePassword.RePassword); err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not change the password", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "password changed succesfully", nil, nil)
+	c.JSON(http.StatusOK, successRes)
+
+}

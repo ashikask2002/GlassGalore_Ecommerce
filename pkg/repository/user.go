@@ -138,3 +138,20 @@ func (c *userDatabase) EditPhone(id int, phone string) error {
 	}
 	return nil
 }
+
+func (c *userDatabase) ChangePassword(id int, password string) error {
+	err := c.DB.Exec("UPDATE users SET password = $1 WHERE id = $2", password, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c *userDatabase) GetPassword(id int) (string, error) {
+	var userPassword string
+	err := c.DB.Raw("select password from users where id = ?", id).Scan(&userPassword).Error
+	if err != nil {
+		return "", err
+	}
+	return userPassword, nil
+}
