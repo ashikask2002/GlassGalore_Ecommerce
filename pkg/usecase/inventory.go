@@ -60,3 +60,12 @@ func (i *invnetoryUseCase) EditInventoryDetails(id int, model models.EditInvento
 	}
 	return nil
 }
+
+func (i *invnetoryUseCase) ListProductForUser(page int) ([]models.Inventories, error) {
+	productDetails, err := i.repository.ListProducts(page)
+	if err != nil {
+		return []models.Inventories{}, err
+	}
+
+	return productDetails, nil
+}

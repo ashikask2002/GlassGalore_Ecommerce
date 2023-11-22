@@ -15,4 +15,6 @@ type UserUseCase interface {
 	EditEmail(id int, email string) error
 	EditPhone(id int, phone string) error
 	ChangePassword(id int, old string, password string, repassword string) error
+	GetCart(id int) (models.GetCartResponse, error)
+
 }

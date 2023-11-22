@@ -19,4 +19,11 @@ type UserRepository interface {
 	EditPhone(id int, Phone string) error
 	ChangePassword(id int, password string) error
 	GetPassword(id int) (string, error)
+	GetCartID(id int) (int, error)
+	GetProductsInCart(cart_id int) ([]int, error)
+	FindProductNames(inventory_id int) (string, error)
+	FindCartQuantity(cart_id, inventory_id int) (int, error)
+	FindPrice(inventory_id int) (float64, error)
+	FindCategory(inventory_id int) (int, error)
+	FindStock(id int) (int, error)
 }

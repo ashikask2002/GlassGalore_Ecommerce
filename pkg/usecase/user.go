@@ -22,7 +22,7 @@ func NewUserUseCase(repo interfaces.UserRepository, helper helper_interface.Help
 	}
 }
 
-var IntenalError = "Internal server Error"
+var InternalError = "Internal server Error"
 var ErrorHashingPassword = "Error In Hashing Password"
 
 func (u *UserUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
@@ -68,7 +68,7 @@ func (u *UserUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 	}
 	isBlocked, err := u.userRepo.UserBlockStatus(user.Email)
 	if err != nil {
-		return models.TokenUsers{}, errors.New(IntenalError)
+		return models.TokenUsers{}, errors.New(InternalError)
 	}
 	if isBlocked {
 		return models.TokenUsers{}, errors.New("user is blocked by admin")
@@ -77,7 +77,7 @@ func (u *UserUseCase) LoginHandler(user models.UserLogin) (models.TokenUsers, er
 	// Get the user details in order to check the password, in this case (The same function can be reused in future)
 	user_details, err := u.userRepo.FindUserByEmail(user)
 	if err != nil {
-		return models.TokenUsers{}, errors.New(IntenalError)
+		return models.TokenUsers{}, errors.New(InternalError)
 	}
 
 	err = u.helper.CompareHashAndPassword(user_details.Password, user.Password)
@@ -169,7 +169,7 @@ func (i *UserUseCase) EditPhone(id int, Phone string) error {
 func (i *UserUseCase) ChangePassword(id int, old string, password string, repassword string) error {
 	userPassword, err := i.userRepo.GetPassword(id)
 	if err != nil {
-		return errors.New(IntenalError)
+		return errors.New(InternalError)
 	}
 
 	err = i.helper.CompareHashAndPassword(userPassword, old)
@@ -186,4 +186,85 @@ func (i *UserUseCase) ChangePassword(id int, old string, password string, repass
 	}
 
 	return i.userRepo.ChangePassword(id, string(newPassword))
+}
+
+func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
+	//find cart id
+	cart_id, err := u.userRepo.GetCartID(id)
+	if err != nil {
+		return models.GetCartResponse{}, errors.New(InternalError)
+	}
+	//find product inside the cart
+	products, err := u.userRepo.GetProductsInCart(cart_id)
+	if err != nil {
+		return models.GetCartResponse{}, errors.New(InternalError)
+	}
+	//find products names
+	var product_names []string
+	for i := range products {
+		product_name, err := u.userRepo.FindProductNames(products[i])
+		if err != nil {
+			return models.GetCartResponse{}, errors.New(InternalError)
+		}
+		product_names = append(product_names, product_name)
+	}
+
+	//find quantity
+	var quantity []int
+	for i := range products {
+		q, err := u.userRepo.FindCartQuantity(cart_id, products[i])
+		if err != nil {
+			return models.GetCartResponse{}, errors.New(InternalError)
+		}
+		quantity = append(quantity, q)
+	}
+
+	//find price
+	var price []float64
+	for i := range products {
+		q, err := u.userRepo.FindPrice(products[i])
+		if err != nil {
+			return models.GetCartResponse{}, errors.New(InternalError)
+		}
+		price = append(price, q)
+	}
+
+	var stocks []int
+	for i := range products {
+		stock, err := u.userRepo.FindStock(products[i])
+		if err != nil {
+			return models.GetCartResponse{}, errors.New(InternalError)
+		}
+		stocks = append(stocks, stock)
+	}
+
+	//find quantity
+	var categories []int
+	for i := range products {
+		c, err := u.userRepo.FindCategory(products[i])
+		if err != nil {
+			return models.GetCartResponse{}, errors.New(InternalError)
+		}
+		categories = append(categories, c)
+	}
+
+	var getcart []models.GetCart
+	for i := range product_names {
+		var get models.GetCart
+		get.ID = products[i]
+		get.ProductName = product_names[i]
+		get.Category_id = categories[i]
+		get.Qantity = quantity[i]
+		get.Total = price[i]
+		get.StockAvailabe = stocks[i]
+
+		getcart = append(getcart, get)
+	}
+
+	var response models.GetCartResponse
+	response.ID = cart_id
+	response.Data = getcart
+
+	//return in appropriate format
+	return response, nil
 }

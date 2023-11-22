@@ -7,4 +7,5 @@ type InvnetoryUseCase interface {
 	DeleteInventory(id string) error
 	UpdateInventory(ProductID int, Stock int) (models.InventoryResponse, error)
 	EditInventoryDetails(int, models.EditInventoryDetails) error
+	ListProductForUser(page int) ([]models.Inventories, error)
 }

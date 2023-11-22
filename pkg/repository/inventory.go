@@ -35,7 +35,7 @@ func (i *inventoryRepository) AddInventory(inventory models.AddInventories) (mod
 func (i *inventoryRepository) DeleteInventory(inventoryID string) error {
 	id, err := strconv.Atoi(inventoryID)
 	if err != nil {
-		return errors.New("Converting to integer not happened")
+		return errors.New("converting to integer not happened")
 	}
 
 	result := i.DB.Exec("DELETE FROM inventories WHERE id = ?", id)
@@ -87,4 +87,28 @@ func (i *inventoryRepository) EditInventoryDetails(id int, model models.EditInve
 		return err
 	}
 	return nil
+}
+
+func (i *inventoryRepository) ListProducts(page int) ([]models.Inventories, error) {
+	if page == 0 {
+		page = 1
+	}
+	offset := (page - 1) * 10
+
+	var productDetails []models.Inventories
+
+	if err := i.DB.Raw("select id,category_id,product_name,size,stock,price from inventories limit $1 offset $2", 10, offset).Scan(&productDetails).Error; err != nil {
+		return []models.Inventories{}, err
+	}
+
+	return productDetails, nil
+}
+
+func (i *inventoryRepository) CheckStock(pid int) (int, error) {
+	var k int
+	if err := i.DB.Raw("select stock from inventories where id = ?", pid).Scan(&k).Error; err != nil {
+		return 0, err
+	}
+	return k, nil
+
 }

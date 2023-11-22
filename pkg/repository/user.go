@@ -155,3 +155,65 @@ func (c *userDatabase) GetPassword(id int) (string, error) {
 	}
 	return userPassword, nil
 }
+
+func (i *userDatabase) GetCartID(id int) (int, error) {
+	var cart_id int
+
+	if err := i.DB.Raw("select id from carts where user_id = ?", id).Scan(&cart_id).Error; err != nil {
+		return 0, err
+	}
+	return cart_id, nil
+}
+
+func (i *userDatabase) GetProductsInCart(cart_id int) ([]int, error) {
+	var cart_products []int
+	if err := i.DB.Raw("select inventory_id from line_items where cart_id=?", cart_id).Scan(&cart_products).Error; err != nil {
+		return []int{}, err
+	}
+	return cart_products, nil
+}
+
+func (i *userDatabase) FindProductNames(inventory_id int) (string, error) {
+	var product_name string
+
+	if err := i.DB.Raw("select product_name from inventories where id= ?", inventory_id).Scan(&product_name).Error; err != nil {
+		return "", err
+	}
+	return product_name, nil
+}
+
+func (i *userDatabase) FindCartQuantity(cart_id, inventory_id int) (int, error) {
+	var quantity int
+
+	if err := i.DB.Raw("select quantity from line_items where cart_id = $1 and inventory_id = $2", cart_id, inventory_id).Scan(&quantity).Error; err != nil {
+		return 0, err
+	}
+	return quantity, nil
+}
+
+func (i *userDatabase) FindPrice(inventory_id int) (float64, error) {
+	var price float64
+
+	if err := i.DB.Raw("select price from inventories where id = ?", inventory_id).Scan(&price).Error; err != nil {
+		return 0, err
+	}
+	return price, nil
+}
+
+func (i *userDatabase) FindCategory(inventory_id int) (int, error) {
+	var category int
+
+	if err := i.DB.Raw("select category_id from inventories where id=?", inventory_id).Scan(&category).Error; err != nil {
+		return 0, err
+	}
+
+	return category, nil
+}
+
+func (i *userDatabase) FindStock(id int) (int, error) {
+	var stock int
+	if err := i.DB.Raw("select stock from inventories where id = ?", id).Scan(&stock).Error; err != nil {
+		return 0, err
+	}
+	return stock, nil
+}

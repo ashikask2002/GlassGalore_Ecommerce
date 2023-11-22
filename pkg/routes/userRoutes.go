@@ -9,7 +9,9 @@ import (
 
 func UserRoutes(engine *gin.RouterGroup,
 	userHandler *handler.UserHandler,
-	otpHandler *handler.OtpHandler) {
+	otpHandler *handler.OtpHandler,
+	inventoryHandler *handler.InventoryHandler,
+	cartHandler *handler.CartHandler) {
 
 	engine.POST("/signup", userHandler.UserSignUp)
 	engine.POST("/login", userHandler.LoginHandler)
@@ -36,6 +38,22 @@ func UserRoutes(engine *gin.RouterGroup,
 				secutiry.PUT("password", userHandler.ChangePassword)
 			}
 
+		}
+
+		// cart := engine.Group("/cart")
+		// {
+		// 	cart.GET("/", userHandler.GetCart)
+		// }
+
+		home := engine.Group("/home")
+		{
+			home.GET("/product", inventoryHandler.ListProductForUser)
+		}
+
+		cart := engine.Group("/cart")
+		{
+			cart.POST("add-to-cart", cartHandler.AddToCart)
+			cart.GET("get", userHandler.GetCart)
 		}
 
 	}

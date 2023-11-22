@@ -9,6 +9,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/spf13/viper v1.17.0
+	github.com/twilio/twilio-go v1.15.1
 	golang.org/x/crypto v0.14.0
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5
@@ -47,7 +48,6 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/twilio/twilio-go v1.15.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	go.uber.org/atomic v1.9.0 // indirect

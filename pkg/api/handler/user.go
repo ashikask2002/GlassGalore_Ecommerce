@@ -267,3 +267,19 @@ func (i *UserHandler) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 
 }
+
+func (i *UserHandler) GetCart(c *gin.Context) {
+	idString, _ := c.Get("id")
+	id, _ := idString.(int)
+
+	products, err := i.userUseCase.GetCart(id)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve the cart", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully get all products in  cart", products, nil)
+	c.JSON(http.StatusOK, successRes)
+
+}

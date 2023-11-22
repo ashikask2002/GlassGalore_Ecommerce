@@ -69,3 +69,18 @@ type ChangePassword struct {
 	Password    string `json:"password"`
 	RePassword  string `json:"re_password"`
 }
+
+type GetCart struct {
+	ID            int     `json:"product_id"`
+	ProductName   string  `json:"product_name"`
+	Category_id   int     `json:"category_id"`
+	Qantity       int     `json:"quantity"`
+	StockAvailabe int     `json:"stock"`
+	Total         float64 `json:"total_price"`
+	// DiscountedPrice float64 `json:"discounted_price"`
+}
+
+type GetCartResponse struct {
+	ID   int
+	Data []GetCart
+}
