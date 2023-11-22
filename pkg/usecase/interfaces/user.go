@@ -16,5 +16,6 @@ type UserUseCase interface {
 	EditPhone(id int, phone string) error
 	ChangePassword(id int, old string, password string, repassword string) error
 	GetCart(id int) (models.GetCartResponse, error)
-
+	RemoveFromCart(cart, inventory int) error
+	UpdateQuantity(id, inv_id, qty int) error
 }

@@ -217,3 +217,29 @@ func (i *userDatabase) FindStock(id int) (int, error) {
 	}
 	return stock, nil
 }
+
+func (i *userDatabase) RemoveFromCart(cart, inventory int) error {
+	if err := i.DB.Exec(`DELETE FROM line_items WHERE cart_id = $1 AND inventory_id = $2`, cart, inventory).Error; err != nil {
+		return err
+	}
+	return nil
+}
+func (i *userDatabase) UpdateQuantity(id, inv_id, qty int) error {
+
+	if id <= 0 || inv_id <= 0 || qty <= 0 {
+		return errors.New("negtive or zero values are not allowed")
+	}
+	if qty >= 0 {
+		query := `update line_items set quantity = $1 where cart_id = $2 and inventory_id= $3`
+
+		result := i.DB.Exec(query, qty, id, inv_id)
+		{
+			if result.Error != nil {
+				return result.Error
+			}
+
+		}
+	}
+	return nil
+
+}

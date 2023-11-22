@@ -268,3 +268,19 @@ func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 	//return in appropriate format
 	return response, nil
 }
+
+func (i *UserUseCase) RemoveFromCart(cart, inventory int) error {
+	err := i.userRepo.RemoveFromCart(cart, inventory)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *UserUseCase) UpdateQuantity(id, inv_id, qty int) error {
+	err := i.userRepo.UpdateQuantity(id, inv_id, qty)
+	if err != nil {
+		return err
+	}
+	return nil
+}

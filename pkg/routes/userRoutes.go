@@ -54,6 +54,8 @@ func UserRoutes(engine *gin.RouterGroup,
 		{
 			cart.POST("add-to-cart", cartHandler.AddToCart)
 			cart.GET("get", userHandler.GetCart)
+			cart.DELETE("/remove", userHandler.RemoveFromCart)
+			cart.PUT("update", userHandler.UpdateQuantity)
 		}
 
 	}
