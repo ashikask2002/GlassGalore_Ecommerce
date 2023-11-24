@@ -5,7 +5,6 @@ import (
 	helper_interface "GlassGalore/pkg/helper/interfaces"
 	interfaces "GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
-	"fmt"
 
 	"errors"
 )
@@ -109,7 +108,7 @@ func (i *UserUseCase) GetUserDetails(id int) (models.UserDetailsResponse, error)
 	if err != nil {
 		return models.UserDetailsResponse{}, errors.New("error in getting details")
 	}
-	fmt.Println("qqqqqqqqqqqq", details)
+
 	return details, nil
 }
 
@@ -190,7 +189,9 @@ func (i *UserUseCase) ChangePassword(id int, old string, password string, repass
 
 func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 	//find cart id
+
 	cart_id, err := u.userRepo.GetCartID(id)
+
 	if err != nil {
 		return models.GetCartResponse{}, errors.New(InternalError)
 	}
@@ -255,7 +256,8 @@ func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 		get.ProductName = product_names[i]
 		get.Category_id = categories[i]
 		get.Qantity = quantity[i]
-		get.Total = price[i]
+		get.Total = price[i] * float64(quantity[i])
+		get.Price = int(price[i])
 		get.StockAvailabe = stocks[i]
 
 		getcart = append(getcart, get)

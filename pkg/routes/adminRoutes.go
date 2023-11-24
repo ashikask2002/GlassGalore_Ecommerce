@@ -37,5 +37,12 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 			inventorymanagement.PUT("/:id/stock", inventoryHandler.UpdateInventory)
 
 		}
+
+		payment := engine.Group("/payment-method")
+		{
+			payment.POST("", adminHandler.NewPaymentMethod)
+			payment.GET("", adminHandler.ListPaymentMethods)
+			payment.DELETE("", adminHandler.DeletePaymentMethod)
+		}
 	}
 }

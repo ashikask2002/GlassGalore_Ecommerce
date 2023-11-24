@@ -5,6 +5,7 @@ import (
 	"GlassGalore/pkg/utils/models"
 	"GlassGalore/pkg/utils/response"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,4 +35,21 @@ func (i *CartHandler) AddToCart(c *gin.Context) {
 
 	succesRes := response.ClientResponse(http.StatusOK, "succesfully added to the cart", nil, nil)
 	c.JSON(http.StatusOK, succesRes)
+}
+
+func (i *CartHandler) CheckOut(c *gin.Context) {
+	id, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "user_id not in correct format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	products, err := i.usecase.CheckOut(id)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not open checkout", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all records", products, nil)
+	c.JSON(http.StatusOK, successRes)
 }

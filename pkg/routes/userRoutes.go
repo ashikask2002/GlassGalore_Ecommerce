@@ -11,7 +11,8 @@ func UserRoutes(engine *gin.RouterGroup,
 	userHandler *handler.UserHandler,
 	otpHandler *handler.OtpHandler,
 	inventoryHandler *handler.InventoryHandler,
-	cartHandler *handler.CartHandler) {
+	cartHandler *handler.CartHandler,
+	orderHandler *handler.OrderHandler) {
 
 	engine.POST("/signup", userHandler.UserSignUp)
 	engine.POST("/login", userHandler.LoginHandler)
@@ -56,6 +57,11 @@ func UserRoutes(engine *gin.RouterGroup,
 			cart.GET("get", userHandler.GetCart)
 			cart.DELETE("/remove", userHandler.RemoveFromCart)
 			cart.PUT("update", userHandler.UpdateQuantity)
+		}
+		checkout := engine.Group("/check-out")
+		{
+			checkout.GET("", cartHandler.CheckOut)
+			checkout.POST("/order", orderHandler.OrderItemsFromCart)
 		}
 
 	}

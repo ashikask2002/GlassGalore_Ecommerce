@@ -102,3 +102,35 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 	}
 	return nil
 }
+
+func (i *adminUseCase) NewPaymentMethod(id string) error {
+	exists, err := i.adminRepository.CheckIfPaymentMethodAlreadyExists(id)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return errors.New("payment method already exist")
+	}
+
+	err = i.adminRepository.NewPaymentMethod(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *adminUseCase) ListPaymentMethods() ([]domain.PaymentMethod, error) {
+	categories, err := i.adminRepository.ListPaymentMethods()
+	if err != nil {
+		return []domain.PaymentMethod{}, err
+	}
+	return categories, nil
+}
+
+func (i *adminUseCase) DeletePaymentMethod(id int) error {
+	err := i.adminRepository.DeletePaymentMethod(id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

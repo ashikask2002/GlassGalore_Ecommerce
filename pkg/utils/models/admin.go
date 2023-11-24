@@ -10,3 +10,6 @@ type AdminDetailsResponse struct {
 	Name  string `josn:"name"`
 	Email string `json:"email"`
 }
+type NewPaymentMethod struct {
+	PaymenMethod string `json:"payment_method"`
+}

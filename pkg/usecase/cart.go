@@ -1,19 +1,25 @@
 package usecase
 
 import (
-	"GlassGalore/pkg/repository/interfaces"
+	interfaces "GlassGalore/pkg/repository/interfaces"
+	services "GlassGalore/pkg/usecase/interfaces"
+	"GlassGalore/pkg/utils/models"
 	"errors"
 )
 
 type cartUseCase struct {
 	repo                interfaces.CartRepository
 	inventoryRepository interfaces.InventoryRepository
+	userUsecase         services.UserUseCase
+	adrepo              interfaces.AdminRepository
 }
 
-func NewCartUseCase(repo interfaces.CartRepository, inventoryRepo interfaces.InventoryRepository) *cartUseCase {
+func NewCartUseCase(repo interfaces.CartRepository, inventoryRepo interfaces.InventoryRepository, userUseCase services.UserUseCase, adrepo interfaces.AdminRepository) *cartUseCase {
 	return &cartUseCase{
 		repo:                repo,
 		inventoryRepository: inventoryRepo,
+		userUsecase:         userUseCase,
+		adrepo:              adrepo,
 	}
 }
 
@@ -54,4 +60,32 @@ func (i *cartUseCase) AddToCart(userID, inventoryID int) error {
 	}
 	return nil
 
+}
+
+func (i *cartUseCase) CheckOut(id int) (models.CheckOut, error) {
+
+	address, err := i.repo.GetAddresses(id)
+	if err != nil {
+		return models.CheckOut{}, err
+	}
+
+	paymethods, err := i.adrepo.GetPaymentMethod()
+	if err != nil {
+		return models.CheckOut{}, err
+	}
+
+	products, err := i.userUsecase.GetCart(id)
+
+	if err != nil {
+		return models.CheckOut{}, err
+	}
+
+	var checkout models.CheckOut
+
+	checkout.CartID = products.ID
+	checkout.Addresses = address
+	checkout.Products = products.Data
+	checkout.PaymentMethods = paymethods
+
+	return checkout, err
 }
