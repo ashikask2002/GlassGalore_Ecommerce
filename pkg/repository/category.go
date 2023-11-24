@@ -4,6 +4,7 @@ import (
 	"GlassGalore/pkg/domain"
 	interfaces "GlassGalore/pkg/repository/interfaces"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -58,24 +59,25 @@ func (p *categoryRepository) CheckCategory(current string) (bool, error) {
 	return true, err
 }
 
-func (p *categoryRepository) UpdateCategory(current, new string) (domain.Category, error) {
+func (p *categoryRepository) UpdateCategory(category domain.Category) (domain.Category, error) {
 
 	// Check the database connection
-	if p.DB == nil {
-		return domain.Category{}, errors.New("database connection is nil")
-	}
+	// if p.DB == nil {
+	// 	return domain.Category{}, errors.New("database connection is nil")
+	// }
 
 	// update the category
-	if err := p.DB.Exec("UPDATE categories SET category = $1 WHERE category =$2", new, current).Error; err != nil {
+	fmt.Println("xxxxxxxxxxxxx", category.Category, category.ID)
+	if err := p.DB.Exec("UPDATE categories SET category = $1 WHERE id =$2", category.Category, category.ID).Error; err != nil {
 		return domain.Category{}, err
 	}
 
 	//Retrieve the updated category
-	var newcat domain.Category
-	if err := p.DB.First(&newcat, "category = ?", new).Error; err != nil {
+	var body domain.Category
+	if err := p.DB.First(&body, category.ID).Error; err != nil {
 		return domain.Category{}, err
 	}
-	return newcat, nil
+	return body, nil
 }
 
 func (c *categoryRepository) DeleteCategory(categoryID string) error {
@@ -92,12 +94,12 @@ func (c *categoryRepository) DeleteCategory(categoryID string) error {
 	return nil
 }
 
-func ( c *categoryRepository) GetCategory() ([]domain.Category,error){
-  var model []domain.Category
-  err := c.DB.Raw("SELECT * FROM categories").Scan(&model).Error
-  if err != nil {
-	return []domain.Category{},err
-  }
+func (c *categoryRepository) GetCategory() ([]domain.Category, error) {
+	var model []domain.Category
+	err := c.DB.Raw("SELECT * FROM categories").Scan(&model).Error
+	if err != nil {
+		return []domain.Category{}, err
+	}
 
-  return model, nil
+	return model, nil
 }

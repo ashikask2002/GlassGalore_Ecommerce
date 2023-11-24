@@ -4,7 +4,6 @@ import (
 	"GlassGalore/pkg/domain"
 	interfaces "GlassGalore/pkg/repository/interfaces"
 	services "GlassGalore/pkg/usecase/interfaces"
-	"errors"
 )
 
 type categoryUseCase struct {
@@ -27,21 +26,21 @@ func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Catego
 	return productResponse, nil
 }
 
-func (Cat *categoryUseCase) UpdateCategory(current string, new string) (domain.Category, error) {
+func (Cat *categoryUseCase) UpdateCategory(category domain.Category) (domain.Category, error) {
 
-	result, err := Cat.repository.CheckCategory(current)
+	// result, err := Cat.repository.CheckCategory(current)
+	// if err != nil {
+	// 	return domain.Category{}, err
+	// }
+	// if !result {
+	// 	return domain.Category{}, errors.New("there is no category as you mentioned")
+	// }
+
+	newcat, err := Cat.repository.UpdateCategory(category)
 	if err != nil {
 		return domain.Category{}, err
 	}
-	if !result {
-		return domain.Category{}, errors.New("there is no category as you mentioned")
-	}
-
-	newcat, err := Cat.repository.UpdateCategory(current, new)
-	if err != nil {
-		return domain.Category{}, err
-	}
-	return newcat, err
+	return newcat, nil
 }
 
 func (Cat *categoryUseCase) DeleteCategory(categoryID string) error {
@@ -53,9 +52,9 @@ func (Cat *categoryUseCase) DeleteCategory(categoryID string) error {
 }
 
 func (Cat *categoryUseCase) GetCategory() ([]domain.Category, error) {
-	categories , err := Cat.repository.GetCategory()
+	categories, err := Cat.repository.GetCategory()
 
-	if err != nil{
+	if err != nil {
 		return []domain.Category{}, err
 	}
 	return categories, nil
