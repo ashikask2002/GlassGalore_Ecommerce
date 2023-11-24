@@ -255,7 +255,7 @@ func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 		get.ID = products[i]
 		get.ProductName = product_names[i]
 		get.Category_id = categories[i]
-		get.Qantity = quantity[i]
+		get.Quantity = quantity[i]
 		get.Total = price[i] * float64(quantity[i])
 		get.Price = int(price[i])
 		get.StockAvailabe = stocks[i]

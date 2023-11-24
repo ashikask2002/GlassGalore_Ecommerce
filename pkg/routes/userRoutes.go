@@ -20,6 +20,7 @@ func UserRoutes(engine *gin.RouterGroup,
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
 	engine.Use(middleware.UserAuthMiddleware)
+
 	{
 		profile := engine.Group("/profile")
 		{
@@ -37,6 +38,13 @@ func UserRoutes(engine *gin.RouterGroup,
 			secutiry := profile.Group("/security")
 			{
 				secutiry.PUT("password", userHandler.ChangePassword)
+			}
+
+			orders := profile.Group("/orders")
+			{
+				orders.GET("", orderHandler.GetOrders)
+				orders.GET("/all", orderHandler.GetAllOrders)
+				orders.DELETE("", orderHandler.CancelOrder)
 			}
 
 		}
