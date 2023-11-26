@@ -37,6 +37,10 @@ func (i *invnetoryUseCase) DeleteInventory(inventoryID string) error {
 }
 
 func (i *invnetoryUseCase) UpdateInventory(pid int, stock int) (models.InventoryResponse, error) {
+
+	if pid <= 0 || stock <= 0 {
+		return models.InventoryResponse{}, errors.New("no negative values are allowded")
+	}
 	result, err := i.repository.CheckInventory(pid)
 	if err != nil {
 		return models.InventoryResponse{}, err

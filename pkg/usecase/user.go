@@ -139,31 +139,32 @@ func (i *UserUseCase) AddAddress(id int, address models.AddAddress) error {
 
 }
 
-func (i *UserUseCase) EditName(id int, name string) error {
+func (i *UserUseCase) EditDetails(id int, user models.EditDetailsResponse) (models.EditDetailsResponse, error) {
 
-	err := i.userRepo.EditName(id, name)
+	body, err := i.userRepo.EditDetails(id, user)
 	if err != nil {
-		return errors.New("could not change name")
+		return models.EditDetailsResponse{}, err
 	}
-	return nil
+
+	return body, nil
 }
 
-func (i *UserUseCase) EditEmail(id int, email string) error {
+// func (i *UserUseCase) EditEmail(id int, email string) error {
 
-	err := i.userRepo.EditEmail(id, email)
-	if err != nil {
-		return errors.New("could not change email")
-	}
-	return nil
-}
+// 	err := i.userRepo.EditEmail(id, email)
+// 	if err != nil {
+// 		return errors.New("could not change email")
+// 	}
+// 	return nil
+// }
 
-func (i *UserUseCase) EditPhone(id int, Phone string) error {
-	err := i.userRepo.EditPhone(id, Phone)
-	if err != nil {
-		return errors.New("could not change phone")
-	}
-	return nil
-}
+// func (i *UserUseCase) EditPhone(id int, Phone string) error {
+// 	err := i.userRepo.EditPhone(id, Phone)
+// 	if err != nil {
+// 		return errors.New("could not change phone")
+// 	}
+// 	return nil
+// }
 
 func (i *UserUseCase) ChangePassword(id int, old string, password string, repassword string) error {
 	userPassword, err := i.userRepo.GetPassword(id)

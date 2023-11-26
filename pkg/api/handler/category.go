@@ -42,16 +42,6 @@ func (Cat *CategoryHandler) UpdateCategory(c *gin.Context) {
 
 	var category domain.Category
 
-	// id_str := c.Param("id")
-	// id, err := strconv.Atoi(id_str)
-
-	// if err != nil {
-	// 	errRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
-	// 	fmt.Println("wwwwwwwwwwwwww", id)
-	// 	c.JSON(http.StatusBadRequest, errRes)
-	// 	return
-	// }
-
 	if err := c.BindJSON(&category); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields are provided in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

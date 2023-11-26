@@ -64,17 +64,19 @@ type AddAddress struct {
 	Pin       string `json:"pin" validate:"required"`
 }
 
-type EditName struct {
-	Name string `json:"name"`
-}
-
-type EditEmail struct {
-	Email string `json:"email"`
-}
-
-type EditPhone struct {
+type EditDetailsResponse struct {
+	Name  string `json:"name"`
+	Email string `json:"email" validate:"email"`
 	Phone string `json:"phone"`
 }
+
+// type EditEmail struct {
+// 	Email string `json:"email"`
+// }
+
+//	type EditPhone struct {
+//		Phone string `json:"phone"`
+//	}
 type ChangePassword struct {
 	OldPassword string `json:"old_password"`
 	Password    string `json:"password"`

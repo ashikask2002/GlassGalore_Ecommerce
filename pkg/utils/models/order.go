@@ -6,7 +6,7 @@ type PaymentMethodResponse struct {
 }
 
 type OrderDetails struct {
-	OrderID         int     `json:"order_id" gorm:"column:id"`
+	OrderID         int     `json:"order_id" gorm:"column:order_id"`
 	AddressID       int     `json:"address_id" gorm:"column:address_id"`
 	PaymentMethodID int     `json:"payment_method_id" gorm:"column:payment_method_id"`
 	Price           float64 `json:"price" gorm:"column:price"`

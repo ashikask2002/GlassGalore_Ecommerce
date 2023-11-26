@@ -111,33 +111,64 @@ func (c *userDatabase) AddAddress(id int, address models.AddAddress, result bool
 	return nil
 }
 
-func (c *userDatabase) EditName(id int, name string) error {
+func (i *userDatabase) EditDetails(id int, user models.EditDetailsResponse) (models.EditDetailsResponse, error) {
 
-	err := c.DB.Exec("update users set name = $1 where id = $2", name, id).Error
-	if err != nil {
-		return err
+	var body models.EditDetailsResponse
+
+	args := []interface{}{}
+	query := "update users set"
+
+	if user.Email != "" {
+		query += " email = $1,"
+
+		args = append(args, user.Email)
 	}
 
-	return nil
-}
-
-func (c *userDatabase) EditEmail(id int, email string) error {
-
-	err := c.DB.Exec("update users set email =$1 where id = $2", email, id).Error
-	if err != nil {
-		return err
+	if user.Name != "" {
+		query += " name = $2,"
+		args = append(args, user.Name)
 	}
 
-	return nil
+	if user.Phone != "" {
+		query += " phone = $3,"
+
+		args = append(args, user.Phone)
+	}
+
+	query = query[:len(query)-1] + " where id = $4"
+
+	args = append(args, id)
+	// fmt.Println(query, args)
+	err := i.DB.Exec(query, args...).Error
+	if err != nil {
+		return models.EditDetailsResponse{}, err
+	}
+	query2 := "select * from users where id = ?"
+	if err := i.DB.Raw(query2, id).Scan(&body).Error; err != nil {
+		return models.EditDetailsResponse{}, err
+	}
+
+	return body, nil
+
 }
 
-func (c *userDatabase) EditPhone(id int, phone string) error {
-	err := c.DB.Exec("update users set phone = $1 where id = $2", phone, id).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
+// func (c *userDatabase) EditEmail(id int, email string) error {
+
+// 	err := c.DB.Exec("update users set email =$1 where id = $2", email, id).Error
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
+
+// func (c *userDatabase) EditPhone(id int, phone string) error {
+// 	err := c.DB.Exec("update users set phone = $1 where id = $2", phone, id).Error
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func (c *userDatabase) ChangePassword(id int, password string) error {
 	err := c.DB.Exec("UPDATE users SET password = $1 WHERE id = $2", password, id).Error

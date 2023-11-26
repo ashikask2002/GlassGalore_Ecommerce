@@ -4,6 +4,7 @@ import (
 	"GlassGalore/pkg/domain"
 	interfaces "GlassGalore/pkg/repository/interfaces"
 	services "GlassGalore/pkg/usecase/interfaces"
+	"errors"
 )
 
 type categoryUseCase struct {
@@ -28,13 +29,9 @@ func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Catego
 
 func (Cat *categoryUseCase) UpdateCategory(category domain.Category) (domain.Category, error) {
 
-	// result, err := Cat.repository.CheckCategory(current)
-	// if err != nil {
-	// 	return domain.Category{}, err
-	// }
-	// if !result {
-	// 	return domain.Category{}, errors.New("there is no category as you mentioned")
-	// }
+	if category.Category == "" {
+		return domain.Category{}, errors.New("must provide a value")
+	}
 
 	newcat, err := Cat.repository.UpdateCategory(category)
 	if err != nil {

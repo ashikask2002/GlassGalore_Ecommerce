@@ -11,9 +11,9 @@ type UserUseCase interface {
 	GetUserDetails(id int) (models.UserDetailsResponse, error)
 	GetAddresses(id int) ([]domain.Address, error)
 	AddAddress(id int, address models.AddAddress) error
-	EditName(id int, name string) error
-	EditEmail(id int, email string) error
-	EditPhone(id int, phone string) error
+	EditDetails(int, models.EditDetailsResponse) (models.EditDetailsResponse, error)
+	// EditEmail(id int, email string) error
+	// EditPhone(id int, phone string) error
 	ChangePassword(id int, old string, password string, repassword string) error
 	GetCart(id int) (models.GetCartResponse, error)
 	RemoveFromCart(cart, inventory int) error
