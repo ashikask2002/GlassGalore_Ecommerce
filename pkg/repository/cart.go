@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
 
 	"gorm.io/gorm"
@@ -10,7 +11,7 @@ type cartRepository struct {
 	DB *gorm.DB
 }
 
-func NewCartRepository(db *gorm.DB) *cartRepository {
+func NewCartRepository(db *gorm.DB) interfaces.CartRepository {
 	return &cartRepository{
 		DB: db,
 	}

@@ -10,8 +10,8 @@ type AddInventories struct {
 }
 
 type InventoryResponse struct {
-	ProductID int
-	Stock     int
+	ProductID int `json:"id"`
+	Stock     int `json:"stock"`
 }
 
 type InventoryUpdate struct {

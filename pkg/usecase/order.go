@@ -6,6 +6,7 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
+	"strconv"
 )
 
 type orderUseCase struct {
@@ -13,7 +14,7 @@ type orderUseCase struct {
 	userUseCase     services.UserUseCase
 }
 
-func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase) *orderUseCase {
+func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase) services.OrderUseCase {
 	return &orderUseCase{
 		orderRepository: repo,
 		userUseCase:     userUseCase,
@@ -87,5 +88,49 @@ func (i *orderUseCase) CancelOrder(orderID int) error {
 		return err
 	}
 
+	return nil
+}
+
+func (i *orderUseCase) GetAdminOrders(page int) ([]models.CombinedOrderDetails, error) {
+	orderDetails, err := i.orderRepository.GetOrderDetailsBrief(page)
+	if err != nil {
+		return []models.CombinedOrderDetails{}, err
+	}
+	return orderDetails, nil
+}
+
+func (i *orderUseCase) OrdersStatus(orderID string) error {
+	orderId, sErr := strconv.Atoi(orderID)
+	if sErr != nil {
+		return sErr
+	}
+	status, err := i.orderRepository.CheckOrderStatusByID(orderId)
+	if err != nil {
+		return err
+	}
+	switch status {
+	case "CANCELED", "RETURNED", "DELIVERED":
+		return errors.New("cannot approve this order becouse it's in processed or cancelled state")
+	case "PENDING":
+		//for the admin approval change the PENDING to SHIPPED
+		err := i.orderRepository.ChangeOrderStatus(orderID, "SHIPPED")
+		if err != nil {
+			return err
+		}
+	case "SHIPPED":
+		shipmentStatus, err := i.orderRepository.GetShipmentStatus(orderID)
+		if err != nil {
+			return err
+		}
+		if shipmentStatus == "CANCELED" {
+			return errors.New("cannot approve this orders becouse its cancelled")
+		}
+
+		//for admin approval, change SHIPPED to  DELIVERED
+		err = i.orderRepository.ChangeOrderStatus(orderID, "DELIVERED")
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }

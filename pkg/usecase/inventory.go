@@ -5,15 +5,16 @@ import (
 	"GlassGalore/pkg/utils/models"
 	"errors"
 
-	interfaces "GlassGalore/pkg/repository/interfaces"
+	repos "GlassGalore/pkg/repository/interfaces"
+	use"GlassGalore/pkg/usecase/interfaces"
 )
 
 type invnetoryUseCase struct {
-	repository interfaces.InventoryRepository
+	repository repos.InventoryRepository
 	helper     helper_interface.Helper
 }
 
-func NewInventoryUseCase(repo interfaces.InventoryRepository, h helper_interface.Helper) *invnetoryUseCase {
+func NewInventoryUseCase(repo repos.InventoryRepository, h helper_interface.Helper) use.InvnetoryUseCase {
 	return &invnetoryUseCase{
 		repository: repo,
 		helper:     h,

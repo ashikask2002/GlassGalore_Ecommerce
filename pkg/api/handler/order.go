@@ -109,3 +109,37 @@ func (i *OrderHandler) CancelOrder(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully cancelled the order", nil, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+func (i *OrderHandler) GetAdminOrders(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	orders, err := i.orderUseCase.GetAdminOrders(page)
+
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve the orders", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully retrieved all orders", orders, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (i *OrderHandler) ApproveOrder(c *gin.Context){
+	orderID := c.Query("order_id")
+
+	err := i.orderUseCase.OrdersStatus(orderID)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest,"could not approve order",nil,err.Error())
+		c.JSON(http.StatusBadRequest,errorRes)
+		return
+	}
+
+	succeRes := response.ClientResponse(http.StatusOK,"successfully approved order",nil,nil)
+	c.JSON(http.StatusOK,succeRes)
+}

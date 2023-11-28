@@ -45,7 +45,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	orderUsecase := usecase.NewOrderUseCase(orderRepository, userUseCase)
 	orderHandler := handler.NewOrderHandler(orderUsecase)
 
-	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler, otpHandler, inventoryHandler, cartHandler, orderHandler)
+	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler, otpHandler, inventoryHandler, cartHandler, orderHandler )
 
 	return serverHTTP, nil
 

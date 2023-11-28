@@ -97,3 +97,46 @@ func (i *orderRepository) CancelOrder(id int) error {
 	}
 	return nil
 }
+
+func (i *orderRepository) GetOrderDetailsBrief(page int) ([]models.CombinedOrderDetails, error) {
+	if page == 0 {
+		page = 1
+	}
+	offset := (page - 1) * 2
+
+	var orderDetails []models.CombinedOrderDetails
+
+	err := i.DB.Raw(`
+	SELECT orders.id AS order_id, orders.final_price, orders.order_status, orders.payment_status, 
+	users.name, users.email, users.phone, addresses.house_name, addresses.state, 
+	addresses.pin, addresses.street, addresses.city 
+	FROM orders 
+	INNER JOIN users ON orders.user_id = users.id 
+	INNER JOIN addresses ON users.id = addresses.user_id 
+	LIMIT ? OFFSET ?
+`, 2, offset).Scan(&orderDetails).Error
+
+	if err != nil {
+		return []models.CombinedOrderDetails{}, err
+	}
+	return orderDetails, nil
+
+}
+
+func (i *orderRepository) ChangeOrderStatus(orderID, status string) error {
+	err := i.DB.Exec("UPDATE orders SET order_status = ? WHERE id = ?", status, orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *orderRepository) GetShipmentStatus(orderID string) (string, error) {
+
+	var shipmentStatus string
+	err := i.DB.Raw("UPDATE orders SET order_status = 'DELIVERED', payment_status = 'PAID' WHERE id = ?", orderID).Scan(&shipmentStatus).Error
+	if err != nil {
+		return "", err
+	}
+	return shipmentStatus, nil
+}
