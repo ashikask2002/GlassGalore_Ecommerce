@@ -26,6 +26,10 @@ func NewOtpUseCase(cfg config.Config, repo interfaces.OtpRepository, h helper_in
 }
 
 func (ot *otpUseCase) SendOTP(phone string) error {
+	phoneNumber := ot.helper.PhoneValidation(phone)
+	if !phoneNumber {
+		return errors.New("invalid mobile Number")
+	}
 	ok := ot.otpRepository.FindUserByMobileNumber(phone)
 	if !ok {
 		return errors.New("the uer does not exist")

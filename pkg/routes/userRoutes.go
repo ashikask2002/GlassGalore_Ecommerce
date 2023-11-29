@@ -10,13 +10,12 @@ import (
 func UserRoutes(engine *gin.RouterGroup,
 	userHandler *handler.UserHandler,
 	otpHandler *handler.OtpHandler,
-	inventoryHandler *handler.InventoryHandler,
+	productHandler *handler.ProductHandler,
 	cartHandler *handler.CartHandler,
 	orderHandler *handler.OrderHandler) {
 
 	engine.POST("/signup", userHandler.UserSignUp)
 	engine.POST("/login", userHandler.LoginHandler)
-	
 
 	engine.POST("/otplogin", otpHandler.SendOTP)
 	engine.POST("/verifyotp", otpHandler.VerifyOTP)
@@ -51,7 +50,7 @@ func UserRoutes(engine *gin.RouterGroup,
 
 		home := engine.Group("/home")
 		{
-			home.GET("/product", inventoryHandler.ListProductForUser)
+			home.GET("/product", productHandler.ListProductForUser)
 		}
 
 		cart := engine.Group("/cart")

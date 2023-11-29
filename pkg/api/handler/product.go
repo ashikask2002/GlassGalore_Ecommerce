@@ -10,51 +10,51 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type InventoryHandler struct {
+type ProductHandler struct {
 	InvnetoryUseCase services.InvnetoryUseCase
 }
 
-func NewInventoryHandler(usecase services.InvnetoryUseCase) *InventoryHandler {
-	return &InventoryHandler{
+func NewProductHandler(usecase services.InvnetoryUseCase) *ProductHandler {
+	return &ProductHandler{
 		InvnetoryUseCase: usecase,
 	}
 }
 
-func (i *InventoryHandler) AddInventory(c *gin.Context) {
+func (i *ProductHandler) AddProduct(c *gin.Context) {
 
-	var inventory models.AddInventories
-	if err := c.ShouldBindJSON(&inventory); err != nil {
+	var product models.AddProducts
+	if err := c.ShouldBindJSON(&product); err != nil {
 		errorres := response.ClientResponse(http.StatusBadRequest, "form file error", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorres)
 		return
 	}
 
-	InventoryResponse, err := i.InvnetoryUseCase.AddInventory(inventory)
+	ProductResponse, err := i.InvnetoryUseCase.AddProduct(product)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "could not add the Inventory", nil, err.Error())
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not add the product", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	successRes := response.ClientResponse(http.StatusOK, "Successfully added Inventory", InventoryResponse, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully added product", ProductResponse, nil)
 	c.JSON(http.StatusOK, successRes)
 
 }
 
-func (i *InventoryHandler) DeleteInventory(c *gin.Context) {
+func (i *ProductHandler) DeleteProduct(c *gin.Context) {
 
-	inventoryID := c.Query("id")
-	err := i.InvnetoryUseCase.DeleteInventory(inventoryID)
+	productID := c.Query("id")
+	err := i.InvnetoryUseCase.DeleteProduct(productID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	successres := response.ClientResponse(http.StatusOK, "Successfully deleted the inventory", nil, nil)
+	successres := response.ClientResponse(http.StatusOK, "Successfully deleted the Product", nil, nil)
 	c.JSON(http.StatusOK, successres)
 }
 
-func (i *InventoryHandler) UpdateInventory(c *gin.Context) {
-	var p models.InventoryUpdate
+func (i *ProductHandler) UpdateProduct(c *gin.Context) {
+	var p models.ProductUpdate
 
 	if err := c.BindJSON(&p); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields are provided in wrong format", nil, err.Error())
@@ -62,25 +62,25 @@ func (i *InventoryHandler) UpdateInventory(c *gin.Context) {
 		return
 	}
 
-	a, err := i.InvnetoryUseCase.UpdateInventory(p.Productid, p.Stock)
+	a, err := i.InvnetoryUseCase.UpdateProduct(p.Productid, p.Stock)
 	if err != nil {
-		errorres := response.ClientResponse(http.StatusBadRequest, "could not update the inventory stock", nil, err.Error())
+		errorres := response.ClientResponse(http.StatusBadRequest, "could not update the Product stock", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorres)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "Successfully updated the inventory stock", a, nil)
+	successRes := response.ClientResponse(http.StatusOK, "Successfully updated the Product stock", a, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
-func (i *InventoryHandler) EditInventoryDetails(c *gin.Context) {
+func (i *ProductHandler) EditProductDetails(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "problems in the id", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	var model models.EditInventoryDetails
+	var model models.EditProductDetails
 
 	err = c.BindJSON(&model)
 	if err != nil {
@@ -89,18 +89,18 @@ func (i *InventoryHandler) EditInventoryDetails(c *gin.Context) {
 		return
 	}
 
-	err = i.InvnetoryUseCase.EditInventoryDetails(id, model)
+	products, err := i.InvnetoryUseCase.EditProductDetails(id, model)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not edit the details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	successRes := response.ClientResponse(http.StatusOK, "successfully edited details", nil, nil)
+	successRes := response.ClientResponse(http.StatusOK, "successfully edited details", products, nil)
 	c.JSON(http.StatusOK, successRes)
 }
 
-func (i *InventoryHandler) ListProductForUser(c *gin.Context) {
+func (i *ProductHandler) ListProductForUser(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {

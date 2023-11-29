@@ -29,11 +29,11 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID          uint    `json:"id" gorm:"primaryKey;autoIncrement"`
-	OrderID     uint    `json:"order_id"`     //Order       Order       `json:"-" gorm:"foreignkey:OrderID;constraint:OnDelete:CASCADE"`
-	InventoryID uint    `json:"inventory_id"` //Inventory   Inventories `json:"-" gorm:"foreignkey:InventoryID"`
-	Quantity    int     `json:"quantity"`
-	TotalPrice  float64 `json:"total_price"`
+	ID         uint    `json:"id" gorm:"primaryKey;autoIncrement"`
+	OrderID    uint    `json:"order_id"`   //Order       Order       `json:"-" gorm:"foreignkey:OrderID;constraint:OnDelete:CASCADE"`
+	ProductID  uint    `json:"product_id"` //Inventory   Inventories `json:"-" gorm:"foreignkey:InventoryID"`
+	Quantity   int     `json:"quantity"`
+	TotalPrice float64 `json:"total_price"`
 }
 type OrderResponse struct {
 	UserID          uint          `json:"user_id" gorm:"not null"`

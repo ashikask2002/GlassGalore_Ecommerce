@@ -134,3 +134,21 @@ func (i *orderUseCase) OrdersStatus(orderID string) error {
 	}
 	return nil
 }
+
+// func(i *orderUseCase) ReturnOrder(id int) error{
+// 	//should check the order is already returned
+// 	status, err := i.orderRepository.CheckOrderStatusByID(id)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	if status == "RETURNED" {
+//       return errors.New("user is trying to return an order which is still not delivered")
+// 	}
+
+// 	//make orders as return order
+// 	if err := i.orderRepository.ReturnOrder(id);  err != nil {
+//        return err
+// 	}
+// 	return nil
+// }

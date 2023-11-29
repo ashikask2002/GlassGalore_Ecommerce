@@ -38,12 +38,12 @@ func (i *orderRepository) OrderItems(userid, addresid, paymentid int, total floa
 func (i *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart) error {
 	fmt.Println("zxzxzxzx", order_id)
 	query := `
-    INSERT INTO order_items (order_id,inventory_id,quantity,total_price)
+    INSERT INTO order_items (order_id,product_id,quantity,total_price)
     VALUES (?, ?, ?, ?)
     `
 	for _, v := range cart {
 		var inv int
-		if err := i.DB.Raw("select id from inventories where product_name = $1", v.ProductName).Scan(&inv).Error; err != nil {
+		if err := i.DB.Raw("select id from products where product_name = $1", v.ProductName).Scan(&inv).Error; err != nil {
 			return err
 		}
 		if err := i.DB.Exec(query, order_id, inv, v.Quantity, v.Total).Error; err != nil {
@@ -140,3 +140,10 @@ func (i *orderRepository) GetShipmentStatus(orderID string) (string, error) {
 	}
 	return shipmentStatus, nil
 }
+
+// func (i *orderRepository) ReturnOrder(id int) error {
+// 	if err := i.DB.Exec("UPDATE orders SET order_status = 'RETURNED', payment_status = 'REFUND PENDING' WHERE id = ?", id).Error; err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }

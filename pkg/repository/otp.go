@@ -19,6 +19,8 @@ func NewOtpRepository(DB *gorm.DB) interfaces.OtpRepository {
 
 func (ot *otpRepository) FindUserByMobileNumber(phone string) bool {
 
+
+
 	var count int
 	if err := ot.DB.Raw("select count(*) from users where phone = ?", phone).Scan(&count).Error; err != nil {
 		return false

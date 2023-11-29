@@ -25,6 +25,10 @@ var InternalError = "Internal server Error"
 var ErrorHashingPassword = "Error In Hashing Password"
 
 func (u *UserUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, error) {
+	number := u.helper.PhoneValidation(user.Phone)
+	if !number {
+		return models.TokenUsers{}, errors.New("invalid mobilenumber")
+	}
 
 	userExist := u.userRepo.CheckUserAvailability(user.Email)
 	if userExist {
@@ -42,6 +46,7 @@ func (u *UserUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 	user.Password = hashedPassword
 
 	userData, err := u.userRepo.UserSignUp(user)
+
 	if err != nil {
 		return models.TokenUsers{}, errors.New("could not add the user")
 	}
@@ -122,6 +127,12 @@ func (i *UserUseCase) GetAddresses(id int) ([]domain.Address, error) {
 }
 
 func (i *UserUseCase) AddAddress(id int, address models.AddAddress) error {
+
+	phone := i.helper.PhoneValidation(address.Phone)
+	if !phone {
+		return errors.New("invalid phone Number")
+	}
+
 	rslt := i.userRepo.CheckIfFirstAddress(id)
 	var result bool
 

@@ -198,7 +198,7 @@ func (i *userDatabase) GetCartID(id int) (int, error) {
 
 func (i *userDatabase) GetProductsInCart(cart_id int) ([]int, error) {
 	var cart_products []int
-	if err := i.DB.Raw("select inventory_id from line_items where cart_id=?", cart_id).Scan(&cart_products).Error; err != nil {
+	if err := i.DB.Raw("select product_id from line_items where cart_id=?", cart_id).Scan(&cart_products).Error; err != nil {
 		return []int{}, err
 	}
 	return cart_products, nil
@@ -207,7 +207,7 @@ func (i *userDatabase) GetProductsInCart(cart_id int) ([]int, error) {
 func (i *userDatabase) FindProductNames(inventory_id int) (string, error) {
 	var product_name string
 
-	if err := i.DB.Raw("select product_name from inventories where id= ?", inventory_id).Scan(&product_name).Error; err != nil {
+	if err := i.DB.Raw("select product_name from products where id= ?", inventory_id).Scan(&product_name).Error; err != nil {
 		return "", err
 	}
 	return product_name, nil
@@ -216,25 +216,25 @@ func (i *userDatabase) FindProductNames(inventory_id int) (string, error) {
 func (i *userDatabase) FindCartQuantity(cart_id, inventory_id int) (int, error) {
 	var quantity int
 
-	if err := i.DB.Raw("select quantity from line_items where cart_id = $1 and inventory_id = $2", cart_id, inventory_id).Scan(&quantity).Error; err != nil {
+	if err := i.DB.Raw("select quantity from line_items where cart_id = $1 and product_id = $2", cart_id, inventory_id).Scan(&quantity).Error; err != nil {
 		return 0, err
 	}
 	return quantity, nil
 }
 
-func (i *userDatabase) FindPrice(inventory_id int) (float64, error) {
+func (i *userDatabase) FindPrice(product_id int) (float64, error) {
 	var price float64
 
-	if err := i.DB.Raw("select price from inventories where id = ?", inventory_id).Scan(&price).Error; err != nil {
+	if err := i.DB.Raw("select price from products where id = ?", product_id).Scan(&price).Error; err != nil {
 		return 0, err
 	}
 	return price, nil
 }
 
-func (i *userDatabase) FindCategory(inventory_id int) (int, error) {
+func (i *userDatabase) FindCategory(product_id int) (int, error) {
 	var category int
 
-	if err := i.DB.Raw("select category_id from inventories where id=?", inventory_id).Scan(&category).Error; err != nil {
+	if err := i.DB.Raw("select category_id from products where id=?", product_id).Scan(&category).Error; err != nil {
 		return 0, err
 	}
 
@@ -243,14 +243,14 @@ func (i *userDatabase) FindCategory(inventory_id int) (int, error) {
 
 func (i *userDatabase) FindStock(id int) (int, error) {
 	var stock int
-	if err := i.DB.Raw("select stock from inventories where id = ?", id).Scan(&stock).Error; err != nil {
+	if err := i.DB.Raw("select stock from products where id = ?", id).Scan(&stock).Error; err != nil {
 		return 0, err
 	}
 	return stock, nil
 }
 
-func (i *userDatabase) RemoveFromCart(cart, inventory int) error {
-	if err := i.DB.Exec(`DELETE FROM line_items WHERE cart_id = $1 AND inventory_id = $2`, cart, inventory).Error; err != nil {
+func (i *userDatabase) RemoveFromCart(cart, productID int) error {
+	if err := i.DB.Exec(`DELETE FROM line_items WHERE cart_id = $1 AND product_id = $2`, cart, productID).Error; err != nil {
 		return err
 	}
 	return nil
@@ -261,7 +261,7 @@ func (i *userDatabase) UpdateQuantity(id, inv_id, qty int) error {
 		return errors.New("negtive or zero values are not allowed")
 	}
 	if qty >= 0 {
-		query := `update line_items set quantity = $1 where cart_id = $2 and inventory_id= $3`
+		query := `update line_items set quantity = $1 where cart_id = $2 and product_id= $3`
 
 		result := i.DB.Exec(query, qty, id, inv_id)
 		{

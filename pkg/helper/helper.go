@@ -2,9 +2,11 @@ package helper
 
 import (
 	cfg "GlassGalore/pkg/config"
+	"GlassGalore/pkg/helper/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -18,7 +20,7 @@ type helper struct {
 	cfg cfg.Config
 }
 
-func NewHelper(config cfg.Config) *helper {
+func NewHelper(config cfg.Config) interfaces.Helper {
 	return &helper{
 		cfg: config,
 	}
@@ -144,4 +146,12 @@ func (h *helper) TwilioVerifyOTP(serviceID string, code string, phone string) er
 	}
 
 	return errors.New("failed to validate otp")
+}
+
+func (h *helper) PhoneValidation(phone string) bool {
+	phoneNumber := phone
+	pattern := `^\d{10}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(phoneNumber)
+	return value
 }

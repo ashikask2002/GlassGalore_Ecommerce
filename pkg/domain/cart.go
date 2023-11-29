@@ -7,10 +7,10 @@ type Cart struct {
 }
 
 type LineItems struct {
-	ID          uint        `json:"id" gorm:"primarykey"`
-	CartID      uint        `json:"cart_id" gorm:"not null"`
-	Cart        Cart        `json:"-" gorm:"foreignkey:CartID"`
-	InventoryID uint        `json:"inventory_id" gorm:"not null"`
-	Inventories Inventories `json:"-" gorm:"foreignkey:InventoryID;constraint:OnDelete:CASCADE"`
-	Quantity    int         `json:"quantity" gorm:"default:1"`
+	ID        uint     `json:"id" gorm:"primarykey"`
+	CartID    uint     `json:"cart_id" gorm:"not null"`
+	Cart      Cart     `json:"-" gorm:"foreignkey:CartID"`
+	ProductID uint     `json:"product_id" gorm:"not null"`
+	Products  Products `json:"-" gorm:"foreignkey:ProductID;constraint:OnDelete:CASCADE"`
+	Quantity  int      `json:"quantity" gorm:"default:1"`
 }

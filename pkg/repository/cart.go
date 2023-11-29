@@ -3,6 +3,7 @@ package repository
 import (
 	"GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -38,14 +39,14 @@ func (i *cartRepository) CreateNewCart(user_id int) (int, error) {
 }
 func (i *cartRepository) CheckIfItemsIsAlreadyAdded(cart_id, inventory_id int) (bool, error) {
 	var count int
-	if err := i.DB.Raw("SELECT COUNT(*) FROM line_items WHERE cart_id = $1 AND inventory_id = $2", cart_id, inventory_id).Scan(&count).Error; err != nil {
+	if err := i.DB.Raw("SELECT COUNT(*) FROM line_items WHERE cart_id = $1 AND product_id = $2", cart_id, inventory_id).Scan(&count).Error; err != nil {
 		return false, err
 	}
 	return count > 0, nil
 }
 
 func (i *cartRepository) AddLineItems(cart_id, inventory_id int) error {
-	err := i.DB.Exec(`INSERT INTO line_items (cart_id,inventory_id) VALUES ($1,$2)`, cart_id, inventory_id).Error
+	err := i.DB.Exec(`INSERT INTO line_items (cart_id,product_id) VALUES ($1,$2)`, cart_id, inventory_id).Error
 	if err != nil {
 		return err
 	}
@@ -54,9 +55,12 @@ func (i *cartRepository) AddLineItems(cart_id, inventory_id int) error {
 }
 
 func (i *cartRepository) GetAddresses(id int) ([]models.Address, error) {
+	fmt.Println("hhhhhhhhhhh", id)
 	var addresses []models.Address
 	if err := i.DB.Raw("select * from addresses where user_id = ?", id).Scan(&addresses).Error; err != nil {
 		return []models.Address{}, err
+
 	}
+	fmt.Println("adddddddd", addresses)
 	return addresses, nil
 }

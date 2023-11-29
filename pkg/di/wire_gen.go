@@ -33,9 +33,9 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	otpUseCase := usecase.NewOtpUseCase(cfg, otpRepository, Helper)
 	otpHandler := handler.NewOtpHandler(otpUseCase)
 
-	inventoryRepository := repository.NewInventoryRepository(gormDB)
-	inventoryUseCase := usecase.NewInventoryUseCase(inventoryRepository, Helper)
-	inventoryHandler := handler.NewInventoryHandler(inventoryUseCase)
+	inventoryRepository := repository.NewProductRepository(gormDB)
+	inventoryUseCase := usecase.NewProductUseCase(inventoryRepository, Helper)
+	inventoryHandler := handler.NewProductHandler(inventoryUseCase)
 
 	cartRepository := repository.NewCartRepository(gormDB)
 	cartUsecase := usecase.NewCartUseCase(cartRepository, inventoryRepository, userUseCase, adminRepository)
@@ -45,7 +45,7 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	orderUsecase := usecase.NewOrderUseCase(orderRepository, userUseCase)
 	orderHandler := handler.NewOrderHandler(orderUsecase)
 
-	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler, otpHandler, inventoryHandler, cartHandler, orderHandler )
+	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler, otpHandler, inventoryHandler, cartHandler, orderHandler)
 
 	return serverHTTP, nil
 

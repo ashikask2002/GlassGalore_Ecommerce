@@ -5,7 +5,7 @@ type Category struct {
 	Category string `json:"category"`
 }
 
-type Inventories struct {
+type Products struct {
 	ID          uint     `json:"id" gorm:"unique;not null"`
 	CategoryID  int      `json:"category_id"`
 	Category    Category `josn:"-" gorm:"foreignkey:CategoryID;constraint:OnDelete:CASCADE"`

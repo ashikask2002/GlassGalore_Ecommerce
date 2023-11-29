@@ -5,28 +5,29 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
+	"fmt"
 )
 
 type cartUseCase struct {
-	repo                interfaces.CartRepository
-	inventoryRepository interfaces.InventoryRepository
-	userUsecase         services.UserUseCase
-	adrepo              interfaces.AdminRepository
+	repo              interfaces.CartRepository
+	productRepository interfaces.ProductRepository
+	userUsecase       services.UserUseCase
+	adrepo            interfaces.AdminRepository
 }
 
-func NewCartUseCase(repo interfaces.CartRepository, inventoryRepo interfaces.InventoryRepository, userUseCase services.UserUseCase, adrepo interfaces.AdminRepository) services.CartUseCase {
+func NewCartUseCase(repo interfaces.CartRepository, productRepo interfaces.ProductRepository, userUseCase services.UserUseCase, adrepo interfaces.AdminRepository) services.CartUseCase {
 	return &cartUseCase{
-		repo:                repo,
-		inventoryRepository: inventoryRepo,
-		userUsecase:         userUseCase,
-		adrepo:              adrepo,
+		repo:              repo,
+		productRepository: productRepo,
+		userUsecase:       userUseCase,
+		adrepo:            adrepo,
 	}
 }
 
-func (i *cartUseCase) AddToCart(userID, inventoryID int) error {
+func (i *cartUseCase) AddToCart(userID, productID int) error {
 
 	//check the desired product has quantity available
-	stock, err := i.inventoryRepository.CheckStock(inventoryID)
+	stock, err := i.productRepository.CheckStock(productID)
 	if err != nil {
 		return err
 	}
@@ -47,7 +48,7 @@ func (i *cartUseCase) AddToCart(userID, inventoryID int) error {
 			return errors.New("cannot create cart for user")
 		}
 	}
-	exists, err := i.repo.CheckIfItemsIsAlreadyAdded(cart_id, inventoryID)
+	exists, err := i.repo.CheckIfItemsIsAlreadyAdded(cart_id, productID)
 	if err != nil {
 		return err
 	}
@@ -55,7 +56,7 @@ func (i *cartUseCase) AddToCart(userID, inventoryID int) error {
 		return errors.New("item already exist in cart")
 	}
 	//add product to line items
-	if err := i.repo.AddLineItems(cart_id, inventoryID); err != nil {
+	if err := i.repo.AddLineItems(cart_id, productID); err != nil {
 		return errors.New("error in adding products")
 	}
 	return nil
@@ -63,7 +64,7 @@ func (i *cartUseCase) AddToCart(userID, inventoryID int) error {
 }
 
 func (i *cartUseCase) CheckOut(id int) (models.CheckOut, error) {
-
+	fmt.Println("iddddddddddddddddddddd", id)
 	address, err := i.repo.GetAddresses(id)
 	if err != nil {
 		return models.CheckOut{}, err
@@ -75,7 +76,7 @@ func (i *cartUseCase) CheckOut(id int) (models.CheckOut, error) {
 	}
 
 	products, err := i.userUsecase.GetCart(id)
-
+	fmt.Println("ddddddddd", products.ID)
 	if err != nil {
 		return models.CheckOut{}, err
 	}

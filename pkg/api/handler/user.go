@@ -285,14 +285,14 @@ func (i *UserHandler) RemoveFromCart(c *gin.Context) {
 		return
 	}
 
-	InventoryID, err := strconv.Atoi(c.Query("inventory_id"))
+	ProductID, err := strconv.Atoi(c.Query("inventory_id"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
 
-	if err := i.userUseCase.RemoveFromCart(CartID, InventoryID); err != nil {
+	if err := i.userUseCase.RemoveFromCart(CartID, ProductID); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not remove from cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
@@ -309,7 +309,7 @@ func (i *UserHandler) UpdateQuantity(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	inv, err := strconv.Atoi(c.Query("inventory"))
+	inv, err := strconv.Atoi(c.Query("product"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

@@ -15,4 +15,5 @@ type OrderRepository interface {
 	GetOrderDetailsBrief(page int) ([]models.CombinedOrderDetails, error)
 	ChangeOrderStatus(orderID, status string) error
 	GetShipmentStatus(orderID string) (string, error)
+	// ReturnOrder(id int) error
 }

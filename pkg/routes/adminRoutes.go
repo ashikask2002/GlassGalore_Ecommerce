@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, categoryHandler *handler.CategoryHandler, inventoryHandler *handler.InventoryHandler, orderHandler *handler.OrderHandler) {
+func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, categoryHandler *handler.CategoryHandler, inventoryHandler *handler.ProductHandler, orderHandler *handler.OrderHandler) {
 
 	engine.POST("/adminlogin", adminHandler.LoginHandler)
 
@@ -28,13 +28,13 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 			categorymanagement.GET("", categoryHandler.GetCategory)
 		}
 
-		inventorymanagement := engine.Group("/inventories")
+		inventorymanagement := engine.Group("/products")
 		{
-			inventorymanagement.POST("", inventoryHandler.AddInventory)
-			inventorymanagement.DELETE("", inventoryHandler.DeleteInventory)
-			inventorymanagement.PUT("/details", inventoryHandler.EditInventoryDetails)
+			inventorymanagement.POST("", inventoryHandler.AddProduct)
+			inventorymanagement.DELETE("", inventoryHandler.DeleteProduct)
+			inventorymanagement.PUT("/details", inventoryHandler.EditProductDetails)
 
-			inventorymanagement.PUT("/:id/stock", inventoryHandler.UpdateInventory)
+			inventorymanagement.PUT("/:id/stock", inventoryHandler.UpdateProduct)
 
 		}
 
@@ -49,6 +49,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 		{
 			orders.GET("", orderHandler.GetAdminOrders)
 			orders.PATCH("", orderHandler.ApproveOrder)
+			// orders.PUT("", orderHandler.ReturnOrder)
 
 		}
 
