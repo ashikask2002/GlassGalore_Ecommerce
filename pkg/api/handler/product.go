@@ -11,12 +11,12 @@ import (
 )
 
 type ProductHandler struct {
-	InvnetoryUseCase services.InvnetoryUseCase
+	ProductUseCase services.ProductUseCase
 }
 
-func NewProductHandler(usecase services.InvnetoryUseCase) *ProductHandler {
+func NewProductHandler(usecase services.ProductUseCase) *ProductHandler {
 	return &ProductHandler{
-		InvnetoryUseCase: usecase,
+		ProductUseCase: usecase,
 	}
 }
 
@@ -29,7 +29,7 @@ func (i *ProductHandler) AddProduct(c *gin.Context) {
 		return
 	}
 
-	ProductResponse, err := i.InvnetoryUseCase.AddProduct(product)
+	ProductResponse, err := i.ProductUseCase.AddProduct(product)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not add the product", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -43,7 +43,7 @@ func (i *ProductHandler) AddProduct(c *gin.Context) {
 func (i *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	productID := c.Query("id")
-	err := i.InvnetoryUseCase.DeleteProduct(productID)
+	err := i.ProductUseCase.DeleteProduct(productID)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -62,7 +62,7 @@ func (i *ProductHandler) UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	a, err := i.InvnetoryUseCase.UpdateProduct(p.Productid, p.Stock)
+	a, err := i.ProductUseCase.UpdateProduct(p.Productid, p.Stock)
 	if err != nil {
 		errorres := response.ClientResponse(http.StatusBadRequest, "could not update the Product stock", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorres)
@@ -89,7 +89,7 @@ func (i *ProductHandler) EditProductDetails(c *gin.Context) {
 		return
 	}
 
-	products, err := i.InvnetoryUseCase.EditProductDetails(id, model)
+	products, err := i.ProductUseCase.EditProductDetails(id, model)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not edit the details", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -116,7 +116,7 @@ func (i *ProductHandler) ListProductForUser(c *gin.Context) {
 	// 	c.JSON(http.StatusForbidden, errorRes)
 	// 	return
 	// }
-	products, err := i.InvnetoryUseCase.ListProductForUser(page)
+	products, err := i.ProductUseCase.ListProductForUser(page)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -125,4 +125,64 @@ func (i *ProductHandler) ListProductForUser(c *gin.Context) {
 
 	successRes := response.ClientResponse(http.StatusOK, "successfully retrieved all records", products, nil)
 	c.JSON(http.StatusOK, successRes)
+}
+
+func (i *ProductHandler) FilterProducts(c *gin.Context) {
+	CategoryID := c.Query("category_id")
+	CategoryIDInt, err := strconv.Atoi(CategoryID)
+
+	if err != nil {
+		errirRes := response.ClientResponse(http.StatusBadRequest, "error in conversion", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errirRes)
+		return
+	}
+
+	productList, err := i.ProductUseCase.FilterProducts(CategoryIDInt)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "cannot retrieve the productlist", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all product", productList, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
+func (i *ProductHandler) SearchProducts(c *gin.Context) {
+	var search models.Search
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "5")
+	err := c.BindJSON(&search)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields are in wrong format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page str conversio failed", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "limit str conversion failed", nil, err)
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+    search.Page = page
+    search.Limit = limit
+
+	productList, err := i.ProductUseCase.SearchProducts(search)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "couldnt get any products", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	succesRes := response.ClientResponse(http.StatusOK, "successfully got all product", productList, nil)
+	c.JSON(http.StatusOK, succesRes)
+
 }

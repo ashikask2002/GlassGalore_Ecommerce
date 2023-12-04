@@ -14,7 +14,7 @@ type productUseCase struct {
 	helper     helper_interface.Helper
 }
 
-func NewProductUseCase(repo repos.ProductRepository, h helper_interface.Helper) use.InvnetoryUseCase {
+func NewProductUseCase(repo repos.ProductRepository, h helper_interface.Helper) use.ProductUseCase {
 	return &productUseCase{
 		repository: repo,
 		helper:     h,
@@ -73,4 +73,24 @@ func (i *productUseCase) ListProductForUser(page int) ([]models.Products, error)
 	}
 
 	return productDetails, nil
+}
+
+func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserResponse, error) {
+	product_list, err := i.repository.FilterProducts(CategoryID)
+	if err != nil {
+		return []models.ProductUserResponse{}, err
+	}
+	return product_list, nil
+}
+
+func (i *productUseCase) SearchProducts(search models.Search) ([]models.ProductUserResponse, error) {
+
+	offset := (search.Page - 1) * search.Limit
+
+	product_list, err := i.repository.SearchProducts(offset, search.Limit, search.Search)
+	if err != nil {
+		return nil, err
+	}
+	return product_list, nil
+
 }

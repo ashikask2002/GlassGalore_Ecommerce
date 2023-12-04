@@ -27,3 +27,20 @@ type CombinedOrderDetails struct {
 	State         string  `json:"state" validate:"required"`
 	Pin           string  `json:"pin" validate:"required"`
 }
+
+type OrderPay struct {
+	UserID uint `json:"user_id" `
+
+	AddressID uint `json:"address_id" `
+
+	PaymentMethodID uint `json:"paymentmethod_id"`
+
+	FinalPrice    float64 `json:"price"`
+	OrderStatus   string  `json:"order_status" `
+	PaymentStatus string  `json:"payment_status"`
+}
+
+type OrderPayOnly struct {
+	OrderID    uint    `json:"order_id" `
+	FinalPrice float64 `json:"final_price"`
+}

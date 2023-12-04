@@ -51,3 +51,25 @@ type AddToCart struct {
 	UserID      int `json:"user_id"`
 	InventoryID int `json:"inventory_id"`
 }
+
+type SearchItems struct {
+	ProductName string `json:"product_name"`
+}
+type ProductUserResponse struct {
+	ID         uint `json:"id"`
+	CategoryID int  `json:"category_id"`
+	//Category    string `json:"category" gorm:"unique;not null"`
+	ProductName string `json:"productname"`
+	//Color       string `json:"color"`
+	Size  string `json:"size"`
+	Price int    `json:"price"`
+	//	IfPresentAtWishlist bool    `json:"if_present_at_wishlist"`
+	//	IfPresentAtCart bool    `json:"if_present_at_cart"`
+	//	DiscountedPrice float64 `json:"discounted_price"`
+}
+
+type Search struct {
+	Search string `json:"search"`
+	Page   int    `json:"page"`
+	Limit  int    `json:"limit"`
+}

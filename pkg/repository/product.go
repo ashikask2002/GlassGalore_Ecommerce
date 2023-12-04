@@ -4,6 +4,7 @@ import (
 	"GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"gorm.io/gorm"
@@ -117,4 +118,27 @@ func (i *productRepository) CheckStock(pid int) (int, error) {
 	}
 	return k, nil
 
+}
+
+func (i *productRepository) FilterProducts(CategoryID int) ([]models.ProductUserResponse, error) {
+	var product_list []models.ProductUserResponse
+
+	if err := i.DB.Raw("select * from products where category_id = ? ", CategoryID).Scan(&product_list).Error; err != nil {
+		return nil, err
+	}
+	return product_list, nil
+}
+
+func (i *productRepository) SearchProducts(offset, limit int, search string) ([]models.ProductUserResponse, error) {
+	var product_list []models.ProductUserResponse
+
+	query := "SELECT id, product_name, price, category_id, size FROM products WHERE product_name LIKE ? LIMIT ? OFFSET ?"
+	err := i.DB.Raw(query, search+"%", limit, offset).Scan(&product_list).Error
+
+	if err != nil {
+		return nil, errors.New("record not found")
+	}
+	fmt.Println("vzvzvzvzvzvzvzv", product_list)
+
+	return product_list, nil
 }

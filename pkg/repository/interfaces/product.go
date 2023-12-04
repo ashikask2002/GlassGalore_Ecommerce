@@ -10,4 +10,6 @@ type ProductRepository interface {
 	EditProductDetails(id int, model models.EditProductDetails) (models.EditProductDetails, error)
 	ListProducts(page int) ([]models.Products, error)
 	CheckStock(inventory_id int) (int, error)
+	SearchProducts(offset, limit int, search string) ([]models.ProductUserResponse, error)
+	FilterProducts(CategroyID int) ([]models.ProductUserResponse, error)
 }

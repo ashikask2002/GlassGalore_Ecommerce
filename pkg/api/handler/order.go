@@ -144,19 +144,3 @@ func (i *OrderHandler) ApproveOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, succeRes)
 }
 
-// func (i *OrderHandler) ReturnOrder(c *gin.Context){
-// 	id, err := strconv.Atoi(c.Query("id"))
-// 	if err != nil {
-// 		errorRes := response.ClientResponse(http.StatusBadRequest,"coversion to integer not possible",nil,err.Error())
-// 		c.JSON(http.StatusBadRequest,errorRes)
-// 		return
-// 	}
-// 	if err := i.orderUseCase.ReturnOrder(id);err != nil{
-// 		errorRes := response.ClientResponse(http.StatusBadRequest,"there is an error in returning",nil,err.Error())
-// 		c.JSON(http.StatusBadRequest,errorRes)
-// 		return
-// 	}
-
-// 	succesRes:= response.ClientResponse(http.StatusOK,"successfully returned the order,The amount would be credited your wallet",nil,nil)
-// 	c.JSON(http.StatusOK,succesRes)
-// }

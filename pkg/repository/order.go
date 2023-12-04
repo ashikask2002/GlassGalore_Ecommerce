@@ -53,17 +53,27 @@ func (i *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart) 
 	return nil
 }
 
-func (i *orderRepository) GetOrders(orderId int) (domain.OrderResponse, error) {
-	if orderId <= 0 {
-		return domain.OrderResponse{}, errors.New("order id should be positive number")
+func (i *orderRepository) GetOrders(orderID int) (models.OrderPay, error) {
+	if orderID <= 0 {
+		return models.OrderPay{}, errors.New("order ID should be a positive number")
 	}
-	var order domain.OrderResponse
+
+	fmt.Println("order ID:", orderID)
+
+	var order models.OrderPay
 
 	query := `SELECT * FROM orders WHERE id = $1`
+	fmt.Println("abcd", models.OrderPay{})
+	// fmt.Println("abcd", domain.Order.AddressID)
+	// fmt.Println("abcd", domain.Order.AddressID)
+	// fmt.Println("abcd", domain.Order.AddressID)
 
-	if err := i.DB.Raw(query, orderId).First(&order).Error; err != nil {
-		return domain.OrderResponse{}, err
+	if err := i.DB.Raw(query, orderID).Scan(&order).Error; err != nil {
+		return models.OrderPay{}, err
+
 	}
+	fmt.Println("abcd", domain.Order{})
+
 	return order, nil
 }
 
@@ -141,9 +151,54 @@ func (i *orderRepository) GetShipmentStatus(orderID string) (string, error) {
 	return shipmentStatus, nil
 }
 
-// func (i *orderRepository) ReturnOrder(id int) error {
-// 	if err := i.DB.Exec("UPDATE orders SET order_status = 'RETURNED', payment_status = 'REFUND PENDING' WHERE id = ?", id).Error; err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }
+func (i *orderRepository) GetDetailedOrderThroughId(orderId int) (models.CombinedOrderDetails, error) {
+	fmt.Println("dddddddreoiii", orderId)
+	var body models.CombinedOrderDetails
+
+	query := `
+	SELECT 
+        o.id AS order_id,
+        o.final_price AS final_price,
+        o.order_status AS order_status,
+        o.payment_status AS payment_status,
+        u.name AS name,
+        u.email AS email,
+        u.phone AS phone,
+        a.house_name AS house_name,
+        a.state AS state,
+        a.pin AS pin,
+        a.street AS street,
+        a.city AS city
+	FROM orders o
+	JOIN users u ON o.user_id = u.id
+	JOIN addresses a ON o.address_id = a.id 
+	WHERE o.id = ?
+	`
+	if err := i.DB.Raw(query, orderId).Scan(&body).Error; err != nil {
+		err = errors.New("error in getting detailed order through id in repository: " + err.Error())
+		return models.CombinedOrderDetails{}, err
+	}
+	fmt.Println("order", body.OrderID)
+	return body, nil
+}
+
+func (i *orderRepository) GetOrdersRazor(orderID int) (models.OrderPayOnly, error) {
+	if orderID <= 0 {
+		return models.OrderPayOnly{}, errors.New("order ID should be a positive number")
+	}
+
+	fmt.Println("order ID:", orderID)
+
+	var order models.OrderPayOnly
+
+	query := `SELECT id as order_id,final_price FROM orders WHERE id = $1`
+	fmt.Println("abcd", models.OrderPay{})
+
+	if err := i.DB.Raw(query, orderID).Scan(&order).Error; err != nil {
+		return models.OrderPayOnly{}, err
+
+	}
+	// fmt.Println("abcd", domain.Order{})
+
+	return order, nil
+}

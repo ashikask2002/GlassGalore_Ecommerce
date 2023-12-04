@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"GlassGalore/pkg/domain"
 	"GlassGalore/pkg/repository/interfaces"
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
@@ -57,11 +56,11 @@ func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID i
 	return nil
 }
 
-func (i *orderUseCase) GetOrders(orderid int) (domain.OrderResponse, error) {
+func (i *orderUseCase) GetOrders(orderid int) (models.OrderPay, error) {
 
 	orders, err := i.orderRepository.GetOrders(orderid)
 	if err != nil {
-		return domain.OrderResponse{}, err
+		return models.OrderPay{}, err
 	}
 	return orders, nil
 }
@@ -135,20 +134,3 @@ func (i *orderUseCase) OrdersStatus(orderID string) error {
 	return nil
 }
 
-// func(i *orderUseCase) ReturnOrder(id int) error{
-// 	//should check the order is already returned
-// 	status, err := i.orderRepository.CheckOrderStatusByID(id)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	if status == "RETURNED" {
-//       return errors.New("user is trying to return an order which is still not delivered")
-// 	}
-
-// 	//make orders as return order
-// 	if err := i.orderRepository.ReturnOrder(id);  err != nil {
-//        return err
-// 	}
-// 	return nil
-// }
