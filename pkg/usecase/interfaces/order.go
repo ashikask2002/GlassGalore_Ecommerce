@@ -12,4 +12,5 @@ type OrderUseCase interface {
 	GetAdminOrders(page int) ([]models.CombinedOrderDetails, error)
 	OrdersStatus(orderID string) error
 	// ReturnOrder(id int) error
+	ReturnOrder(orderId int) error
 }

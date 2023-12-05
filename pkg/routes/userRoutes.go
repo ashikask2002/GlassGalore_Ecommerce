@@ -43,6 +43,7 @@ func UserRoutes(engine *gin.RouterGroup,
 				orders.GET("", orderHandler.GetOrders)
 				orders.GET("/all", orderHandler.GetAllOrders)
 				orders.DELETE("", orderHandler.CancelOrder)
+				orders.PUT("", orderHandler.ReturnOrder)
 			}
 
 		}

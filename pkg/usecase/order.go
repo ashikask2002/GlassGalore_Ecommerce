@@ -134,3 +134,28 @@ func (i *orderUseCase) OrdersStatus(orderID string) error {
 	return nil
 }
 
+func (i *orderUseCase) ReturnOrder(orderId int) error {
+	shipmentStatus, err := i.orderRepository.GetOrderStatus(orderId)
+	if err != nil {
+		return err
+	}
+
+	// UserID, err := i.orderRepository.FindUserID(orderId)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// FinalPrice, err := i.orderRepository.FindFinalPrice(orderId)
+	// if err != nil {
+	// 	return err
+	// }
+
+	if shipmentStatus == "DELIVERED" {
+		if err := i.orderRepository.ReturnOrder("RETURNED", orderId); err != nil {
+			return err
+		}
+		return nil
+	}
+
+	return errors.New("cannot return order")
+}

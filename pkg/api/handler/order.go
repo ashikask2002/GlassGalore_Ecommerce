@@ -144,3 +144,23 @@ func (i *OrderHandler) ApproveOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, succeRes)
 }
 
+func (i *OrderHandler) ReturnOrder(c *gin.Context) {
+	id := c.Query("order_id")
+	orderID, err := strconv.Atoi(id)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest,"error in conversion",nil,err.Error())
+		c.JSON(http.StatusBadRequest,errorRes)
+		return
+	}
+	err = i.orderUseCase.ReturnOrder(orderID)
+		if err != nil {
+			errorRes := response.ClientResponse(http.StatusBadRequest,"error in returning order",nil,err.Error())
+             c.JSON(http.StatusBadRequest,errorRes)
+			 return
+		}
+
+	successRes := response.ClientResponse(http.StatusOK,"successfully returned the order",nil,nil)
+	c.JSON(http.StatusOK,successRes)
+	}
+
+

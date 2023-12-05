@@ -202,3 +202,37 @@ func (i *orderRepository) GetOrdersRazor(orderID int) (models.OrderPayOnly, erro
 
 	return order, nil
 }
+
+func (i *orderRepository) GetOrderStatus(orderId int) (string, error) {
+	var shipmentStatus string
+	err := i.DB.Raw("SELECT order_status FROM orders WHERE id = ?", orderId).Scan(&shipmentStatus).Error
+	if err != nil {
+		return "", err
+	}
+	return shipmentStatus, nil
+}
+
+// func (i *orderRepository) FindUserID(orderID int) (int, error) {
+// 	var UserID int
+// 	err := i.DB.Raw("select user_id from orders where id = ?", orderID).Scan(UserID).Error
+// 	if err != nil {
+// 		return 0, err
+// 	}
+// 	return UserID, nil
+// }
+
+//	func (i *orderRepository) FindFinalPrice(orderID int) (int, error) {
+//		var finalprice int
+//		err := i.DB.Raw("select final_price from orders where id = ?", orderID).Scan(finalprice).Error
+//		if err != nil {
+//			return 0, err
+//		}
+//		return finalprice, nil
+//	}
+func (i *orderRepository) ReturnOrder(shipmentStatus string, orderID int) error {
+	err := i.DB.Exec("update orders set order_status = $1, payment_status ='ReturnToWallet' where id = $2", shipmentStatus, orderID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
