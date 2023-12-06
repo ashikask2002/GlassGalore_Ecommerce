@@ -13,7 +13,8 @@ func UserRoutes(engine *gin.RouterGroup,
 	productHandler *handler.ProductHandler,
 	cartHandler *handler.CartHandler,
 	orderHandler *handler.OrderHandler,
-	paymentHandler *handler.PaymendHandler) {
+	paymentHandler *handler.PaymendHandler,
+	WallerHandler *handler.WalletHandler) {
 
 	engine.POST("/signup", userHandler.UserSignUp)
 	engine.POST("/login", userHandler.LoginHandler)
@@ -75,6 +76,11 @@ func UserRoutes(engine *gin.RouterGroup,
 		{
 			products.POST("/search", productHandler.SearchProducts)
 			products.POST("/filter", productHandler.FilterProducts)
+		}
+
+		wallet := engine.Group("wallet")
+		{
+			wallet.GET("", WallerHandler.ViewWallet)
 		}
 
 	}

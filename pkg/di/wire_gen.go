@@ -41,15 +41,20 @@ func InitializeAPI(cfg config.Config) (*http.ServerHTTP, error) {
 	cartUsecase := usecase.NewCartUseCase(cartRepository, inventoryRepository, userUseCase, adminRepository)
 	cartHandler := handler.NewCartHandler(cartUsecase)
 
+	walletRepository := repository.NewWalletRepository(gormDB)
+	walletUsecase := usecase.NewWalletUseCase(walletRepository)
+	walletHandler := handler.NewWalletHandler(walletUsecase)
+
 	orderRepository := repository.NewOrderRepository(gormDB)
-	orderUsecase := usecase.NewOrderUseCase(orderRepository, userUseCase)
+	orderUsecase := usecase.NewOrderUseCase(orderRepository, userUseCase,walletRepository)
 	orderHandler := handler.NewOrderHandler(orderUsecase)
 
 	paymentRepository := repository.NewPaymentRepository(gormDB)
 	paymentUsecase := usecase.NewPaymentUseCase(orderRepository, paymentRepository)
 	paymentHandler := handler.NewPaymentHandler(paymentUsecase)
 
-	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler, otpHandler, inventoryHandler, cartHandler, orderHandler, paymentHandler)
+	
+	serverHTTP := http.NewServerHTTP(userHandler, adminHandler, categoryHandler, otpHandler, inventoryHandler, cartHandler, orderHandler, paymentHandler, walletHandler)
 
 	return serverHTTP, nil
 

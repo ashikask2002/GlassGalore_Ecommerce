@@ -16,9 +16,9 @@ type OrderRepository interface {
 	GetShipmentStatus(orderID string) (string, error)
 	// ReturnOrder(id int) error
 	GetDetailedOrderThroughId(orderId int) (models.CombinedOrderDetails, error)
-	GetOrdersRazor(orderID int) (models.OrderPayOnly, error) 
-	GetOrderStatus(orderID int) (string,error)
-	// FindUserID(orderID int) (int, error)
-	// FindFinalPrice(orderID int) (int, error)
-	ReturnOrder(shipmentStatus string,orderID int) error
+	GetOrdersRazor(orderID int) (models.OrderPayOnly, error)
+	GetOrderStatus(orderID int) (string, error)
+	FindUserID(orderID int) (int, error)
+	FindFinalPrice(orderID int) (float64, error)
+	ReturnOrder(shipmentStatus string, orderID int) error
 }

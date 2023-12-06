@@ -9,14 +9,16 @@ import (
 )
 
 type orderUseCase struct {
-	orderRepository interfaces.OrderRepository
-	userUseCase     services.UserUseCase
+	orderRepository  interfaces.OrderRepository
+	userUseCase      services.UserUseCase
+	walletRepository interfaces.WalletRepository
 }
 
-func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase) services.OrderUseCase {
+func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase, walletRepository interfaces.WalletRepository) services.OrderUseCase {
 	return &orderUseCase{
-		orderRepository: repo,
-		userUseCase:     userUseCase,
+		orderRepository:  repo,
+		userUseCase:      userUseCase,
+		walletRepository: walletRepository,
 	}
 }
 
@@ -139,18 +141,47 @@ func (i *orderUseCase) ReturnOrder(orderId int) error {
 	if err != nil {
 		return err
 	}
+	if shipmentStatus == "RETURNED" {
+		return errors.New("the order already returned")
+	}
 
-	// UserID, err := i.orderRepository.FindUserID(orderId)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// FinalPrice, err := i.orderRepository.FindFinalPrice(orderId)
-	// if err != nil {
-	// 	return err
-	// }
+	if shipmentStatus != "DELIVERED" {
+		return errors.New("user try to return the order that not even delivered")
+	}
 
 	if shipmentStatus == "DELIVERED" {
+
+		UserID, err := i.orderRepository.FindUserID(orderId)
+		if err != nil {
+			return err
+		}
+
+		FinalPrice, err := i.orderRepository.FindFinalPrice(orderId)
+		if err != nil {
+			return err
+		}
+
+		//find if the user having the wallet
+
+		walletID, err := i.walletRepository.FindWalletIDFromUserID(UserID)
+		if err != nil {
+			return err
+		}
+
+		//if not any wallet create a new wallet
+
+		if walletID == 0 {
+			walletID, err = i.walletRepository.CreateNewWallet(UserID)
+			if err != nil {
+				return err
+			}
+		}
+
+		//add the price to the wallet
+		if err := i.walletRepository.CreditToUserWallet(FinalPrice, walletID); err != nil {
+			return err
+		}
+
 		if err := i.orderRepository.ReturnOrder("RETURNED", orderId); err != nil {
 			return err
 		}
