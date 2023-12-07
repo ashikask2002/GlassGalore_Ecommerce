@@ -10,7 +10,9 @@ type OrderRepository interface {
 	GetOrders(orderID int) (models.AllItems, error)
 	GetAllOrders(userID, page, pageSize int) ([]models.OrderDetails, error)
 	CheckOrderStatusByID(id int) (string, error)
+	CheckPaymentStatusByID(id int) (string, error)
 	CancelOrder(id int) error
+	CancelOrderPaid(id int) error
 	GetOrderDetailsBrief(page int) ([]models.CombinedOrderDetails, error)
 	ChangeOrderStatus(orderID, status string) error
 	GetShipmentStatus(orderID string) (string, error)

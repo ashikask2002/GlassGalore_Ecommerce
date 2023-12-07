@@ -103,8 +103,23 @@ func (i *orderRepository) CheckOrderStatusByID(id int) (string, error) {
 	return status, nil
 }
 
+func (i *orderRepository) CheckPaymentStatusByID(id int) (string, error) {
+	var status string
+	err := i.DB.Raw("select payment_status from orders where id = ?", id).Scan(&status).Error
+	if err != nil {
+		return "", err
+	}
+	return status, nil
+}
 func (i *orderRepository) CancelOrder(id int) error {
 	if err := i.DB.Exec("update orders set order_status='CANCELED' where id=$1", id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *orderRepository) CancelOrderPaid(id int) error {
+	if err := i.DB.Exec("update orders set order_status='CANCELED',payment_status='ReturnToWallet' where id=$1", id).Error; err != nil {
 		return err
 	}
 	return nil

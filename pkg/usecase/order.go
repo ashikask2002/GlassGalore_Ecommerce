@@ -76,20 +76,73 @@ func (i *orderUseCase) GerAllOrders(userId, page, pageSize int) ([]models.OrderD
 }
 
 func (i *orderUseCase) CancelOrder(orderID int) error {
+	// Check the order status
 	orderStatus, err := i.orderRepository.CheckOrderStatusByID(orderID)
 	if err != nil {
 		return err
 	}
-	if orderStatus != "PENDING" {
-		return errors.New("order cannot be  cancelled , kindly return the product if accidently booked")
+	if orderStatus == "RETURNED" {
+		return errors.New("the order already returned")
 	}
 
-	err = i.orderRepository.CancelOrder(orderID)
-	if err != nil {
-		return err
+	if orderStatus == "CANCELED" {
+		return errors.New("the order already canelled")
 	}
 
+	// Check if the order can be canceled
+	if orderStatus == "PENDING" || orderStatus == "SHIPPED" {
+
+		paymentStatus, err := i.orderRepository.CheckPaymentStatusByID(orderID)
+		if err != nil {
+			return err
+		}
+		if paymentStatus != "PAID" {
+			err = i.orderRepository.CancelOrder(orderID)
+			if err != nil {
+				return err
+			}
+		}
+		if paymentStatus == "PAID" {
+			UserID, err := i.orderRepository.FindUserID(orderID)
+			if err != nil {
+				return err
+			}
+
+			FinalPrice, err := i.orderRepository.FindFinalPrice(orderID)
+			if err != nil {
+				return err
+			}
+
+			//find if the user having the wallet
+
+			walletID, err := i.walletRepository.FindWalletIDFromUserID(UserID)
+			if err != nil {
+				return err
+			}
+
+			//if not any wallet create a new wallet
+
+			if walletID == 0 {
+				walletID, err = i.walletRepository.CreateNewWallet(UserID)
+				if err != nil {
+					return err
+				}
+			}
+
+			//add the price to the wallet
+			if err := i.walletRepository.CreditToUserWallet(FinalPrice, walletID); err != nil {
+				return err
+			}
+			// Attempt to cancel the order
+			err = i.orderRepository.CancelOrderPaid(orderID)
+			if err != nil {
+				return err
+			}
+		}
+
+	}
 	return nil
+
 }
 
 func (i *orderUseCase) GetAdminOrders(page int) ([]models.CombinedOrderDetails, error) {
