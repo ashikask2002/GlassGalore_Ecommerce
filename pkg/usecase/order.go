@@ -58,11 +58,11 @@ func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID i
 	return nil
 }
 
-func (i *orderUseCase) GetOrders(orderid int) (models.OrderPay, error) {
+func (i *orderUseCase) GetOrders(orderid int) (models.AllItems, error) {
 
 	orders, err := i.orderRepository.GetOrders(orderid)
 	if err != nil {
-		return models.OrderPay{}, err
+		return models.AllItems{}, err
 	}
 	return orders, nil
 }

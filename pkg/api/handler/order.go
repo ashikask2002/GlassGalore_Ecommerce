@@ -4,6 +4,7 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"GlassGalore/pkg/utils/response"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -22,6 +23,13 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 }
 
 func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
+	userID, ok := c.Get("id")
+	userIDint := userID.(int)
+	if !ok {
+		err := errors.New("didnt got id")
+		erroRes := response.ClientResponse(http.StatusBadRequest, "error in getting id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, erroRes)
+	}
 
 	var order models.Order
 	if err := c.BindJSON(&order); err != nil {
@@ -29,6 +37,7 @@ func (i *OrderHandler) OrderItemsFromCart(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+	order.UserID = userIDint
 
 	if err := i.orderUseCase.OrderItemsFromCart(order.UserID, order.AddressID, order.PaymentMethodID); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not make the order", nil, err.Error())

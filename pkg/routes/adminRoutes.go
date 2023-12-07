@@ -49,7 +49,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 		{
 			orders.GET("", orderHandler.GetAdminOrders)
 			orders.PATCH("", orderHandler.ApproveOrder)
-			// orders.PUT("", orderHandler.ReturnOrder)
+			
 
 		}
 

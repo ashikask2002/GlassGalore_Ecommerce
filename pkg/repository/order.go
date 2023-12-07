@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"GlassGalore/pkg/domain"
 	"GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
@@ -53,26 +52,29 @@ func (i *orderRepository) AddOrderProducts(order_id int, cart []models.GetCart) 
 	return nil
 }
 
-func (i *orderRepository) GetOrders(orderID int) (models.OrderPay, error) {
+func (i *orderRepository) GetOrders(orderID int) (models.AllItems, error) {
 	if orderID <= 0 {
-		return models.OrderPay{}, errors.New("order ID should be a positive number")
+		return models.AllItems{}, errors.New("order ID should be a positive number")
 	}
 
 	fmt.Println("order ID:", orderID)
 
-	var order models.OrderPay
+	var order models.AllItems
+	var orderDetails models.OrderPay
+	var productDetails []models.OrderItem
 
-	query := `SELECT * FROM orders WHERE id = $1`
-	fmt.Println("abcd", models.OrderPay{})
-	// fmt.Println("abcd", domain.Order.AddressID)
-	// fmt.Println("abcd", domain.Order.AddressID)
-	// fmt.Println("abcd", domain.Order.AddressID)
+	query := `SELECT * FROM orders JOIN order_items ON order_items.order_id = orders.id WHERE orders.id = ?`
 
-	if err := i.DB.Raw(query, orderID).Scan(&order).Error; err != nil {
-		return models.OrderPay{}, err
-
+	if err := i.DB.Raw(query, orderID).Scan(&orderDetails).Error; err != nil {
+		return models.AllItems{}, err
 	}
-	fmt.Println("abcd", domain.Order{})
+	query = `SELECT product_id, quantity FROM order_items	WHERE order_id = ?`
+	if err := i.DB.Raw(query, orderID).Scan(&productDetails).Error; err != nil {
+		return models.AllItems{}, err
+	}
+	fmt.Println("abcd", orderDetails)
+	fmt.Println("abcddefd", productDetails)
+	order = models.AllItems{OrderPay: orderDetails, OrderItem: productDetails}
 
 	return order, nil
 }
