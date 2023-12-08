@@ -83,5 +83,6 @@ func UserRoutes(engine *gin.RouterGroup,
 			wallet.GET("", WallerHandler.ViewWallet)
 		}
 
+		
 	}
 }
