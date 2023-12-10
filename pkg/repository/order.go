@@ -253,3 +253,36 @@ func (i *orderRepository) ReturnOrder(shipmentStatus string, orderID int) error 
 	}
 	return nil
 }
+
+func (i *orderRepository) ReduceStockAfterOrder(productName string, quantity int) error {
+	if err := i.DB.Exec("UPDATE products SET stock = stock - ? WHERE product_name = ?", quantity, productName).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (i *orderRepository) GetProductDetailsFromOrder(orderID int) ([]models.OrderProducts, error) {
+	var OrderProductDetails []models.OrderProducts
+
+	if err := i.DB.Raw("SELECT product_id,quantity as stock FROM order_items where order_id = ?", orderID).Scan(&OrderProductDetails).Error; err != nil {
+		return []models.OrderProducts{}, err
+	}
+	return OrderProductDetails, nil
+}
+
+// func (i *orderRepository) updateQuantityProduct(orderProducts []models.OrderProducts) error {
+// 	for _, odd := range orderProducts {
+
+// 		var quantity int
+// 		if err := i.DB.Raw("select stock from products where id = ?", odd.ProductIs).Scan(quantity).Error; err != nil {
+// 			return err
+// 		}
+
+// 		odd.Stock += quantity
+// 		if err := i.DB.Exec("update products set stock = ? where id = ?", odd.Stock, odd.ProductIs).Error; err != nil {
+// 			return err
+// 		}
+// 	}
+// 	return nil
+// }

@@ -12,17 +12,19 @@ type orderUseCase struct {
 	orderRepository  interfaces.OrderRepository
 	userUseCase      services.UserUseCase
 	walletRepository interfaces.WalletRepository
+	couponRepository interfaces.CouponRepository
 }
 
-func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase, walletRepository interfaces.WalletRepository) services.OrderUseCase {
+func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserUseCase, walletRepository interfaces.WalletRepository, couponRepository interfaces.CouponRepository) services.OrderUseCase {
 	return &orderUseCase{
 		orderRepository:  repo,
 		userUseCase:      userUseCase,
 		walletRepository: walletRepository,
+		couponRepository: couponRepository,
 	}
 }
 
-func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID int) error {
+func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID int, couponID int) error {
 	// Retrieve the user's cart
 	cart, err := i.userUseCase.GetCart(userID)
 	if err != nil {
@@ -37,6 +39,23 @@ func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID i
 		}
 	}
 
+	couponvalid, err := i.couponRepository.CheckCouponValid(couponID)
+	if err != nil {
+		return err
+	}
+	if !couponvalid {
+		return errors.New("this coupon is invalid")
+	}
+
+	coupon, err := i.couponRepository.FindCouponPrice(couponID)
+	if err != nil {
+		return err
+	}
+
+	totaldiscount := float64(coupon)
+
+	total = total - totaldiscount
+
 	// Place an order with the order repository
 	orderID, err := i.orderRepository.OrderItems(userID, addressID, paymentID, total)
 	if err != nil {
@@ -46,6 +65,12 @@ func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID i
 	// Add individual items from the cart to the order
 	if err := i.orderRepository.AddOrderProducts(orderID, cart.Data); err != nil {
 		return err
+	}
+	//decrease the stock of product after order
+	for _, v := range cart.Data {
+		if err := i.orderRepository.ReduceStockAfterOrder(v.ProductName, v.Quantity); err != nil {
+			return err
+		}
 	}
 
 	// Remove the ordered items from the user's cart
@@ -88,6 +113,11 @@ func (i *orderUseCase) CancelOrder(orderID int) error {
 	if orderStatus == "CANCELED" {
 		return errors.New("the order already canelled")
 	}
+
+	// orderProductDetails, err := i.orderRepository.GetProductDetailsFromOrder(orderID)
+	// if err != nil{
+	// 	return err
+	// }
 
 	// Check if the order can be canceled
 	if orderStatus == "PENDING" || orderStatus == "SHIPPED" {
@@ -138,6 +168,12 @@ func (i *orderUseCase) CancelOrder(orderID int) error {
 			if err != nil {
 				return err
 			}
+
+			// err = i.orderRepository.updateQuantityProduct(orderProductDetails)
+			// if err != nil{
+			// 	return err
+			// }
+
 		}
 
 	}

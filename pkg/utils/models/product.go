@@ -9,7 +9,7 @@ type Order struct {
 	UserID          int `json:"user_id"`
 	AddressID       int `json:"address_id"`
 	PaymentMethodID int `json:"payment_id"`
-	// CouponID        int `json:"coupon_id"`
+	CouponID        int `json:"coupon_id"`
 }
 
 type AddProducts struct {
@@ -50,6 +50,7 @@ type Products struct {
 type AddToCart struct {
 	UserID      int `json:"user_id"`
 	InventoryID int `json:"inventory_id"`
+	Quantity    int `josnL:"quantity"`
 }
 
 type SearchItems struct {

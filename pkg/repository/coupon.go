@@ -47,3 +47,22 @@ func (i *couponRepository) ReactivateCoupen(id int) error {
 	}
 	return nil
 }
+
+func (i *couponRepository) FindCouponPrice(id int) (int, error) {
+	var discprice int
+
+	if err := i.DB.Raw("select discount_rate from coupons where id = ?", id).Scan(&discprice).Error; err != nil {
+		return 0, err
+	}
+	return discprice, nil
+}
+
+func (i *couponRepository) CheckCouponValid(id int) (bool, error) {
+	var valid bool
+	err := i.DB.Raw("SELECT valid FROM coupons WHERE id = ?", id).Scan(&valid).Error
+	if err != nil {
+		return false, err
+	}
+	return valid, nil
+}
+

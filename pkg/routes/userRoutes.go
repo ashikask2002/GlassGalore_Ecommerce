@@ -14,7 +14,8 @@ func UserRoutes(engine *gin.RouterGroup,
 	cartHandler *handler.CartHandler,
 	orderHandler *handler.OrderHandler,
 	paymentHandler *handler.PaymendHandler,
-	WallerHandler *handler.WalletHandler) {
+	WallerHandler *handler.WalletHandler,
+	couponHandler *handler.CouponHandler) {
 
 	engine.POST("/signup", userHandler.UserSignUp)
 	engine.POST("/login", userHandler.LoginHandler)
@@ -83,6 +84,10 @@ func UserRoutes(engine *gin.RouterGroup,
 			wallet.GET("", WallerHandler.ViewWallet)
 		}
 
-		
+		coupon := engine.Group("coupon")
+		{
+			coupon.GET("",couponHandler.GetAllCoupons)
+		}
+
 	}
 }

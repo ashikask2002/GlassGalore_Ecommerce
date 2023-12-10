@@ -45,8 +45,8 @@ func (i *cartRepository) CheckIfItemsIsAlreadyAdded(cart_id, inventory_id int) (
 	return count > 0, nil
 }
 
-func (i *cartRepository) AddLineItems(cart_id, inventory_id int) error {
-	err := i.DB.Exec(`INSERT INTO line_items (cart_id,product_id) VALUES ($1,$2)`, cart_id, inventory_id).Error
+func (i *cartRepository) AddLineItems(cart_id, inventory_id, quantity int) error {
+	err := i.DB.Exec(`INSERT INTO line_items (cart_id,product_id,quantity) VALUES ($1,$2,$3)`, cart_id, inventory_id, quantity).Error
 	if err != nil {
 		return err
 	}

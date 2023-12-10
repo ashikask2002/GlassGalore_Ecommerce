@@ -24,7 +24,7 @@ func NewCartUseCase(repo interfaces.CartRepository, productRepo interfaces.Produ
 	}
 }
 
-func (i *cartUseCase) AddToCart(userID, productID int) error {
+func (i *cartUseCase) AddToCart(userID, productID, quantity int) error {
 
 	//check the desired product has quantity available
 	stock, err := i.productRepository.CheckStock(productID)
@@ -56,7 +56,7 @@ func (i *cartUseCase) AddToCart(userID, productID int) error {
 		return errors.New("item already exist in cart")
 	}
 	//add product to line items
-	if err := i.repo.AddLineItems(cart_id, productID); err != nil {
+	if err := i.repo.AddLineItems(cart_id, productID, quantity); err != nil {
 		return errors.New("error in adding products")
 	}
 	return nil

@@ -33,7 +33,7 @@ type OrderPay struct {
 
 	AddressID uint `json:"address_id" `
 
-	PaymentMethodID uint `json:"paymentmethod_id"`
+	PaymentMethodID uint    `json:"paymentmethod_id"`
 	FinalPrice      float64 `json:"price"`
 	OrderStatus     string  `json:"order_status" `
 	PaymentStatus   string  `json:"payment_status"`
@@ -44,7 +44,6 @@ type OrderItem struct {
 	Quantity  int `json:"quantity"`
 }
 
-
 type AllItems struct {
 	OrderPay  OrderPay
 	OrderItem []OrderItem
@@ -52,4 +51,9 @@ type AllItems struct {
 type OrderPayOnly struct {
 	OrderID    uint    `json:"order_id" `
 	FinalPrice float64 `json:"final_price"`
+}
+
+type OrderProducts struct {
+	ProductIs string `json:"id"`
+	Stock     int    `json:"stock"`
 }

@@ -49,7 +49,7 @@ func (i *couponUseCase) MakeCouponInvalid(id int) error {
 
 func (i *couponUseCase) ReactivateCoupen(id int) error {
 	if id <= 0 {
-		errors.New("id need to be positive number")
+		return errors.New("id need to be positive number")
 	}
 
 	if err := i.repository.ReactivateCoupen(id); err != nil {

@@ -21,12 +21,13 @@ func NewCartHandler(usecase interfaces.CartUseCase) *CartHandler {
 
 func (i *CartHandler) AddToCart(c *gin.Context) {
 	var model models.AddToCart
+	
 	if err := c.BindJSON(&model); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	if err := i.usecase.AddToCart(model.UserID, model.InventoryID); err != nil {
+	if err := i.usecase.AddToCart(model.UserID, model.InventoryID, model.Quantity); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not added the cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return

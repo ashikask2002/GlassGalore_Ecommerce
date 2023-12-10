@@ -23,4 +23,7 @@ type OrderRepository interface {
 	FindUserID(orderID int) (int, error)
 	FindFinalPrice(orderID int) (float64, error)
 	ReturnOrder(shipmentStatus string, orderID int) error
+	ReduceStockAfterOrder(productName string,quantitry int) error
+	GetProductDetailsFromOrder(orderID int) ([]models.OrderProducts,error)
+	// updateQuantityProduct(orderProducts []models.OrderProducts) error
 }
