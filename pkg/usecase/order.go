@@ -114,10 +114,10 @@ func (i *orderUseCase) CancelOrder(orderID int) error {
 		return errors.New("the order already canelled")
 	}
 
-	// orderProductDetails, err := i.orderRepository.GetProductDetailsFromOrder(orderID)
-	// if err != nil{
-	// 	return err
-	// }
+	orderProductDetails, err := i.orderRepository.GetProductDetailsFromOrder(orderID)
+	if err != nil {
+		return err
+	}
 
 	// Check if the order can be canceled
 	if orderStatus == "PENDING" || orderStatus == "SHIPPED" {
@@ -128,6 +128,10 @@ func (i *orderUseCase) CancelOrder(orderID int) error {
 		}
 		if paymentStatus != "PAID" {
 			err = i.orderRepository.CancelOrder(orderID)
+			if err != nil {
+				return err
+			}
+			err = i.orderRepository.UpdateQuantityProduct(orderProductDetails)
 			if err != nil {
 				return err
 			}
@@ -169,10 +173,10 @@ func (i *orderUseCase) CancelOrder(orderID int) error {
 				return err
 			}
 
-			// err = i.orderRepository.updateQuantityProduct(orderProductDetails)
-			// if err != nil{
-			// 	return err
-			// }
+			err = i.orderRepository.UpdateQuantityProduct(orderProductDetails)
+			if err != nil {
+				return err
+			}
 
 		}
 

@@ -54,6 +54,6 @@ type OrderPayOnly struct {
 }
 
 type OrderProducts struct {
-	ProductIs string `json:"id"`
+	ProductId string `json:"id"`
 	Stock     int    `json:"stock"`
 }

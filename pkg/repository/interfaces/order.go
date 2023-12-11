@@ -25,5 +25,5 @@ type OrderRepository interface {
 	ReturnOrder(shipmentStatus string, orderID int) error
 	ReduceStockAfterOrder(productName string,quantitry int) error
 	GetProductDetailsFromOrder(orderID int) ([]models.OrderProducts,error)
-	// updateQuantityProduct(orderProducts []models.OrderProducts) error
+	 UpdateQuantityProduct(orderProducts []models.OrderProducts) error
 }

@@ -271,18 +271,18 @@ func (i *orderRepository) GetProductDetailsFromOrder(orderID int) ([]models.Orde
 	return OrderProductDetails, nil
 }
 
-// func (i *orderRepository) updateQuantityProduct(orderProducts []models.OrderProducts) error {
-// 	for _, odd := range orderProducts {
+func (i *orderRepository) UpdateQuantityProduct(orderProducts []models.OrderProducts) error {
+	for _, odd := range orderProducts {
+		fmt.Println("jhjhhjhjhjhhjh", odd.ProductId)
+		var quantity int
+		if err := i.DB.Raw("select stock from products where id = ?", odd.ProductId).Scan(&quantity).Error; err != nil {
+			return err
+		}
 
-// 		var quantity int
-// 		if err := i.DB.Raw("select stock from products where id = ?", odd.ProductIs).Scan(quantity).Error; err != nil {
-// 			return err
-// 		}
-
-// 		odd.Stock += quantity
-// 		if err := i.DB.Exec("update products set stock = ? where id = ?", odd.Stock, odd.ProductIs).Error; err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return nil
-// }
+		odd.Stock += quantity
+		if err := i.DB.Exec("update products set stock = ? where id = ?", odd.Stock, odd.ProductId).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
