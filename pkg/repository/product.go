@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"GlassGalore/pkg/domain"
 	"GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
@@ -20,18 +21,17 @@ func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 	}
 }
 
-func (i *productRepository) AddProduct(product models.AddProducts) (models.ProductResponse, error) {
+func (i *productRepository) AddProduct(product models.AddProducts) (domain.Products, error) {
 
 	query := `INSERT INTO products (category_id, product_name, size, stock, price) VALUES (?, ?, ?, ?, ?);`
-
 	err := i.DB.Exec(query, product.CategoryID, product.ProductName, product.Size, product.Stock, product.Price).Error
 	if err != nil {
-		return models.ProductResponse{}, err
+		return domain.Products{}, err
 	}
 
-	var productResponse models.ProductResponse
+	var insertedProduct domain.Products
 
-	return productResponse, nil
+	return insertedProduct, nil
 }
 
 func (i *productRepository) DeleteProduct(productID string) error {

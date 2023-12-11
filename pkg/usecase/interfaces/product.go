@@ -1,9 +1,12 @@
 package interfaces
 
-import "GlassGalore/pkg/utils/models"
+import (
+	"GlassGalore/pkg/domain"
+	"GlassGalore/pkg/utils/models"
+)
 
 type ProductUseCase interface {
-	AddProduct(inventory models.AddProducts) (models.ProductResponse, error)
+	AddProduct(inventory models.AddProducts) (domain.Products, error)
 	DeleteProduct(id string) error
 	UpdateProduct(ProductID int, Stock int) (models.ProductResponse, error)
 	EditProductDetails(int, models.EditProductDetails) (models.EditProductDetails, error)

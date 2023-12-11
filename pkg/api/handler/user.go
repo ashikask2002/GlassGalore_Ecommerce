@@ -4,7 +4,6 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"GlassGalore/pkg/utils/response"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -88,8 +87,6 @@ func (i *UserHandler) GetUserDetails(c *gin.Context) {
 	idString, _ := c.Get("id")
 	id, _ := idString.(int)
 
-	fmt.Println("zzzz", id)
-
 	details, err := i.userUseCase.GetUserDetails(id)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
@@ -124,12 +121,7 @@ func (i *UserHandler) GetAddresses(c *gin.Context) {
 func (i *UserHandler) AddAddress(c *gin.Context) {
 
 	id, _ := c.Get("id")
-	// id, err := strconv.Atoi(c.Query("id"))
-	// if err != nil {
-	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
-	// 	c.JSON(http.StatusBadRequest, errorRes)
-	// 	return
-	// }
+	
 
 	var address models.AddAddress
 	if err := c.BindJSON(&address); err != nil {

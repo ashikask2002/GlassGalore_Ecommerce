@@ -1,9 +1,12 @@
 package interfaces
 
-import "GlassGalore/pkg/utils/models"
+import (
+	"GlassGalore/pkg/domain"
+	"GlassGalore/pkg/utils/models"
+)
 
 type ProductRepository interface {
-	AddProduct(inventory models.AddProducts) (models.ProductResponse, error)
+	AddProduct(inventory models.AddProducts) (domain.Products, error)
 	DeleteProduct(id string) error
 	CheckProduct(pid int) (bool, error)
 	UpdateProduct(pid int, stock int) (models.ProductResponse, error)

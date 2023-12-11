@@ -4,6 +4,7 @@ import (
 	"GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"GlassGalore/pkg/utils/response"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,12 +22,19 @@ func NewCartHandler(usecase interfaces.CartUseCase) *CartHandler {
 
 func (i *CartHandler) AddToCart(c *gin.Context) {
 	var model models.AddToCart
-	
+	UserID, err := c.Get("id")
+	if !err {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "fields are provided in wrong format", nil, errors.New("getting user Id is failed"))
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
 	if err := c.BindJSON(&model); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields provided are in wrong format", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+	model.UserID = UserID.(int)
 	if err := i.usecase.AddToCart(model.UserID, model.InventoryID, model.Quantity); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not added the cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"GlassGalore/pkg/domain"
 	helper_interface "GlassGalore/pkg/helper/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
@@ -21,10 +22,10 @@ func NewProductUseCase(repo repos.ProductRepository, h helper_interface.Helper) 
 	}
 }
 
-func (i *productUseCase) AddProduct(Products models.AddProducts) (models.ProductResponse, error) {
+func (i *productUseCase) AddProduct(Products models.AddProducts) (domain.Products, error) {
 	productResponse, err := i.repository.AddProduct(Products)
 	if err != nil {
-		return models.ProductResponse{}, err
+		return domain.Products{}, err
 	}
 	return productResponse, nil
 }
