@@ -61,12 +61,9 @@ type ProductUserResponse struct {
 	CategoryID int  `json:"category_id"`
 	//Category    string `json:"category" gorm:"unique;not null"`
 	ProductName string `json:"productname"`
-	//Color       string `json:"color"`
+
 	Size  string `json:"size"`
 	Price int    `json:"price"`
-	//	IfPresentAtWishlist bool    `json:"if_present_at_wishlist"`
-	//	IfPresentAtCart bool    `json:"if_present_at_cart"`
-	//	DiscountedPrice float64 `json:"discounted_price"`
 }
 
 type Search struct {

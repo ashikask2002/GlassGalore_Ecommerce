@@ -32,7 +32,6 @@ func (i *paymentUseCaseImpl) MakePaymentRazorPay(userID int, orderID int) (model
 		err = errors.New("error in getting order details  through orderID" + err.Error())
 		return models.CombinedOrderDetails{}, "", err
 	}
-	fmt.Println("tinga manga", order)
 
 	client := razorpay.NewClient("rzp_test_5K9ErTOEvk0TLA", "OmjlL1D5Px5CqonGNzyzhFgM")
 	fmt.Println("client.................", client)
