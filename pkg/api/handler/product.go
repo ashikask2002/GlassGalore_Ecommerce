@@ -148,6 +148,27 @@ func (i *ProductHandler) FilterProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+func (i *ProductHandler) FilterProductsByPrice(c *gin.Context) {
+	Price := c.Query("price")
+	PriceInt, err := strconv.Atoi(Price)
+
+	if err != nil {
+		errirRes := response.ClientResponse(http.StatusBadRequest, "error in conversion", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errirRes)
+		return
+	}
+
+	productList, err := i.ProductUseCase.FilterProductsByPrice(PriceInt)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "cannot retrieve the productlist", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully got all product", productList, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+
 func (i *ProductHandler) SearchProducts(c *gin.Context) {
 	var search models.Search
 	pageStr := c.DefaultQuery("page", "1")

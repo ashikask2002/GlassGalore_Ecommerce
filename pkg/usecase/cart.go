@@ -35,6 +35,9 @@ func (i *cartUseCase) AddToCart(userID, productID, quantity int) error {
 	if stock <= 0 {
 		return errors.New("out of stock")
 	}
+	if quantity < 0 {
+		return errors.New("quantity must be positive")
+	}
 
 	//find user cart id
 	cart_id, err := i.repo.GetCartId(userID)

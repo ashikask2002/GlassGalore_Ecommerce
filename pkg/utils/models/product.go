@@ -16,6 +16,7 @@ type AddProducts struct {
 	ID          uint    `json:"id"`
 	CategoryID  int     `json:"category_id"`
 	ProductName string  `json:"product_name"`
+	Discription string  `json:"discription"`
 	Size        string  `json:"size"`
 	Stock       int     `json:"stock"`
 	Price       float64 `json:"price"`
@@ -48,9 +49,9 @@ type Products struct {
 }
 
 type AddToCart struct {
-	UserID      int `json:"user_id"`
-	InventoryID int `json:"inventory_id"`
-	Quantity    int `josnL:"quantity"`
+	UserID    int `json:"user_id"`
+	ProductID int `json:"product_id"`
+	Quantity  int `josnL:"quantity"`
 }
 
 type SearchItems struct {

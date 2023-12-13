@@ -15,4 +15,5 @@ type ProductRepository interface {
 	CheckStock(inventory_id int) (int, error)
 	SearchProducts(offset, limit int, search string) ([]models.ProductUserResponse, error)
 	FilterProducts(CategroyID int) ([]models.ProductUserResponse, error)
+	FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error)
 }

@@ -10,6 +10,7 @@ type Products struct {
 	CategoryID  int      `json:"category_id"`
 	Category    Category `josn:"-" gorm:"foreignkey:CategoryID;constraint:OnDelete:CASCADE"`
 	ProductName string   `json:"product_name"`
+	Discription string   `json:"discription"`
 	Size        string   `json:"size" gorm:"size:3;default:'M';check:size IN ('S', 'M', 'L')"`
 	Stock       int      `json:"stock"`
 	Price       int      `json:"price"`

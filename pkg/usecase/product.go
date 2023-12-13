@@ -84,6 +84,14 @@ func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserRes
 	return product_list, nil
 }
 
+func (i *productUseCase) FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error) {
+	product_list, err := i.repository.FilterProductsByPrice(Price)
+	if err != nil {
+		return []models.ProductUserResponse{}, err
+	}
+	return product_list, nil
+}
+
 func (i *productUseCase) SearchProducts(search models.Search) ([]models.ProductUserResponse, error) {
 
 	offset := (search.Page - 1) * search.Limit

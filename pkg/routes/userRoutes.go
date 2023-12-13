@@ -77,6 +77,7 @@ func UserRoutes(engine *gin.RouterGroup,
 		{
 			products.POST("/search", productHandler.SearchProducts)
 			products.POST("/filter", productHandler.FilterProducts)
+			products.POST("filterP",productHandler.FilterProductsByPrice)
 		}
 
 		wallet := engine.Group("wallet")

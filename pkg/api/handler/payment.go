@@ -26,7 +26,7 @@ func (i *PaymendHandler) MakePaymentRazorPay(c *gin.Context) {
 
 	userIDint, err := strconv.Atoi(userID)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "error", nil, errors.New("errors in convert userId into string"+err.Error()))
+		errorRes := response.ClientResponse(http.StatusBadRequest, "there is error check your user id again", nil, errors.New("errors in convert userId into string"+err.Error()))
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
@@ -34,7 +34,7 @@ func (i *PaymendHandler) MakePaymentRazorPay(c *gin.Context) {
 	orderID := c.Query("order_id")
 	orderIDint, err := strconv.Atoi(orderID)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest, "error", nil, errors.New("errors in convert orderId into string"+err.Error()))
+		errorRes := response.ClientResponse(http.StatusBadRequest, "ther is an error check your order id again", nil, errors.New("errors in convert orderId into string"+err.Error()))
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}

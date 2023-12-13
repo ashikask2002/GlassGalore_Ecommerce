@@ -35,7 +35,7 @@ func (i *CartHandler) AddToCart(c *gin.Context) {
 		return
 	}
 	model.UserID = UserID.(int)
-	if err := i.usecase.AddToCart(model.UserID, model.InventoryID, model.Quantity); err != nil {
+	if err := i.usecase.AddToCart(model.UserID, model.ProductID, model.Quantity); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not added the cart", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return

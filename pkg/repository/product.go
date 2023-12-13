@@ -22,15 +22,21 @@ func NewProductRepository(DB *gorm.DB) interfaces.ProductRepository {
 }
 
 func (i *productRepository) AddProduct(product models.AddProducts) (domain.Products, error) {
+	query := `
+		INSERT INTO products (category_id, product_name, discription, size, stock, price)
+		VALUES (?, ?, ?, ?, ?, ?)
+		RETURNING id, category_id, product_name, discription, size, stock, price;`
 
-	query := `INSERT INTO products (category_id, product_name, size, stock, price) VALUES (?, ?, ?, ?, ?);`
-	err := i.DB.Exec(query, product.CategoryID, product.ProductName, product.Size, product.Stock, product.Price).Error
+	var insertedProduct domain.Products
+	err := i.DB.Raw(query,
+		product.CategoryID, product.ProductName, product.Discription, product.Size, product.Stock, product.Price).
+		Scan(&insertedProduct).Error
+
 	if err != nil {
 		return domain.Products{}, err
 	}
 
-	var insertedProduct domain.Products
-
+	fmt.Println("Inserted Product:", insertedProduct)
 	return insertedProduct, nil
 }
 
@@ -124,6 +130,15 @@ func (i *productRepository) FilterProducts(CategoryID int) ([]models.ProductUser
 	var product_list []models.ProductUserResponse
 
 	if err := i.DB.Raw("select * from products where category_id = ? ", CategoryID).Scan(&product_list).Error; err != nil {
+		return nil, err
+	}
+	return product_list, nil
+}
+
+func (i *productRepository) FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error) {
+	var product_list []models.ProductUserResponse
+
+	if err := i.DB.Raw("select * from products where price = ? ",Price ).Scan(&product_list).Error; err != nil {
 		return nil, err
 	}
 	return product_list, nil
