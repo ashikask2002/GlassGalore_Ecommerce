@@ -5,6 +5,7 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
+	"fmt"
 	"strconv"
 )
 
@@ -25,6 +26,18 @@ func NewOrderUseCase(repo interfaces.OrderRepository, userUseCase services.UserU
 }
 
 func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID int, couponID int) error {
+	if userID <= 0 {
+		return errors.New("userid must be positive")
+	}
+	if addressID <= 0 {
+		return errors.New("address id must be positive")
+	}
+	if couponID <= 0 {
+		return errors.New("coupon id must be positive")
+	}
+	if paymentID <= 0 {
+		return errors.New("payment id must be positive")
+	}
 	// Retrieve the user's cart
 	cart, err := i.userUseCase.GetCart(userID)
 	if err != nil {
@@ -55,6 +68,9 @@ func (i *orderUseCase) OrderItemsFromCart(userID int, addressID int, paymentID i
 	totaldiscount := float64(coupon)
 
 	total = total - totaldiscount
+	if total <= 0 {
+		return errors.New("there is nothing in your cart")
+	}
 
 	// Place an order with the order repository
 	orderID, err := i.orderRepository.OrderItems(userID, addressID, paymentID, total)
@@ -93,6 +109,8 @@ func (i *orderUseCase) GetOrders(orderid int) (models.AllItems, error) {
 }
 
 func (i *orderUseCase) GerAllOrders(userId, page, pageSize int) ([]models.OrderDetails, error) {
+
+	fmt.Println("page is ", page)
 	allOrder, err := i.orderRepository.GetAllOrders(userId, page, pageSize)
 	if err != nil {
 		return []models.OrderDetails{}, err
@@ -102,6 +120,9 @@ func (i *orderUseCase) GerAllOrders(userId, page, pageSize int) ([]models.OrderD
 
 func (i *orderUseCase) CancelOrder(orderID int) error {
 	// Check the order status
+	if orderID <= 0 {
+		return errors.New("orderid must be positive")
+	}
 	orderStatus, err := i.orderRepository.CheckOrderStatusByID(orderID)
 	if err != nil {
 		return err
@@ -230,6 +251,10 @@ func (i *orderUseCase) OrdersStatus(orderID string) error {
 }
 
 func (i *orderUseCase) ReturnOrder(orderId int) error {
+
+	if orderId <= 0 {
+		return errors.New("orderID must be positive")
+	}
 	shipmentStatus, err := i.orderRepository.GetOrderStatus(orderId)
 	if err != nil {
 		return err

@@ -121,7 +121,6 @@ func (i *UserHandler) GetAddresses(c *gin.Context) {
 func (i *UserHandler) AddAddress(c *gin.Context) {
 
 	id, _ := c.Get("id")
-	
 
 	var address models.AddAddress
 	if err := c.BindJSON(&address); err != nil {

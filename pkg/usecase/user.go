@@ -30,6 +30,11 @@ func (u *UserUseCase) UserSignUp(user models.UserDetails) (models.TokenUsers, er
 		return models.TokenUsers{}, errors.New("invalid mobilenumber")
 	}
 
+	email := u.helper.IsValidEmail(user.Email)
+	if !email {
+		return models.TokenUsers{}, errors.New("invalid email")
+	}
+
 	userExist := u.userRepo.CheckUserAvailability(user.Email)
 	if userExist {
 		return models.TokenUsers{}, errors.New("user already exist, sign in")
@@ -133,6 +138,11 @@ func (i *UserUseCase) AddAddress(id int, address models.AddAddress) error {
 		return errors.New("invalid phone Number")
 	}
 
+	pin := i.helper.IsValidPIN(address.Pin)
+	if !pin {
+		return errors.New("invalid pin number")
+	}
+
 	rslt := i.userRepo.CheckIfFirstAddress(id)
 	var result bool
 
@@ -151,6 +161,13 @@ func (i *UserUseCase) AddAddress(id int, address models.AddAddress) error {
 }
 
 func (i *UserUseCase) EditDetails(id int, user models.EditDetailsResponse) (models.EditDetailsResponse, error) {
+	if !i.helper.PhoneValidation(user.Phone) {
+		return models.EditDetailsResponse{}, errors.New("phone number is invalid")
+	}
+
+	if !i.helper.IsValidEmail(user.Email) {
+		return models.EditDetailsResponse{}, errors.New("email is invalid")
+	}
 
 	body, err := i.userRepo.EditDetails(id, user)
 	if err != nil {
@@ -284,6 +301,13 @@ func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 }
 
 func (i *UserUseCase) RemoveFromCart(cart, inventory int) error {
+	if cart <= 0 {
+		return errors.New("cartid must be positive")
+	}
+
+	if inventory <= 0 {
+		return errors.New("inventoryid must be positive")
+	}
 	err := i.userRepo.RemoveFromCart(cart, inventory)
 	if err != nil {
 		return err
@@ -292,6 +316,16 @@ func (i *UserUseCase) RemoveFromCart(cart, inventory int) error {
 }
 
 func (i *UserUseCase) UpdateQuantity(id, inv_id, qty int) error {
+	if id <= 0 {
+		return errors.New(" id must be positive")
+	}
+
+	if inv_id <= 0 {
+		return errors.New("inventory id must be positive")
+	}
+	if qty <= 0 {
+		return errors.New("quantity must be positive")
+	}
 	err := i.userRepo.UpdateQuantity(id, inv_id, qty)
 	if err != nil {
 		return err

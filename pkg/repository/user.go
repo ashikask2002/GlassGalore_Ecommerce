@@ -257,9 +257,6 @@ func (i *userDatabase) RemoveFromCart(cart, productID int) error {
 }
 func (i *userDatabase) UpdateQuantity(id, inv_id, qty int) error {
 
-	if id <= 0 || inv_id <= 0 || qty <= 0 {
-		return errors.New("negtive or zero values are not allowed")
-	}
 	if qty >= 0 {
 		query := `update line_items set quantity = $1 where cart_id = $2 and product_id= $3`
 

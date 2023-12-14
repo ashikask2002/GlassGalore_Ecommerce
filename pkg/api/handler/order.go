@@ -71,6 +71,7 @@ func (i *OrderHandler) GetOrders(c *gin.Context) {
 
 func (i *OrderHandler) GetAllOrders(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
+
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "page number correct in wrong format", nil, err.Error())

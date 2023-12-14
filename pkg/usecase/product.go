@@ -68,6 +68,9 @@ func (i *productUseCase) EditProductDetails(id int, model models.EditProductDeta
 }
 
 func (i *productUseCase) ListProductForUser(page int) ([]models.Products, error) {
+	if page <= 0 {
+		return []models.Products{}, errors.New("page must be positive")
+	}
 	productDetails, err := i.repository.ListProducts(page)
 	if err != nil {
 		return []models.Products{}, err
@@ -77,6 +80,9 @@ func (i *productUseCase) ListProductForUser(page int) ([]models.Products, error)
 }
 
 func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserResponse, error) {
+	if CategoryID <= 0 {
+		return []models.ProductUserResponse{}, errors.New("you provided the negtive id")
+	}
 	product_list, err := i.repository.FilterProducts(CategoryID)
 	if err != nil {
 		return []models.ProductUserResponse{}, err
@@ -85,6 +91,9 @@ func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserRes
 }
 
 func (i *productUseCase) FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error) {
+	if Price <= 0 {
+		return []models.ProductUserResponse{}, errors.New("you provided the negtive price")
+	}
 	product_list, err := i.repository.FilterProductsByPrice(Price)
 	if err != nil {
 		return []models.ProductUserResponse{}, err

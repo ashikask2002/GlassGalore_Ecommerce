@@ -155,3 +155,19 @@ func (h *helper) PhoneValidation(phone string) bool {
 	value := regex.MatchString(phoneNumber)
 	return value
 }
+
+func (h *helper) IsValidEmail(email string) bool {
+	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(email)
+	return value
+}
+
+func (h *helper) IsValidPIN(pincode string) bool {
+	// Regular expression for a simple PIN code validation (6 digits)
+	pattern := `^\d{6}$`
+	regex := regexp.MustCompile(pattern)
+	value := regex.MatchString(pincode)
+
+	return value
+}
