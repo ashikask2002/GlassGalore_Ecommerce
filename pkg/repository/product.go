@@ -45,6 +45,9 @@ func (i *productRepository) DeleteProduct(productID string) error {
 	if err != nil {
 		return errors.New("converting to integer not happened")
 	}
+	if id <= 0 {
+		return errors.New("id must be positive")
+	}
 
 	result := i.DB.Exec("DELETE FROM products WHERE id = ?", id)
 
@@ -90,15 +93,17 @@ func (i *productRepository) UpdateProduct(pid int, stock int) (models.ProductRes
 }
 
 func (i *productRepository) EditProductDetails(id int, model models.EditProductDetails) (models.EditProductDetails, error) {
-	err := i.DB.Exec("UPDATE products SET product_name = $1, category_id = $2, price = $3, size = $4 WHERE id =$5", model.Name, model.CategoryID, model.Price, model.Size, id).Error
+	fmt.Println("yyyyyyyyyyyyyyyyyyy", id, model)
+	err := i.DB.Exec("UPDATE products SET product_name = $1, discription = $2, category_id = $3, price = $4, size = $5 WHERE id =$6", model.Name, model.Discription, model.CategoryID, model.Price, model.Size, id).Error
 	if err != nil {
 		return models.EditProductDetails{}, err
 	}
 	var products models.EditProductDetails
-	err = i.DB.Raw("SELECT product_name as name,category_id,price,size FROM products WHERE id = ?", id).Scan(&products).Error
+	err = i.DB.Raw("SELECT product_name as name,discription,category_id,price,size FROM products WHERE id = ?", id).Scan(&products).Error
 	if err != nil {
 		return models.EditProductDetails{}, err
 	}
+	fmt.Println("fkfkjkfjdkjfkdjkfjdkjfkjdk", products)
 	return products, nil
 }
 
@@ -138,7 +143,7 @@ func (i *productRepository) FilterProducts(CategoryID int) ([]models.ProductUser
 func (i *productRepository) FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error) {
 	var product_list []models.ProductUserResponse
 
-	if err := i.DB.Raw("select * from products where price = ? ",Price ).Scan(&product_list).Error; err != nil {
+	if err := i.DB.Raw("select * from products where price = ? ", Price).Scan(&product_list).Error; err != nil {
 		return nil, err
 	}
 	return product_list, nil

@@ -86,6 +86,7 @@ func (i *adminRepository) CheckIfPaymentMethodAlreadyExists(payment string) (boo
 }
 
 func (i *adminRepository) NewPaymentMethod(pay string) error {
+	
 	if err := i.DB.Exec("INSERT INTO payment_methods(payment_name) VALUES (?)", pay).Error; err != nil {
 		return err
 	}

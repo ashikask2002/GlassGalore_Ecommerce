@@ -104,6 +104,9 @@ func (ad *adminUseCase) UnBlockUser(id string) error {
 }
 
 func (i *adminUseCase) NewPaymentMethod(id string) error {
+	if id == "" {
+		return errors.New("not allowed empty name")
+	}
 	exists, err := i.adminRepository.CheckIfPaymentMethodAlreadyExists(id)
 	if err != nil {
 		return err
@@ -128,6 +131,9 @@ func (i *adminUseCase) ListPaymentMethods() ([]domain.PaymentMethod, error) {
 }
 
 func (i *adminUseCase) DeletePaymentMethod(id int) error {
+	if id <= 0 {
+		return errors.New("id must be positive")
+	}
 	err := i.adminRepository.DeletePaymentMethod(id)
 	if err != nil {
 		return err

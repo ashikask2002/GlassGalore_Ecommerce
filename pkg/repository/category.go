@@ -86,6 +86,9 @@ func (c *categoryRepository) DeleteCategory(categoryID string) error {
 	if err != nil {
 		return errors.New("converting into integer not happened")
 	}
+	if id <= 0 {
+		return errors.New("id must be positive")
+	}
 	result := c.DB.Exec("DELETE FROM categories WHERE id = ?", id)
 
 	if result.RowsAffected < 1 {

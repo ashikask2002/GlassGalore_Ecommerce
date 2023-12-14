@@ -23,6 +23,21 @@ func NewProductUseCase(repo repos.ProductRepository, h helper_interface.Helper) 
 }
 
 func (i *productUseCase) AddProduct(Products models.AddProducts) (domain.Products, error) {
+	if Products.CategoryID <= 0 {
+		return domain.Products{}, errors.New("id must be positive")
+	}
+	if Products.Discription == "" {
+		return domain.Products{}, errors.New("discription must be something")
+	}
+	if Products.Price <= 0 {
+		return domain.Products{}, errors.New("price must be positive")
+	}
+	if Products.ProductName == "" {
+		return domain.Products{}, errors.New("product name is empty now")
+	}
+	if Products.Stock <= 0 {
+		return domain.Products{}, errors.New("stock must be positive")
+	}
 	productResponse, err := i.repository.AddProduct(Products)
 	if err != nil {
 		return domain.Products{}, err
@@ -31,6 +46,7 @@ func (i *productUseCase) AddProduct(Products models.AddProducts) (domain.Product
 }
 
 func (i *productUseCase) DeleteProduct(productID string) error {
+	
 	err := i.repository.DeleteProduct(productID)
 	if err != nil {
 		return err
@@ -59,6 +75,21 @@ func (i *productUseCase) UpdateProduct(pid int, stock int) (models.ProductRespon
 
 func (i *productUseCase) EditProductDetails(id int, model models.EditProductDetails) (models.EditProductDetails, error) {
 	//send the url and save it in to the database
+	if id <= 0 {
+		return models.EditProductDetails{}, errors.New("id must be positive")
+	}
+	if model.CategoryID <= 0 {
+		return models.EditProductDetails{}, errors.New("category id must be positive")
+	}
+	if model.Name == "" {
+		return models.EditProductDetails{}, errors.New("name is empty now")
+	}
+	if model.Price <= 0 {
+		return models.EditProductDetails{}, errors.New("price must be positive")
+	}
+	if model.Discription == "" {
+		return models.EditProductDetails{}, errors.New("discription must have something")
+	}
 
 	products, err := i.repository.EditProductDetails(id, model)
 	if err != nil {

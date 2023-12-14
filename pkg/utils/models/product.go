@@ -33,10 +33,11 @@ type ProductUpdate struct {
 }
 
 type EditProductDetails struct {
-	Name       string  `json:"name"`
-	Price      float64 `json:"price"`
-	CategoryID int     `json:"category_id"`
-	Size       string  `json:"size"`
+	Name        string  `json:"name"`
+	Discription string  `json:"discription"`
+	Price       float64 `json:"price"`
+	CategoryID  int     `json:"category_id"`
+	Size        string  `json:"size"`
 }
 
 type Products struct {

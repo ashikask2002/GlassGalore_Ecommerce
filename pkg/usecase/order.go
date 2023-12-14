@@ -207,6 +207,9 @@ func (i *orderUseCase) CancelOrder(orderID int) error {
 }
 
 func (i *orderUseCase) GetAdminOrders(page int) ([]models.CombinedOrderDetails, error) {
+	if page <= 0 {
+		return []models.CombinedOrderDetails{}, errors.New("page must be positive")
+	}
 	orderDetails, err := i.orderRepository.GetOrderDetailsBrief(page)
 	if err != nil {
 		return []models.CombinedOrderDetails{}, err
@@ -218,6 +221,9 @@ func (i *orderUseCase) OrdersStatus(orderID string) error {
 	orderId, sErr := strconv.Atoi(orderID)
 	if sErr != nil {
 		return sErr
+	}
+	if orderId <= 0 {
+		return errors.New("order id must be positive")
 	}
 	status, err := i.orderRepository.CheckOrderStatusByID(orderId)
 	if err != nil {

@@ -80,6 +80,7 @@ func (i *ProductHandler) EditProductDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+	
 	var model models.EditProductDetails
 
 	err = c.BindJSON(&model)

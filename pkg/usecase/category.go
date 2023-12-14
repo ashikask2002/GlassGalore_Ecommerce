@@ -18,6 +18,9 @@ func NewCategoryUseCase(repo interfaces.CategoryRepository) services.CategoryUse
 }
 
 func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Category, error) {
+	if category.Category == "" {
+		return domain.Category{}, errors.New("category not be empty")
+	}
 	productResponse, err := Cat.repository.AddCategory(category)
 
 	if err != nil {
@@ -28,7 +31,9 @@ func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Catego
 }
 
 func (Cat *categoryUseCase) UpdateCategory(category domain.Category) (domain.Category, error) {
-
+    if category.ID <= 0{
+		return domain.Category{},errors.New("id must be positive")
+	}
 	if category.Category == "" {
 		return domain.Category{}, errors.New("must provide a value")
 	}
