@@ -13,4 +13,5 @@ type AdminUseCase interface {
 	NewPaymentMethod(id string) error
 	ListPaymentMethods() ([]domain.PaymentMethod, error)
 	DeletePaymentMethod(id int) error
+	DashBoard()(models.CompleteAdminDashboard,error)
 }

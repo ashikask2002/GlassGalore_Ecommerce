@@ -18,3 +18,37 @@ type Coupons struct {
 	DiscountRate int    `json:"discount_rate" gorm:"not null"`
 	Valid        bool   `json:"valid" gorm:"default:true"`
 }
+type CompleteAdminDashboard struct {
+	DashboardUser    DashBoardUser
+	DashboardProduct DashBoardProduct
+	DashboardOrder   DashboardOrder
+	DashboardRevenue DashBoardRevenue
+	DashboardAmount  DashBoardAmount
+}
+
+type DashBoardUser struct {
+	TotalUser   int `json:"totaluser"`
+	BlockedUser int `json:"blockuser"`
+}
+type DashBoardProduct struct {
+	TotalProducts     int `json:"totalproduct"`
+	OutOfStockProduct int `json:"outofstock"`
+}
+type DashboardOrder struct {
+	CompletedOrder int
+	PendingOrder   int
+	CancelledOrder int
+	TotalOrder     int
+	TotalOrderItem int
+}
+
+type DashBoardRevenue struct {
+	ToadayRevenue float64
+	MonthRevenue  float64
+	YearRevenue   float64
+}
+
+type DashBoardAmount struct {
+	CreditedAmount float64
+	PendingAmounr  float64
+}

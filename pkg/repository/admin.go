@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -86,7 +87,7 @@ func (i *adminRepository) CheckIfPaymentMethodAlreadyExists(payment string) (boo
 }
 
 func (i *adminRepository) NewPaymentMethod(pay string) error {
-	
+
 	if err := i.DB.Exec("INSERT INTO payment_methods(payment_name) VALUES (?)", pay).Error; err != nil {
 		return err
 	}
@@ -117,4 +118,102 @@ func (i *adminRepository) GetPaymentMethod() ([]models.PaymentMethodResponse, er
 		return []models.PaymentMethodResponse{}, err
 	}
 	return model, nil
+}
+
+func (i *adminRepository) DashBoardUserDetails() (models.DashBoardUser, error) {
+	var userDetails models.DashBoardUser
+	err := i.DB.Raw("select count(*) from users where is_admin= 'false'").Scan(&userDetails.TotalUser).Error
+	if err != nil {
+		return models.DashBoardUser{}, err
+	}
+
+	err = i.DB.Raw("select count(*) from users where blocked = 'true'").Scan(&userDetails.BlockedUser).Error
+	if err != nil {
+		return models.DashBoardUser{}, err
+	}
+	return userDetails, nil
+
+}
+
+func (i *adminRepository) DashBoardProductDetails() (models.DashBoardProduct, error) {
+	var productDetails models.DashBoardProduct
+
+	err := i.DB.Raw("select count(*) from products").Scan(&productDetails.TotalProducts).Error
+	if err != nil {
+		return models.DashBoardProduct{}, err
+	}
+
+	err = i.DB.Raw("select * from products where stock <= 0").Scan(&productDetails.OutOfStockProduct).Error
+	if err != nil {
+		return models.DashBoardProduct{}, err
+	}
+	return productDetails, nil
+}
+
+func (i *adminRepository) DashBoardOrder() (models.DashboardOrder, error) {
+	var dashboardOrder models.DashboardOrder
+	err := i.DB.Raw("select count(*) from orders where payment_status = 'PAID'").Scan(&dashboardOrder.CompletedOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, err
+	}
+
+	err = i.DB.Raw("select count(*) from orders where order_status = 'PENDING'").Scan(&dashboardOrder.PendingOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, err
+	}
+
+	err = i.DB.Raw("select count(*) from orders where order_status = 'CANCELED'").Scan(&dashboardOrder.CancelledOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, err
+	}
+
+	err = i.DB.Raw("select count(*) from orders").Scan(&dashboardOrder.TotalOrder).Error
+	if err != nil {
+		return models.DashboardOrder{}, err
+	}
+	err = i.DB.Raw("select sum(quantity) from order_items").Scan(&dashboardOrder.TotalOrderItem).Error
+	if err != nil {
+		return models.DashboardOrder{}, err
+	}
+
+	return dashboardOrder, nil
+}
+
+func (i *adminRepository) TotalRevenue() (models.DashBoardRevenue, error) {
+	var revenueDetails models.DashBoardRevenue
+
+	startTime := time.Now().AddDate(0, 0, -1)
+
+	err := i.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'PAID'  and created_at >= ?", startTime).Scan(&revenueDetails.ToadayRevenue).Error
+	if err != nil {
+		return models.DashBoardRevenue{}, nil
+	}
+
+	startTime = time.Now().AddDate(0, -1, 1).UTC()
+	err = i.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'PAID'  and created_at >= ?", startTime).Scan(&revenueDetails.MonthRevenue).Error
+	if err != nil {
+		return models.DashBoardRevenue{}, nil
+	}
+	startTime = time.Now().AddDate(-1, 1, 1).UTC()
+	err = i.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'PAID'  and created_at >= ?", startTime).Scan(&revenueDetails.YearRevenue).Error
+	if err != nil {
+		return models.DashBoardRevenue{}, nil
+	}
+
+	return revenueDetails, nil
+
+}
+
+func (i *adminRepository) AmountDetails() (models.DashBoardAmount, error) {
+	var amountDetails models.DashBoardAmount
+	err := i.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status = 'PAID'").Scan(&amountDetails.CreditedAmount).Error
+	if err != nil {
+		return models.DashBoardAmount{}, err
+	}
+
+	err = i.DB.Raw("select coalesce(sum(final_price),0) from orders where payment_status= 'NOT PAID' and order_status = 'PENDING' or order_status = 'SHIPPED'").Scan(&amountDetails.PendingAmounr).Error
+	if err != nil {
+		return models.DashBoardAmount{}, err
+	}
+	return amountDetails, nil
 }

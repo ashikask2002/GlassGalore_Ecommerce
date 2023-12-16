@@ -15,4 +15,9 @@ type AdminRepository interface {
 	ListPaymentMethods() ([]domain.PaymentMethod, error)
 	DeletePaymentMethod(id int) error
 	GetPaymentMethod() ([]models.PaymentMethodResponse, error)
+	DashBoardUserDetails() (models.DashBoardUser, error)
+	DashBoardProductDetails() (models.DashBoardProduct, error)
+	DashBoardOrder() (models.DashboardOrder, error)
+	TotalRevenue() (models.DashBoardRevenue,error)
+	AmountDetails() (models.DashBoardAmount,error)
 }

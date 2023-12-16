@@ -61,5 +61,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 			coupen.PUT("",couponHandler.ReactivateCoupen)
 		}
 
+		engine.GET("/dashboard",adminHandler.DashBoard)
+
 	}
 }

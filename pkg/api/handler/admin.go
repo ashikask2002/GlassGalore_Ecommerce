@@ -175,3 +175,14 @@ func (i *AdminHandler) DeletePaymentMethod(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 
 }
+
+func (i *AdminHandler) DashBoard(c *gin.Context){
+	dashboard, err := i.adminUseCase.DashBoard()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest,"error in getting dashboard details",nil,err.Error())
+		c.JSON(http.StatusBadRequest,errorRes)
+		return
+	}
+  succesRes := response.ClientResponse(http.StatusOK,"successfully got all details of dashboard",dashboard,nil)
+  c.JSON(http.StatusOK,succesRes)
+}
