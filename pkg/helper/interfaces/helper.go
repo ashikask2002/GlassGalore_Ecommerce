@@ -1,6 +1,9 @@
 package interfaces
 
-import "GlassGalore/pkg/utils/models"
+import (
+	"GlassGalore/pkg/utils/models"
+	"time"
+)
 
 type Helper interface {
 	PasswordHashing(string) (string, error)
@@ -13,4 +16,5 @@ type Helper interface {
 	PhoneValidation(phone string) bool
 	IsValidEmail(email string) bool
 	IsValidPIN(pincode string) bool
+	GetTimeFromPeriod(timePeriod string) (time.Time, time.Time)
 }

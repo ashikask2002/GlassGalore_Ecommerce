@@ -3,6 +3,7 @@ package interfaces
 import (
 	"GlassGalore/pkg/domain"
 	"GlassGalore/pkg/utils/models"
+	"time"
 )
 
 type AdminRepository interface {
@@ -20,4 +21,5 @@ type AdminRepository interface {
 	DashBoardOrder() (models.DashboardOrder, error)
 	TotalRevenue() (models.DashBoardRevenue,error)
 	AmountDetails() (models.DashBoardAmount,error)
+	FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport,error)
 }

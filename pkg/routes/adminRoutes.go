@@ -55,13 +55,14 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 
 		coupen := engine.Group("/coupons")
 		{
-			coupen.POST("",couponHandler.CreateNewCoupen)
-			coupen.GET("",couponHandler.GetAllCoupons)
-			coupen.DELETE("",couponHandler.MakeCouponInvalid)
-			coupen.PUT("",couponHandler.ReactivateCoupen)
+			coupen.POST("", couponHandler.CreateNewCoupen)
+			coupen.GET("", couponHandler.GetAllCoupons)
+			coupen.DELETE("", couponHandler.MakeCouponInvalid)
+			coupen.PUT("", couponHandler.ReactivateCoupen)
 		}
 
-		engine.GET("/dashboard",adminHandler.DashBoard)
+		engine.GET("/dashboard", adminHandler.DashBoard)
+		engine.GET("/salesreport", adminHandler.Salesreport)
 
 	}
 }

@@ -176,13 +176,27 @@ func (i *AdminHandler) DeletePaymentMethod(c *gin.Context) {
 
 }
 
-func (i *AdminHandler) DashBoard(c *gin.Context){
+func (i *AdminHandler) DashBoard(c *gin.Context) {
 	dashboard, err := i.adminUseCase.DashBoard()
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"error in getting dashboard details",nil,err.Error())
-		c.JSON(http.StatusBadRequest,errorRes)
+		errorRes := response.ClientResponse(http.StatusBadRequest, "error in getting dashboard details", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-  succesRes := response.ClientResponse(http.StatusOK,"successfully got all details of dashboard",dashboard,nil)
-  c.JSON(http.StatusOK,succesRes)
+	succesRes := response.ClientResponse(http.StatusOK, "successfully got all details of dashboard", dashboard, nil)
+	c.JSON(http.StatusOK, succesRes)
+}
+
+func (i *AdminHandler) Salesreport(c *gin.Context) {
+	timePeriod := c.Query("period")
+
+	salesReport, err := i.adminUseCase.FilteredSalesReport(timePeriod)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "error in getting sales report", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	succesRes := response.ClientResponse(http.StatusOK, "successfully got the sales report", salesReport, nil)
+	c.JSON(http.StatusOK, succesRes)
 }

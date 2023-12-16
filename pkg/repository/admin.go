@@ -6,6 +6,7 @@ import (
 	"GlassGalore/pkg/utils/models"
 	"errors"
 	"fmt"
+
 	"strconv"
 	"time"
 
@@ -216,4 +217,74 @@ func (i *adminRepository) AmountDetails() (models.DashBoardAmount, error) {
 		return models.DashBoardAmount{}, err
 	}
 	return amountDetails, nil
+}
+
+func (i *adminRepository) FilteredSalesReport(startTime time.Time, endTime time.Time) (models.SalesReport, error) {
+	var salesRepot models.SalesReport
+
+	querry := `select coalesce(sum(final_price),0)
+	from orders where payment_status = 'PAID' 
+	and created_at >= ? and created_at <= ?`
+	result := i.DB.Raw(querry, startTime, endTime).Scan(&salesRepot.TotalSales)
+
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	result = i.DB.Raw("select count(*) from orders where created_at >= ? and created_at <= ?", startTime, endTime).Scan(&salesRepot.TotalOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	querry = `select count(*) from orders
+	where payment_status = 'PAID' and order_status = 'DELIVERED' 
+	and created_at >= ? and created_at <= ?`
+
+	result = i.DB.Raw(querry, startTime, endTime).Scan(&salesRepot.CompletedOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	query := `
+	SELECT COUNT(*) FROM orders 
+	WHERE order_status IN ('SHIPPED', 'PENDING') AND created_at >= ? AND created_at <= ?;
+`
+
+	result = i.DB.Raw(query, startTime, endTime).Scan(&salesRepot.PendingOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	querry = `
+	SELECT COUNT(*) FROM orders WHERE order_status = 'CANCELED'
+	AND created_at >= ? AND created_at<=?`
+	result = i.DB.Raw(querry, startTime, endTime).Scan(&salesRepot.CancelledOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	querry = `
+	SELECT COUNT(*) FROM orders WHERE order_status = 'RETURNED'
+	AND created_at >= ? AND created_at<=?`
+	result = i.DB.Raw(querry, startTime, endTime).Scan(&salesRepot.ReturnedOrders)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	var productID int
+	querry = `
+		SELECT product_id FROM order_items 
+		GROUP BY product_id order by SUM(quantity) DESC LIMIT 1
+		`
+	result = i.DB.Raw(querry).Scan(&productID)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+
+	result = i.DB.Raw("select product_name from products where id = ?", productID).Scan(&salesRepot.TrendingProduct)
+	if result.Error != nil {
+		return models.SalesReport{}, result.Error
+	}
+	return salesRepot, nil
+
 }

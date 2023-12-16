@@ -140,32 +140,42 @@ func (i *adminUseCase) DeletePaymentMethod(id int) error {
 	}
 	return nil
 }
-func (i *adminUseCase) DashBoard() (models.CompleteAdminDashboard,error){
-	userDetails,err := i.adminRepository.DashBoardUserDetails()
+func (i *adminUseCase) DashBoard() (models.CompleteAdminDashboard, error) {
+	userDetails, err := i.adminRepository.DashBoardUserDetails()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 	productDetails, err := i.adminRepository.DashBoardProductDetails()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 	orderDetails, err := i.adminRepository.DashBoardOrder()
-	if err != nil{
-		return models.CompleteAdminDashboard{},err
+	if err != nil {
+		return models.CompleteAdminDashboard{}, err
 	}
 	totalRevenue, err := i.adminRepository.TotalRevenue()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 	amountDetails, err := i.adminRepository.AmountDetails()
 	if err != nil {
-		return models.CompleteAdminDashboard{},err
+		return models.CompleteAdminDashboard{}, err
 	}
 	return models.CompleteAdminDashboard{
-		DashboardUser: userDetails,
+		DashboardUser:    userDetails,
 		DashboardProduct: productDetails,
-		DashboardOrder: orderDetails,
+		DashboardOrder:   orderDetails,
 		DashboardRevenue: totalRevenue,
-		DashboardAmount: amountDetails,
-	},nil
+		DashboardAmount:  amountDetails,
+	}, nil
+}
+
+func (i *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport, error) {
+	startTime, endTime := i.helper.GetTimeFromPeriod(timePeriod)
+	salesReport, err := i.adminRepository.FilteredSalesReport(startTime, endTime)
+
+	if err != nil {
+		return models.SalesReport{}, err
+	}
+	return salesReport, nil
 }

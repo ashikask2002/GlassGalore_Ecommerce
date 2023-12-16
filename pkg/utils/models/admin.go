@@ -52,3 +52,13 @@ type DashBoardAmount struct {
 	CreditedAmount float64
 	PendingAmounr  float64
 }
+
+type SalesReport struct {
+	TotalSales      float64
+	TotalOrders     int
+	CompletedOrders int
+	PendingOrders   int
+	ReturnedOrders  int
+	CancelledOrders int
+	TrendingProduct string
+}
