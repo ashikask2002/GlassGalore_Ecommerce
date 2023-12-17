@@ -140,14 +140,15 @@ func (i *productRepository) FilterProducts(CategoryID int) ([]models.ProductUser
 	return product_list, nil
 }
 
-func (i *productRepository) FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error) {
+func (i *productRepository) FilterProductsByPrice(Price, pricetwo int) ([]models.ProductUserResponse, error) {
 	var product_list []models.ProductUserResponse
 
-	if err := i.DB.Raw("select * from products where price = ? ", Price).Scan(&product_list).Error; err != nil {
+	if err := i.DB.Raw("SELECT * FROM products WHERE price BETWEEN ? AND ?", Price, pricetwo).Scan(&product_list).Error; err != nil {
 		return nil, err
 	}
 	return product_list, nil
 }
+
 
 func (i *productRepository) SearchProducts(offset, limit int, search string) ([]models.ProductUserResponse, error) {
 	var product_list []models.ProductUserResponse

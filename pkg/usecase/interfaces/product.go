@@ -13,5 +13,5 @@ type ProductUseCase interface {
 	ListProductForUser(page int) ([]models.Products, error)
 	SearchProducts(search models.Search) ([]models.ProductUserResponse, error)
 	FilterProducts(categoryID int) ([]models.ProductUserResponse, error)
-	FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error)
+	FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error)
 }

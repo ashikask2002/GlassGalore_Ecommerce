@@ -121,11 +121,14 @@ func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserRes
 	return product_list, nil
 }
 
-func (i *productUseCase) FilterProductsByPrice(Price int) ([]models.ProductUserResponse, error) {
+func (i *productUseCase) FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error) {
 	if Price <= 0 {
 		return []models.ProductUserResponse{}, errors.New("you provided the negtive price")
 	}
-	product_list, err := i.repository.FilterProductsByPrice(Price)
+	if pricetwo <= 0{
+		return []models.ProductUserResponse{},errors.New("you proivded the negtive price")
+	}
+	product_list, err := i.repository.FilterProductsByPrice(Price,pricetwo)
 	if err != nil {
 		return []models.ProductUserResponse{}, err
 	}

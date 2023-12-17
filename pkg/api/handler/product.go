@@ -159,7 +159,16 @@ func (i *ProductHandler) FilterProductsByPrice(c *gin.Context) {
 		return
 	}
 
-	productList, err := i.ProductUseCase.FilterProductsByPrice(PriceInt)
+	Pricetwo := c.Query("pricetwo")
+	PricetwoInt, err := strconv.Atoi(Pricetwo)
+
+	if err != nil {
+		errirRes := response.ClientResponse(http.StatusBadRequest, "error in conversion", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errirRes)
+		return
+	}
+
+	productList, err := i.ProductUseCase.FilterProductsByPrice(PriceInt,PricetwoInt)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "cannot retrieve the productlist", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
