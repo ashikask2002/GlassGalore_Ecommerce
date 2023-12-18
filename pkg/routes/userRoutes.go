@@ -88,6 +88,7 @@ func UserRoutes(engine *gin.RouterGroup,
 		coupon := engine.Group("coupon")
 		{
 			coupon.GET("",couponHandler.GetAllCoupons)
+			
 		}
 
 	}
