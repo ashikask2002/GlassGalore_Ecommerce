@@ -91,7 +91,7 @@ type GetCart struct {
 	StockAvailabe int     `json:"stock"`
 	Price         int     `json:"price"`
 	Total         float64 `json:"total_price"`
-	// DiscountedPrice float64 `json:"discounted_price"`
+	 DiscountedPrice float64 `json:"discounted_price"`
 }
 
 type GetCartResponseData struct {

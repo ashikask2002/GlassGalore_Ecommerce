@@ -4,6 +4,7 @@ import (
 	"GlassGalore/pkg/domain"
 	helper_interface "GlassGalore/pkg/helper/interfaces"
 	interfaces "GlassGalore/pkg/repository/interfaces"
+	use "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 
 	"errors"
@@ -14,7 +15,7 @@ type UserUseCase struct {
 	helper   helper_interface.Helper
 }
 
-func NewUserUseCase(repo interfaces.UserRepository, helper helper_interface.Helper) *UserUseCase {
+func NewUserUseCase(repo interfaces.UserRepository, helper helper_interface.Helper) use.UserUseCase {
 	return &UserUseCase{
 		userRepo: repo,
 		helper:   helper,
@@ -256,6 +257,7 @@ func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 		if err != nil {
 			return models.GetCartResponse{}, errors.New(InternalError)
 		}
+
 		price = append(price, q)
 	}
 
@@ -275,6 +277,7 @@ func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 		if err != nil {
 			return models.GetCartResponse{}, errors.New(InternalError)
 		}
+
 		categories = append(categories, c)
 	}
 
@@ -288,8 +291,25 @@ func (u *UserUseCase) GetCart(id int) (models.GetCartResponse, error) {
 		get.Total = price[i] * float64(quantity[i])
 		get.Price = int(price[i])
 		get.StockAvailabe = stocks[i]
+		get.DiscountedPrice = 0
 
 		getcart = append(getcart, get)
+	}
+
+	var offers []float64
+
+	for i := range categories {
+
+		c, err := u.userRepo.GetCatOfferr(categories[i])
+		if err != nil {
+			return models.GetCartResponse{}, errors.New(InternalError)
+		}
+		offers = append(offers, c)
+	}
+
+	//find discounted price
+	for i := range getcart {
+		getcart[i].DiscountedPrice = (getcart[i].Total) - offers[i]
 	}
 
 	var response models.GetCartResponse

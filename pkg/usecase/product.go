@@ -46,7 +46,7 @@ func (i *productUseCase) AddProduct(Products models.AddProducts) (domain.Product
 }
 
 func (i *productUseCase) DeleteProduct(productID string) error {
-	
+
 	err := i.repository.DeleteProduct(productID)
 	if err != nil {
 		return err
@@ -107,6 +107,15 @@ func (i *productUseCase) ListProductForUser(page int) ([]models.Products, error)
 		return []models.Products{}, err
 	}
 
+	for j := range productDetails {
+		discountPrice, err := i.repository.GetCatOffer(productDetails[j].CategoryID)
+		if err != nil {
+			return []models.Products{}, errors.New("error in getting category offer")
+		}
+
+		productDetails[j].DiscountPrice = productDetails[j].Price - discountPrice
+	}
+
 	return productDetails, nil
 }
 
@@ -118,19 +127,37 @@ func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserRes
 	if err != nil {
 		return []models.ProductUserResponse{}, err
 	}
+	for j := range product_list {
+		discountPrice, err := i.repository.GetCatOffer(product_list[j].CategoryID)
+		if err != nil {
+			return []models.ProductUserResponse{}, errors.New("error in getting category offer")
+		}
+
+		product_list[j].OfferPrice = product_list[j].Price - discountPrice
+	}
+
 	return product_list, nil
 }
 
-func (i *productUseCase) FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error) {
+func (i *productUseCase) FilterProductsByPrice(Price, pricetwo int) ([]models.ProductUserResponse, error) {
 	if Price <= 0 {
 		return []models.ProductUserResponse{}, errors.New("you provided the negtive price")
 	}
-	if pricetwo <= 0{
-		return []models.ProductUserResponse{},errors.New("you proivded the negtive price")
+	if pricetwo <= 0 {
+		return []models.ProductUserResponse{}, errors.New("you proivded the negtive price")
 	}
-	product_list, err := i.repository.FilterProductsByPrice(Price,pricetwo)
+	product_list, err := i.repository.FilterProductsByPrice(Price, pricetwo)
 	if err != nil {
 		return []models.ProductUserResponse{}, err
+	}
+
+	for j := range product_list {
+		discountPrice, err := i.repository.GetCatOffer(product_list[j].CategoryID)
+		if err != nil {
+			return []models.ProductUserResponse{}, errors.New("error in getting category offer")
+		}
+
+		product_list[j].OfferPrice = product_list[j].Price - discountPrice
 	}
 	return product_list, nil
 }
@@ -143,6 +170,15 @@ func (i *productUseCase) SearchProducts(search models.Search) ([]models.ProductU
 	if err != nil {
 		return nil, err
 	}
+	for j := range product_list {
+		discountPrice, err := i.repository.GetCatOffer(product_list[j].CategoryID)
+		if err != nil {
+			return []models.ProductUserResponse{}, errors.New("error in getting category offer")
+		}
+
+		product_list[j].OfferPrice = product_list[j].Price - discountPrice
+	}
+
 	return product_list, nil
 
 }

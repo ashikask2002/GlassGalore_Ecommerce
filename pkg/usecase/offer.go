@@ -5,6 +5,7 @@ import (
 	"GlassGalore/pkg/repository/interfaces"
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
+	"errors"
 	"fmt"
 )
 
@@ -36,6 +37,9 @@ func (i *offerUseCase) GetCategoryOffer() ([]domain.CategoryOffer, error) {
 }
 
 func (i *offerUseCase) ExpireCategoryOffer(id int) error {
+	if id <= 0 {
+		return errors.New("id must be positive")
+	}
 	if err := i.repo.ExpireCategoryOffer(id); err != nil {
 		return err
 	}

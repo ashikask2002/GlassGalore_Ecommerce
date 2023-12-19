@@ -28,4 +28,5 @@ type UserRepository interface {
 	FindStock(id int) (int, error)
 	RemoveFromCart(cart, inventory int) error
 	UpdateQuantity(id, inv_id, qty int) error
+	GetCatOfferr(id int) (float64, error)
 }

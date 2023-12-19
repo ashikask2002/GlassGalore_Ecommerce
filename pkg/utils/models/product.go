@@ -65,8 +65,9 @@ type ProductUserResponse struct {
 	//Category    string `json:"category" gorm:"unique;not null"`
 	ProductName string `json:"productname"`
 
-	Size  string `json:"size"`
-	Price int    `json:"price"`
+	Size       string `json:"size"`
+	Price      float64    `json:"price"`
+	OfferPrice float64    `json:"offerprice"`
 }
 
 type Search struct {

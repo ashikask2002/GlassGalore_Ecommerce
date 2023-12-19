@@ -16,4 +16,5 @@ type ProductRepository interface {
 	SearchProducts(offset, limit int, search string) ([]models.ProductUserResponse, error)
 	FilterProducts(CategroyID int) ([]models.ProductUserResponse, error)
 	FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error)
+	GetCatOffer(id int) (float64, error)
 }

@@ -67,12 +67,14 @@ func (i *OfferHandler) ExpireCategoryOffer(c *gin.Context) {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "error in converting the id ", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
-
 	}
 	if err = i.OfferUseCase.ExpireCategoryOffer(id); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "error in deleting the category offer", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
+
+	succesRes := response.ClientResponse(http.StatusOK,"successfully expired the offer",nil,nil)
+	c.JSON(http.StatusOK,succesRes)
 
 }

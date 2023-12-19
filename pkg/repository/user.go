@@ -271,3 +271,11 @@ func (i *userDatabase) UpdateQuantity(id, inv_id, qty int) error {
 	return nil
 
 }
+
+func (i *userDatabase) GetCatOfferr(id int) (float64, error) {
+	var disc_price float64
+	if err := i.DB.Raw("select discount_price from category_offers where category_id = ?", id).Scan(&disc_price).Error; err != nil {
+		return 0, err
+	}
+	return disc_price, nil
+}

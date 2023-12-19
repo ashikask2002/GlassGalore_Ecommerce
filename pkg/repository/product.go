@@ -149,7 +149,6 @@ func (i *productRepository) FilterProductsByPrice(Price, pricetwo int) ([]models
 	return product_list, nil
 }
 
-
 func (i *productRepository) SearchProducts(offset, limit int, search string) ([]models.ProductUserResponse, error) {
 	var product_list []models.ProductUserResponse
 
@@ -162,4 +161,12 @@ func (i *productRepository) SearchProducts(offset, limit int, search string) ([]
 	fmt.Println("vzvzvzvzvzvzvzv", product_list)
 
 	return product_list, nil
+}
+
+func (i *productRepository) GetCatOffer(id int) (float64, error) {
+	var disc_price float64
+	if err := i.DB.Raw("select discount_price from category_offers where category_id = ?", id).Scan(&disc_price).Error; err != nil {
+		return 0, err
+	}
+	return disc_price, nil
 }
