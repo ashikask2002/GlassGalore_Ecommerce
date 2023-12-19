@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"GlassGalore/pkg/config"
 	"GlassGalore/pkg/repository/interfaces"
 	usecasee "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
@@ -26,6 +27,8 @@ func NewPaymentUseCase(repo interfaces.OrderRepository, payment interfaces.Payme
 //make payment through razorpay
 
 func (i *paymentUseCaseImpl) MakePaymentRazorPay(userID int, orderID int) (models.CombinedOrderDetails, string, error) {
+	cong, _ := config.LoadConfig()
+
 	fmt.Println("dddddd", orderID)
 	order, err := i.orderRepository.GetOrdersRazor(orderID)
 	if err != nil {
@@ -33,7 +36,7 @@ func (i *paymentUseCaseImpl) MakePaymentRazorPay(userID int, orderID int) (model
 		return models.CombinedOrderDetails{}, "", err
 	}
 
-	client := razorpay.NewClient("rzp_test_5K9ErTOEvk0TLA", "OmjlL1D5Px5CqonGNzyzhFgM")
+	client := razorpay.NewClient(cong.RazorID, cong.KeySecret)
 	fmt.Println("client.................", client)
 
 	data := map[string]interface{}{

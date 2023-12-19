@@ -16,10 +16,12 @@ type Config struct {
 	ACCOUNTSID string `mapstructure:"DB_ACCOUNTSID"`
 	AUTHTOKEN  string `mapstructure:"DB_AUTHTOKEN"`
 	SERVICESID string `mapstructure:"DB_SERVICESID"`
+	RazorID    string `mapstructure:"RAZOR_ID"`
+	KeySecret  string `mapstructure:"kEY_SECRET"`
 }
 
 var envs = []string{
-	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "DB_ACCOUNTSID", "AUTHTOKEN", "DB_SERVICESID",
+	"DB_HOST", "DB_NAME", "DB_USER", "DB_PORT", "DB_PASSWORD", "DB_ACCOUNTSID", "AUTHTOKEN", "DB_SERVICESID","RAZOR_ID","kEY_SECRET",
 }
 
 func LoadConfig() (Config, error) {
