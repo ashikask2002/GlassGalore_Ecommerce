@@ -131,6 +131,15 @@ func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserRes
 	if CategoryID <= 0 {
 		return []models.ProductUserResponse{}, errors.New("you provided the negtive id")
 	}
+
+	exist, err := i.repository.GetIdExist(CategoryID)
+	if err != nil {
+		return []models.ProductUserResponse{}, err
+	}
+	if !exist {
+		return []models.ProductUserResponse{}, errors.New("not exist")
+	}
+
 	product_list, err := i.repository.FilterProducts(CategoryID)
 	if err != nil {
 		return []models.ProductUserResponse{}, err

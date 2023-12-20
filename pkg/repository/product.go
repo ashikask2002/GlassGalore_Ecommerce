@@ -178,3 +178,12 @@ func (i *productRepository) CheckIfProductAlreadyExists(productname string) (boo
 	}
 	return count > 0, nil
 }
+
+func (i *productRepository) GetIdExist(id int) (bool, error) {
+	var count int64
+	err := i.DB.Raw("SELECT COUNT(*) FROM products WHERE category_id = ?", id).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}

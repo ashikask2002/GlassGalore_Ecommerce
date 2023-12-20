@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"regexp"
 	"time"
+	"unicode"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/twilio/twilio-go"
@@ -193,4 +194,13 @@ func (h *helper) GetTimeFromPeriod(timePeriod string) (time.Time, time.Time) {
 
 	return endDate.AddDate(0, 0, -6), endDate
 
+}
+
+func (h *helper) ValidateAlphabets(data string) (bool, error) {
+	for _, char := range data {
+		if !unicode.IsLetter(char) {
+			return false, errors.New("data contains non-alphabetic characters")
+		}
+	}
+	return true, nil
 }

@@ -17,4 +17,5 @@ type Helper interface {
 	IsValidEmail(email string) bool
 	IsValidPIN(pincode string) bool
 	GetTimeFromPeriod(timePeriod string) (time.Time, time.Time)
+	ValidateAlphabets(data string) (bool, error)
 }

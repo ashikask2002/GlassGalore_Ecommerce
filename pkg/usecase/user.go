@@ -133,6 +133,58 @@ func (i *UserUseCase) GetAddresses(id int) ([]domain.Address, error) {
 }
 
 func (i *UserUseCase) AddAddress(id int, address models.AddAddress) error {
+	if address.Name == "" {
+		return errors.New("please provide the name")
+	}
+	if address.HouseName == "" {
+		return errors.New("please provide the housename")
+	}
+	if address.City == "" {
+		return errors.New("please provide the city")
+	}
+	if address.Street == "" {
+		return errors.New("please provide the street")
+	}
+	if address.State == "" {
+		return errors.New("please provide the city")
+	}
+	alpha, errr := i.helper.ValidateAlphabets(address.Name)
+	if errr != nil {
+		return errr
+	}
+	if !alpha {
+		return errr
+	}
+
+	alpha, eror := i.helper.ValidateAlphabets(address.City)
+	if errr != nil {
+		return eror
+	}
+	if !alpha {
+		return eror
+	}
+	alpha, rrr := i.helper.ValidateAlphabets(address.HouseName)
+	if errr != nil {
+		return rrr
+	}
+	if !alpha {
+		return rrr
+	}
+	alpha, errs := i.helper.ValidateAlphabets(address.State)
+	if errr != nil {
+		return errs
+	}
+	if !alpha {
+		return errs
+	}
+
+	alpha, erro := i.helper.ValidateAlphabets(address.Street)
+	if errr != nil {
+		return erro
+	}
+	if !alpha {
+		return erro
+	}
 
 	phone := i.helper.PhoneValidation(address.Phone)
 	if !phone {

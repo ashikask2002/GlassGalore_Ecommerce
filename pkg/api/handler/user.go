@@ -128,7 +128,7 @@ func (i *UserHandler) AddAddress(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-
+	validator.New().Struct(address)
 	if err := i.userUseCase.AddAddress(id.(int), address); err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not added the address", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)

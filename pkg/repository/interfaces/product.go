@@ -15,8 +15,8 @@ type ProductRepository interface {
 	CheckStock(inventory_id int) (int, error)
 	SearchProducts(offset, limit int, search string) ([]models.ProductUserResponse, error)
 	FilterProducts(CategroyID int) ([]models.ProductUserResponse, error)
-	FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error)
+	FilterProductsByPrice(Price, pricetwo int) ([]models.ProductUserResponse, error)
 	GetCatOffer(id int) (float64, error)
-	CheckIfProductAlreadyExists(productname string) (bool,error)
-	
+	CheckIfProductAlreadyExists(productname string) (bool, error)
+	GetIdExist(id int) (bool, error)
 }
