@@ -17,4 +17,6 @@ type ProductRepository interface {
 	FilterProducts(CategroyID int) ([]models.ProductUserResponse, error)
 	FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error)
 	GetCatOffer(id int) (float64, error)
+	CheckIfProductAlreadyExists(productname string) (bool,error)
+	
 }

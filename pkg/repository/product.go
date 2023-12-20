@@ -170,3 +170,11 @@ func (i *productRepository) GetCatOffer(id int) (float64, error) {
 	}
 	return disc_price, nil
 }
+func (i *productRepository) CheckIfProductAlreadyExists(productname string) (bool, error) {
+	var count int64
+	err := i.DB.Raw("SELECT COUNT(*) FROM products WHERE product_name = ?", productname).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}

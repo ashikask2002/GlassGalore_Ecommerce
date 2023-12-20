@@ -286,3 +286,11 @@ func (i *orderRepository) UpdateQuantityProduct(orderProducts []models.OrderProd
 	}
 	return nil
 }
+func (i *orderRepository) CheckOrderExist(id int) (bool, error) {
+	var count int
+	err := i.DB.Raw("select count(*) from orders where id = ?", id).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}

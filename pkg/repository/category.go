@@ -106,3 +106,12 @@ func (c *categoryRepository) GetCategory() ([]domain.Category, error) {
 
 	return model, nil
 }
+
+func (i *categoryRepository) CheckCategoryExist(catname string) (bool, error) {
+	var count int
+	err := i.DB.Raw("select count(*) from categories where category = ?", catname).Scan(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}

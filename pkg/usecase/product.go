@@ -38,6 +38,14 @@ func (i *productUseCase) AddProduct(Products models.AddProducts) (domain.Product
 	if Products.Stock <= 0 {
 		return domain.Products{}, errors.New("stock must be positive")
 	}
+
+	exists, err := i.repository.CheckIfProductAlreadyExists(Products.ProductName)
+	if err != nil {
+		return domain.Products{}, err
+	}
+	if exists {
+		return domain.Products{}, errors.New("product is already exist")
+	}
 	productResponse, err := i.repository.AddProduct(Products)
 	if err != nil {
 		return domain.Products{}, err

@@ -21,6 +21,14 @@ func (Cat *categoryUseCase) AddCategory(category domain.Category) (domain.Catego
 	if category.Category == "" {
 		return domain.Category{}, errors.New("category not be empty")
 	}
+
+	exist, err := Cat.repository.CheckCategoryExist(category.Category)
+	if err != nil {
+		return domain.Category{},err
+	}
+	if exist {
+		return domain.Category{},errors.New("category is already exist")
+	}
 	productResponse, err := Cat.repository.AddCategory(category)
 
 	if err != nil {

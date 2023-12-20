@@ -18,6 +18,9 @@ func NewCouponUseCase(repo interfaces.CouponRepository) *couponUseCase {
 }
 
 func (i *couponUseCase) AddCoupon(coupon models.Coupons) error {
+	if coupon.Coupon == "" {
+		return errors.New("name must have something")
+	}
 	if coupon.DiscountRate < 0 {
 		return errors.New("price must be positive")
 	}

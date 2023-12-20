@@ -22,7 +22,7 @@ func NewOfferRepository(DB *gorm.DB) interfaces.OfferRepository {
 }
 
 func (i *OfferRepository) AddCategoryOffer(categoryoffer models.CategorytOfferResp) error {
-	fmt.Println("nnnnnnnnnnnnnnnnn", categoryoffer)
+
 	var count int
 	err := i.DB.Raw("select count(*) from category_offers where offer_name = ? and category_id = ?", categoryoffer.OfferName, categoryoffer.CategoryID).Scan(&count).Error
 	if err != nil {

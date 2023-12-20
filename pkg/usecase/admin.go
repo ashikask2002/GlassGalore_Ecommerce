@@ -171,6 +171,12 @@ func (i *adminUseCase) DashBoard() (models.CompleteAdminDashboard, error) {
 }
 
 func (i *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport, error) {
+	if timePeriod == "" {
+		return models.SalesReport{}, errors.New("must have to provide something")
+	}
+	if timePeriod != "week" && timePeriod != "month" && timePeriod != "year" {
+		return models.SalesReport{}, errors.New("provided timeperiod is not correct (week, month, year ) are only available")
+	}
 	startTime, endTime := i.helper.GetTimeFromPeriod(timePeriod)
 	salesReport, err := i.adminRepository.FilteredSalesReport(startTime, endTime)
 

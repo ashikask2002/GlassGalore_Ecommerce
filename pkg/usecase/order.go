@@ -225,6 +225,13 @@ func (i *orderUseCase) OrdersStatus(orderID string) error {
 	if orderId <= 0 {
 		return errors.New("order id must be positive")
 	}
+	exist, err := i.orderRepository.CheckOrderExist(orderId)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return errors.New("this order is not exist")
+	}
 	status, err := i.orderRepository.CheckOrderStatusByID(orderId)
 	if err != nil {
 		return err

@@ -6,7 +6,6 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
-	"fmt"
 )
 
 type offerUseCase struct {
@@ -20,9 +19,19 @@ func NewOfferUseCase(repo interfaces.OfferRepository) services.OfferUseCase {
 }
 
 func (i *offerUseCase) AddCategoryOffer(categoryOffer models.CategorytOfferResp) error {
-	fmt.Println("eeeeeeeeeeeeeeeeee", categoryOffer)
+
+	if categoryOffer.CategoryID <= 0 {
+		return errors.New("id must be positive")
+	}
+
+	if categoryOffer.DiscountPrice <= 0 {
+		return errors.New("discount price must be positive")
+	}
+	if categoryOffer.OfferName == "" {
+		return errors.New("not allowed empty name")
+	}
 	if err := i.repo.AddCategoryOffer(categoryOffer); err != nil {
-		fmt.Println("aaaaaaaaaaa", err)
+
 		return err
 	}
 	return nil
