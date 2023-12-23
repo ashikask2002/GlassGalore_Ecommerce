@@ -27,4 +27,5 @@ type OrderRepository interface {
 	GetProductDetailsFromOrder(orderID int) ([]models.OrderProducts, error)
 	UpdateQuantityProduct(orderProducts []models.OrderProducts) error
 	CheckOrderExist(id int) (bool, error)
+	GetItemsByOrderID(orderId int) ([]models.ItemDetails,error)
 }

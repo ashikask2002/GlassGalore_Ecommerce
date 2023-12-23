@@ -144,7 +144,7 @@ func (i *adminRepository) DashBoardProductDetails() (models.DashBoardProduct, er
 		return models.DashBoardProduct{}, err
 	}
 
-	err = i.DB.Raw("select * from products where stock <= 0").Scan(&productDetails.OutOfStockProduct).Error
+	err = i.DB.Raw("select count(*) from products where stock <= 0").Scan(&productDetails.OutOfStockProduct).Error
 	if err != nil {
 		return models.DashBoardProduct{}, err
 	}

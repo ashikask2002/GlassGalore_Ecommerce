@@ -294,3 +294,26 @@ func (i *orderRepository) CheckOrderExist(id int) (bool, error) {
 	}
 	return count > 0, nil
 }
+func (i *orderRepository) GetItemsByOrderID(orderid int) ([]models.ItemDetails,error){
+	var items []models.ItemDetails
+
+	query := `
+	SELECT
+    i.product_name,
+    oi.quantity,
+    i.price,
+    oi.total_price
+FROM
+    orders o
+JOIN
+    order_items oi ON o.id = oi.order_id
+JOIN
+    inventories i ON oi.inventory_id = i.id
+WHERE
+    o.id = ?;
+	`
+	if err := i.DB.Raw(query, orderid).Scan(&items).Error;err != nil {
+		return []models.ItemDetails{}, err
+	}
+	return items, nil
+}

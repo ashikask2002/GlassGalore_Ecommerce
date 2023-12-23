@@ -79,7 +79,7 @@ func (helper *helper) GenerateTokenAdmin(admin models.AdminDetailsResponse) (str
 		//Email: admin.Email,
 		Role: "admin",
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Minute * 30).Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 50).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 	}

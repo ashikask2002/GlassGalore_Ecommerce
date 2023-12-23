@@ -71,6 +71,7 @@ func UserRoutes(engine *gin.RouterGroup,
 		{
 			checkout.GET("", cartHandler.CheckOut)
 			checkout.POST("/order", orderHandler.OrderItemsFromCart)
+			checkout.GET("/invoice",orderHandler.PrintInvoice )
 		}
 
 		products := engine.Group("/products")

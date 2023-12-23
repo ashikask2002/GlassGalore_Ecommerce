@@ -276,7 +276,7 @@ func (i *UserHandler) RemoveFromCart(c *gin.Context) {
 		return
 	}
 
-	ProductID, err := strconv.Atoi(c.Query("inventory_id"))
+	ProductID, err := strconv.Atoi(c.Query("product_id"))
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "check parameters properly", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
