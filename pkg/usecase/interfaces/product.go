@@ -14,4 +14,5 @@ type ProductUseCase interface {
 	SearchProducts(search models.Search) ([]models.ProductUserResponse, error)
 	FilterProducts(categoryID int) ([]models.ProductUserResponse, error)
 	FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error)
+	Rating(id,productid int, rating float64) error
 }

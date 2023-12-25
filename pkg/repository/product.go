@@ -187,3 +187,13 @@ func (i *productRepository) GetIdExist(id int) (bool, error) {
 	}
 	return count > 0, nil
 }
+
+func (i *productRepository) Rating(id, prductid int, rating float64) error {
+	result := i.DB.Exec("INSERT INTO ratings (user_id, product_id, rating) VALUES (?, ?, ?)", id, prductid, rating)
+
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}

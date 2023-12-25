@@ -15,3 +15,10 @@ type Products struct {
 	Stock       int      `json:"stock"`
 	Price       int      `json:"price"`
 }
+
+type Rating struct {
+	ID         uint    `json:"id" gorm:"primaryKey"`
+	UserID     int     `json:"user_id"`
+	ProductID  int     `json:"product_id"`
+	Rating     float64 `json:"rating"`
+}

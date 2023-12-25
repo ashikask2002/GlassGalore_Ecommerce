@@ -217,3 +217,33 @@ func (i *ProductHandler) SearchProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 
 }
+
+func(i *ProductHandler) Rating(c *gin.Context){
+  idstring, _ := c.Get("id")
+  id, _ := idstring.(int)
+  productId := c.Query("product_id")
+  productIdInt, err := strconv.Atoi(productId) 
+  if err != nil {
+	errorRes := response.ClientResponse(http.StatusBadRequest,"error in converting id",nil,err.Error())
+	c.JSON(http.StatusBadRequest,errorRes)
+	return
+  }
+
+  rating := c.Query("rating")
+  ratingfloat, err := strconv.ParseFloat(rating,64)
+  if err != nil {
+	errorRes := response.ClientResponse(http.StatusBadRequest,"error in converting rating",nil,err.Error())
+	c.JSON(http.StatusBadRequest,errorRes)
+	return
+  }
+
+   err = i.ProductUseCase.Rating(id, productIdInt, ratingfloat)
+  if err != nil {
+	errorRes := response.ClientResponse(http.StatusBadRequest,"error in rating the product",nil,err.Error())
+	c.JSON(http.StatusBadRequest,errorRes)
+	return
+  }
+
+  succesRes := response.ClientResponse(http.StatusOK,"succesfully added the rating",nil,nil)
+  c.JSON(http.StatusOK,succesRes)
+}

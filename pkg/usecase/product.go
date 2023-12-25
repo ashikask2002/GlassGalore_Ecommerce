@@ -199,3 +199,11 @@ func (i *productUseCase) SearchProducts(search models.Search) ([]models.ProductU
 	return product_list, nil
 
 }
+
+func (i *productUseCase) Rating(id,productid int,rating float64) error{
+	err := i.repository.Rating(id,productid,rating)
+	if err != nil{
+		return err
+	}
+	return nil
+}
