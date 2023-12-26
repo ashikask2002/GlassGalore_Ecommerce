@@ -4,6 +4,7 @@ import (
 	"GlassGalore/pkg/domain"
 	"GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
+	"database/sql"
 	"errors"
 	"fmt"
 	"strconv"
@@ -196,4 +197,13 @@ func (i *productRepository) Rating(id, prductid int, rating float64) error {
 	}
 
 	return nil
+}
+
+func (i *productRepository) FindRating(id int) (float64, error) {
+	var rating sql.NullFloat64
+	err := i.DB.Raw("SELECT COALESCE(AVG(CASE WHEN rating IS NOT NULL THEN rating ELSE 0 END), 0) FROM ratings WHERE product_id = ?", id).Scan(&rating).Error
+	if err != nil {
+		return 0, err
+	}
+	return rating.Float64, nil
 }

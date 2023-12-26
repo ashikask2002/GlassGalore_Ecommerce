@@ -124,6 +124,14 @@ func (i *productUseCase) ListProductForUser(page int) ([]models.Products, error)
 		productDetails[j].DiscountPrice = productDetails[j].Price - discountPrice
 	}
 
+	for k := range productDetails {
+		productRating, err := i.repository.FindRating(int(productDetails[k].ID))
+		if err != nil {
+			return []models.Products{}, errors.New("error in getting the rating")
+		}
+		productDetails[k].Rating = productRating
+	}
+
 	return productDetails, nil
 }
 
@@ -200,9 +208,9 @@ func (i *productUseCase) SearchProducts(search models.Search) ([]models.ProductU
 
 }
 
-func (i *productUseCase) Rating(id,productid int,rating float64) error{
-	err := i.repository.Rating(id,productid,rating)
-	if err != nil{
+func (i *productUseCase) Rating(id, productid int, rating float64) error {
+	err := i.repository.Rating(id, productid, rating)
+	if err != nil {
 		return err
 	}
 	return nil

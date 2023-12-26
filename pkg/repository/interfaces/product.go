@@ -19,5 +19,6 @@ type ProductRepository interface {
 	GetCatOffer(id int) (float64, error)
 	CheckIfProductAlreadyExists(productname string) (bool, error)
 	GetIdExist(id int) (bool, error)
-	Rating(id,productid int, rating float64) error
+	Rating(id, productid int, rating float64) error
+	FindRating(id int) (float64, error)
 }
