@@ -10,6 +10,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/360EntSecGroup-Skylar/excelize"
 	"github.com/golang-jwt/jwt"
 	"github.com/twilio/twilio-go"
 	"golang.org/x/crypto/bcrypt"
@@ -203,4 +204,28 @@ func (h *helper) ValidateAlphabets(data string) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+func ConvertToExel(sales []models.OrderDetailsAdmin) (*excelize.File, error) {
+
+	filename := "salesReport/sales_report.xlsx"
+	file := excelize.NewFile()
+
+	file.SetCellValue("Sheet1", "A1", "Item")
+	file.SetCellValue("Sheet1", "B1", "Total Amount Sold")
+
+	for i, sale := range sales {
+		col1 := fmt.Sprintf("A%d", i+1)
+		col2 := fmt.Sprintf("B%d", i+1)
+
+		file.SetCellValue("Sheet1", col1, sale.ProductName)
+		file.SetCellValue("Sheet1", col2, sale.TotalAmount)
+
+	}
+
+	if err := file.SaveAs(filename); err != nil {
+		return nil, err
+	}
+
+	return file, nil
 }

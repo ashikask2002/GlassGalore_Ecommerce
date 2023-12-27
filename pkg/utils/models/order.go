@@ -57,3 +57,7 @@ type OrderProducts struct {
 	ProductId string `json:"id"`
 	Stock     int    `json:"stock"`
 }
+type OrderDetailsAdmin struct {
+	TotalAmount float64 `gorm:"column:total_amount"`
+	ProductName string  `gorm:"column:product_name"`
+}

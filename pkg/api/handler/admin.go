@@ -197,6 +197,16 @@ func (i *AdminHandler) Salesreport(c *gin.Context) {
 		return
 	}
 
+	c.Header("Content-Disposition", "attachment; filename=sales_report.pdf")
+	c.Header("Content-Type", "application/pdf")
+
+	err = salesReport.Output(c.Writer)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadGateway, "error in printing invoice", nil, err.Error())
+		c.JSON(http.StatusBadGateway, errorRes)
+		return
+	}
+
 	succesRes := response.ClientResponse(http.StatusOK, "successfully got the sales report", salesReport, nil)
 	c.JSON(http.StatusOK, succesRes)
 }

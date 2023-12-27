@@ -3,6 +3,8 @@ package interfaces
 import (
 	"GlassGalore/pkg/domain"
 	"GlassGalore/pkg/utils/models"
+
+	"github.com/jung-kurt/gofpdf"
 )
 
 type AdminUseCase interface {
@@ -13,6 +15,6 @@ type AdminUseCase interface {
 	NewPaymentMethod(id string) error
 	ListPaymentMethods() ([]domain.PaymentMethod, error)
 	DeletePaymentMethod(id int) error
-	DashBoard()(models.CompleteAdminDashboard,error)
-	FilteredSalesReport(timePeriod string) (models.SalesReport, error)
+	DashBoard() (models.CompleteAdminDashboard, error)
+	FilteredSalesReport(timePeriod string) (*gofpdf.Fpdf, error)
 }

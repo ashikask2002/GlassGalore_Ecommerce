@@ -5,11 +5,13 @@ import (
 	interfaces "GlassGalore/pkg/repository/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
+	"fmt"
 
 	helper_interface "GlassGalore/pkg/helper/interfaces"
 	services "GlassGalore/pkg/usecase/interfaces"
 
 	"github.com/jinzhu/copier"
+	"github.com/jung-kurt/gofpdf"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -170,18 +172,72 @@ func (i *adminUseCase) DashBoard() (models.CompleteAdminDashboard, error) {
 	}, nil
 }
 
-func (i *adminUseCase) FilteredSalesReport(timePeriod string) (models.SalesReport, error) {
+func (i *adminUseCase) FilteredSalesReport(timePeriod string) (*gofpdf.Fpdf, error) {
+
 	if timePeriod == "" {
-		return models.SalesReport{}, errors.New("must have to provide something")
+		return nil, errors.New("must have to provide something")
 	}
 	if timePeriod != "week" && timePeriod != "month" && timePeriod != "year" {
-		return models.SalesReport{}, errors.New("provided timeperiod is not correct (week, month, year ) are only available")
+		return nil, errors.New("provided timeperiod is not correct (week, month, year ) are only available")
 	}
 	startTime, endTime := i.helper.GetTimeFromPeriod(timePeriod)
 	salesReport, err := i.adminRepository.FilteredSalesReport(startTime, endTime)
 
 	if err != nil {
-		return models.SalesReport{}, err
+		return nil, err
 	}
-	return salesReport, nil
+
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+
+	pdf.SetFont("Arial", "B", 16)
+	pdf.Cell(0, 10, "Sales Report")
+
+	// Set Y position for the first line
+	y := pdf.GetY()
+
+	// Output the sales report data in the PDF
+	pdf.Ln(10)
+	pdf.Ln(10)
+	pdf.SetX(10)
+	pdf.SetY(y + 10)
+	pdf.Cell(0, 10, "Total Sales: "+fmt.Sprintf("%.2f", salesReport.TotalSales))
+
+	pdf.Ln(10)
+	pdf.SetX(10)
+	pdf.SetY(y + 20)
+	pdf.Cell(0, 10, "Total Orders: "+fmt.Sprintf("%d", salesReport.TotalOrders))
+
+	pdf.Ln(10)
+	pdf.SetX(10)
+	pdf.SetY(y + 30)
+	pdf.Cell(0, 10, "Completed Orders: "+fmt.Sprintf("%d", salesReport.CompletedOrders))
+
+	pdf.Ln(10)
+	pdf.SetX(10)
+	pdf.SetY(y + 40)
+	pdf.Cell(0, 10, "Pending Orders: "+fmt.Sprintf("%d", salesReport.PendingOrders))
+
+	pdf.Ln(10)
+	pdf.SetX(10)
+	pdf.SetY(y + 50)
+	pdf.Cell(0, 10, "Returned Orders: "+fmt.Sprintf("%d", salesReport.ReturnedOrders))
+
+	pdf.Ln(10)
+	pdf.SetX(10)
+	pdf.SetY(y + 60)
+	pdf.Cell(0, 10, "Cancelled Orders: "+fmt.Sprintf("%d", salesReport.CancelledOrders))
+
+	pdf.Ln(10)
+	pdf.SetX(10)
+	pdf.SetY(y + 70)
+	pdf.Cell(0, 10, "Trending Product: "+salesReport.TrendingProduct)
+
+	// Save the PDF file
+	// err = pdf.OutputFileAndClose("sales_report.pdf")
+	// if err != nil {
+	// 	return pdf, err
+	// }
+
+	return pdf, nil
 }
