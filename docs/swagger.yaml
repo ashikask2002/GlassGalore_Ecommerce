@@ -1,0 +1,16 @@
+info:
+  contact:
+    name: API Support
+  description: fgdh
+  title: Go + Gin Mobile-Mart
+paths: {}
+securityDefinitions:
+  BearerTokenAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+  Refreshtoken:
+    in: header
+    name: Refreshtoken
+    type: apiKey
+swagger: "2.0"

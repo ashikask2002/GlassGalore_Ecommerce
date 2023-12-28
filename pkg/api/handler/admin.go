@@ -24,6 +24,7 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 	}
 }
 
+
 func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 
 	var adminDetails models.AdminLogin

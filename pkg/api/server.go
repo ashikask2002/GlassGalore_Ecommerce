@@ -6,6 +6,8 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type ServerHTTP struct {
@@ -28,6 +30,9 @@ func NewServerHTTP(userHandler *handler.UserHandler,
 	engine.Use(gin.Logger())
 
 	engine.LoadHTMLGlob("template/*")
+
+	// use ginSwagger middleware to serve the API docs
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	engine.GET("/validate-token", adminHandler.ValidateRefreshTokenAndCreateNewAccess)
 

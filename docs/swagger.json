@@ -1,0 +1,23 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "fgdh",
+        "title": "Go + Gin Mobile-Mart",
+        "contact": {
+            "name": "API Support"
+        }
+    },
+    "paths": {},
+    "securityDefinitions": {
+        "BearerTokenAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        },
+        "Refreshtoken": {
+            "type": "apiKey",
+            "name": "Refreshtoken",
+            "in": "header"
+        }
+    }
+}
