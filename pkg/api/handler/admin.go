@@ -184,7 +184,7 @@ func (i *AdminHandler) DashBoard(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	succesRes := response.ClientResponse(http.StatusOK, "successfully got all details of dashboard", dashboard, nil)
+	succesRes := response.ClientResponse(http.StatusOK, "successfully got all details of the  dashboard", dashboard, nil)
 	c.JSON(http.StatusOK, succesRes)
 }
 
