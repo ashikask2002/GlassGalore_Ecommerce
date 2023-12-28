@@ -207,3 +207,12 @@ func (i *productRepository) FindRating(id int) (float64, error) {
 	}
 	return rating.Float64, nil
 }
+
+func (i *productRepository) UpdateProductImage(productID int, url string) error {
+	err := i.DB.Exec("insert into images (product_id,url) values($1,$2) returning *", productID, url).Error
+	if err != nil {
+		return errors.New("error while insert image to database")
+	}
+	return nil
+
+}

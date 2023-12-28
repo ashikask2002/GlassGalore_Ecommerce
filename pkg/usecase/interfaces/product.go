@@ -3,6 +3,7 @@ package interfaces
 import (
 	"GlassGalore/pkg/domain"
 	"GlassGalore/pkg/utils/models"
+	"mime/multipart"
 )
 
 type ProductUseCase interface {
@@ -15,4 +16,5 @@ type ProductUseCase interface {
 	FilterProducts(categoryID int) ([]models.ProductUserResponse, error)
 	FilterProductsByPrice(Price,pricetwo int) ([]models.ProductUserResponse, error)
 	Rating(id,productid int, rating float64) error
+	UpdateProductImage(id int,file *multipart.FileHeader) error
 }

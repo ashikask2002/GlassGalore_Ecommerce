@@ -21,4 +21,5 @@ type ProductRepository interface {
 	GetIdExist(id int) (bool, error)
 	Rating(id, productid int, rating float64) error
 	FindRating(id int) (float64, error)
+	UpdateProductImage(productID int,url string) error
 }

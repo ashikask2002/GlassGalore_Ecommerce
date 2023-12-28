@@ -17,8 +17,14 @@ type Products struct {
 }
 
 type Rating struct {
-	ID         uint    `json:"id" gorm:"primaryKey"`
-	UserID     int     `json:"user_id"`
-	ProductID  int     `json:"product_id"`
-	Rating     float64 `json:"rating"`
+	ID        uint    `json:"id" gorm:"primaryKey"`
+	UserID    int     `json:"user_id"`
+	ProductID int     `json:"product_id"`
+	Rating    float64 `json:"rating"`
+}
+
+type Image struct {
+	ID        uint   `json:"id" gorm:"primaryKey"`
+	ProductId uint   `json:"product_id"`
+	Url       string `JSON:"url" `
 }

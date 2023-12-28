@@ -2,9 +2,11 @@ package usecase
 
 import (
 	"GlassGalore/pkg/domain"
+	"GlassGalore/pkg/helper"
 	helper_interface "GlassGalore/pkg/helper/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"errors"
+	"mime/multipart"
 
 	repos "GlassGalore/pkg/repository/interfaces"
 	use "GlassGalore/pkg/usecase/interfaces"
@@ -210,6 +212,18 @@ func (i *productUseCase) SearchProducts(search models.Search) ([]models.ProductU
 
 func (i *productUseCase) Rating(id, productid int, rating float64) error {
 	err := i.repository.Rating(id, productid, rating)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (i *productUseCase) UpdateProductImage(id int,file *multipart.FileHeader) error{
+	url, err := helper.AddImageToS3(file)
+	if err != nil {
+		return err
+	}
+	err = i.repository.UpdateProductImage(id,url)
 	if err != nil {
 		return err
 	}
