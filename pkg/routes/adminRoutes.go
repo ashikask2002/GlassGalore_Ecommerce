@@ -45,7 +45,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 			payment.GET("", adminHandler.ListPaymentMethods)
 			payment.DELETE("", adminHandler.DeletePaymentMethod)
 		}
-
+                                         
 		orders := engine.Group("/orders")
 		{
 			orders.GET("", orderHandler.GetAdminOrders)

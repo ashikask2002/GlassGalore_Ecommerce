@@ -4,6 +4,7 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"GlassGalore/pkg/utils/response"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -80,7 +81,7 @@ func (i *ProductHandler) EditProductDetails(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	
+
 	var model models.EditProductDetails
 
 	err = c.BindJSON(&model)
@@ -168,7 +169,7 @@ func (i *ProductHandler) FilterProductsByPrice(c *gin.Context) {
 		return
 	}
 
-	productList, err := i.ProductUseCase.FilterProductsByPrice(PriceInt,PricetwoInt)
+	productList, err := i.ProductUseCase.FilterProductsByPrice(PriceInt, PricetwoInt)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "cannot retrieve the productlist", nil, err.Error())
 		c.JSON(http.StatusBadRequest, errorRes)
@@ -203,8 +204,8 @@ func (i *ProductHandler) SearchProducts(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-    search.Page = page
-    search.Limit = limit
+	search.Page = page
+	search.Limit = limit
 
 	productList, err := i.ProductUseCase.SearchProducts(search)
 	if err != nil {
@@ -218,70 +219,71 @@ func (i *ProductHandler) SearchProducts(c *gin.Context) {
 
 }
 
-func(i *ProductHandler) Rating(c *gin.Context){
-  idstring, _ := c.Get("id")
-  id, _ := idstring.(int)
-  productId := c.Query("product_id")
-  productIdInt, err := strconv.Atoi(productId) 
-  if err != nil {
-	errorRes := response.ClientResponse(http.StatusBadRequest,"error in converting id",nil,err.Error())
-	c.JSON(http.StatusBadRequest,errorRes)
-	return
-  }
-
-  rating := c.Query("rating")
-  ratingfloat, err := strconv.ParseFloat(rating,64)
-  if err != nil {
-	errorRes := response.ClientResponse(http.StatusBadRequest,"error in converting rating",nil,err.Error())
-	c.JSON(http.StatusBadRequest,errorRes)
-	return
-  }
-
-   err = i.ProductUseCase.Rating(id, productIdInt, ratingfloat)
-  if err != nil {
-	errorRes := response.ClientResponse(http.StatusBadRequest,"error in rating the product",nil,err.Error())
-	c.JSON(http.StatusBadRequest,errorRes)
-	return
-  }
-
-  succesRes := response.ClientResponse(http.StatusOK,"succesfully added the rating",nil,nil)
-  c.JSON(http.StatusOK,succesRes)
-}
-
-func(i *ProductHandler) UploadImage(c *gin.Context){
-   productid := c.Query("product_id")
-
-   productIdInt, err := strconv.Atoi(productid)
-   if err != nil {
-	errorRes := response.ClientResponse(http.StatusBadRequest,"error in converting id",nil,err.Error())
-	c.JSON(http.StatusBadRequest,errorRes)
-	return
-   }
-
-   form, err := c.MultipartForm()
-   if err != nil {
-	errorRes := response.ClientResponse(http.StatusBadRequest,"retreiving images from form error",nil,err.Error())
-	c.JSON(http.StatusBadRequest,errorRes)
-	return
-   }
-
-   files := form.File["files"]
-   if len(files) == 0{
-	errorRes := response.ClientResponse(http.StatusBadRequest,"no files are provided",nil,err.Error())
-	c.JSON(http.StatusBadRequest,errorRes)
-	return
-   }
-
-   for _, file := range files{
-	err := i.ProductUseCase.UpdateProductImage(productIdInt,file)
+func (i *ProductHandler) Rating(c *gin.Context) {
+	idstring, _ := c.Get("id")
+	id, _ := idstring.(int)
+	productId := c.Query("product_id")
+	productIdInt, err := strconv.Atoi(productId)
 	if err != nil {
-		errorRes := response.ClientResponse(http.StatusBadRequest,"could not change one or more images",nil,err.Error())
-		c.JSON(http.StatusBadRequest,errorRes)
+		errorRes := response.ClientResponse(http.StatusBadRequest, "error in converting id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-   }
-  
-   succesRes := response.ClientResponse(http.StatusOK,"succesfully added the images",nil,nil)
-   c.JSON(http.StatusOK,succesRes)
-   
+
+	rating := c.Query("rating")
+	ratingfloat, err := strconv.ParseFloat(rating, 64)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "error in converting rating", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	err = i.ProductUseCase.Rating(id, productIdInt, ratingfloat)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "error in rating the product", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	succesRes := response.ClientResponse(http.StatusOK, "succesfully added the rating", nil, nil)
+	c.JSON(http.StatusOK, succesRes)
+}
+
+func (i *ProductHandler) UploadImage(c *gin.Context) {
+	productid := c.Query("product_id")
+
+	productIdInt, err := strconv.Atoi(productid)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "error in converting id", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	form, err := c.MultipartForm()
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "retreiving images from form error", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	files := form.File["files"]
+	if len(files) == 0 {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "no files are provided", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+	fmt.Println("njjjjjjjjjjjjjjjjjjj", files)
+
+	for _, file := range files {
+		err := i.ProductUseCase.UpdateProductImage(productIdInt, file)
+		if err != nil {
+			errorRes := response.ClientResponse(http.StatusBadRequest, "could not change one or more images", nil, err.Error())
+			c.JSON(http.StatusBadRequest, errorRes)
+			return
+		}
+	}
+
+	succesRes := response.ClientResponse(http.StatusOK, "succesfully added the images", nil, nil)
+	c.JSON(http.StatusOK, succesRes)
+
 }

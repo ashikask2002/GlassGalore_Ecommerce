@@ -283,7 +283,7 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 	}
 	// Create an S3 uploader with the session and default options
 	uploader := s3manager.NewUploader(sess)
-	BucketName := "zhooze"
+	BucketName := "glassgalore"
 	//upload data(video or image)
 	_, err = uploader.Upload(&s3manager.UploadInput{
 		Bucket:      aws.String(BucketName),
