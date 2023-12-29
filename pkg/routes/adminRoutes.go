@@ -31,11 +31,13 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 		inventorymanagement := engine.Group("/products")
 		{
 			inventorymanagement.POST("", inventoryHandler.AddProduct)
+			inventorymanagement.GET("", inventoryHandler.LisProductforAdmin)
+
 			inventorymanagement.DELETE("", inventoryHandler.DeleteProduct)
 			inventorymanagement.PUT("/details", inventoryHandler.EditProductDetails)
 
 			inventorymanagement.PUT("/:id/stock", inventoryHandler.UpdateProduct)
-			inventorymanagement.POST("/upload_image",inventoryHandler.UploadImage)
+			inventorymanagement.POST("/upload_image", inventoryHandler.UploadImage)
 
 		}
 
@@ -45,7 +47,7 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 			payment.GET("", adminHandler.ListPaymentMethods)
 			payment.DELETE("", adminHandler.DeletePaymentMethod)
 		}
-                                         
+
 		orders := engine.Group("/orders")
 		{
 			orders.GET("", orderHandler.GetAdminOrders)
@@ -67,9 +69,9 @@ func AdminRoutes(engine *gin.RouterGroup, adminHandler *handler.AdminHandler, ca
 
 		offer := engine.Group("/offers")
 		{
-			offer.POST("",offerHandler.AddCategoryOffer)
-			offer.GET("",offerHandler.GetCategoryOffer)
-			offer.DELETE("",offerHandler.ExpireCategoryOffer)
+			offer.POST("", offerHandler.AddCategoryOffer)
+			offer.GET("", offerHandler.GetCategoryOffer)
+			offer.DELETE("", offerHandler.ExpireCategoryOffer)
 		}
 
 	}

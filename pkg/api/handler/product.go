@@ -4,7 +4,6 @@ import (
 	services "GlassGalore/pkg/usecase/interfaces"
 	"GlassGalore/pkg/utils/models"
 	"GlassGalore/pkg/utils/response"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -118,6 +117,25 @@ func (i *ProductHandler) ListProductForUser(c *gin.Context) {
 	// 	c.JSON(http.StatusForbidden, errorRes)
 	// 	return
 	// }
+	products, err := i.ProductUseCase.ListProductForUser(page)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
+	successRes := response.ClientResponse(http.StatusOK, "successfully retrieved all records", products, nil)
+	c.JSON(http.StatusOK, successRes)
+}
+func (i *ProductHandler) LisProductforAdmin(c *gin.Context) {
+	pageStr := c.Query("page")
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		errorRes := response.ClientResponse(http.StatusBadRequest, "page number not in right format", nil, err.Error())
+		c.JSON(http.StatusBadRequest, errorRes)
+		return
+	}
+
 	products, err := i.ProductUseCase.ListProductForUser(page)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
@@ -272,7 +290,6 @@ func (i *ProductHandler) UploadImage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	fmt.Println("njjjjjjjjjjjjjjjjjjj", files)
 
 	for _, file := range files {
 		err := i.ProductUseCase.UpdateProductImage(productIdInt, file)
