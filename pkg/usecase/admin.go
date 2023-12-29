@@ -173,29 +173,28 @@ func (i *adminUseCase) DashBoard() (models.CompleteAdminDashboard, error) {
 }
 
 func (i *adminUseCase) FilteredSalesReport(timePeriod string) (*gofpdf.Fpdf, error) {
-
 	if timePeriod == "" {
 		return nil, errors.New("must have to provide something")
 	}
 	if timePeriod != "week" && timePeriod != "month" && timePeriod != "year" {
-		return nil, errors.New("provided timeperiod is not correct (week, month, year ) are only available")
+		return nil, errors.New("provided time period is not correct (week, month, year) are only available")
 	}
+
 	startTime, endTime := i.helper.GetTimeFromPeriod(timePeriod)
 	salesReport, err := i.adminRepository.FilteredSalesReport(startTime, endTime)
-
 	if err != nil {
 		return nil, err
 	}
 
 	pdf := gofpdf.New("P", "mm", "A4", "")
 	pdf.AddPage()
-
 	pdf.SetFont("Arial", "B", 16)
 	pdf.Cell(0, 10, "Sales Report")
 
-	// Set Y position for the first line
+	// Output the sales report data in the PDF
+	pdf.Ln(10)
+	pdf.Ln(10)
 	y := pdf.GetY()
-
 	// Output the sales report data in the PDF
 	pdf.Ln(10)
 	pdf.Ln(10)

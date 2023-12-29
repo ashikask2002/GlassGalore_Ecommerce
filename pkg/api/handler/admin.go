@@ -24,7 +24,15 @@ func NewAdminHandler(usecase services.AdminUseCase) *AdminHandler {
 	}
 }
 
-
+// @Summary Admin login
+// @Description Authenticate admin user and generate access token
+// @Accept json
+// @Produce json
+// @Tags ADMIN
+// @Param adminDetails body models.AdminLogin true "Admin login details in JSON format"
+// @Success 200 {object} response.Response "Admin authenticated successfully"
+// @Failure 400 {object} response.Response "Invalid request format or authentication failure"
+// @Router /admin/adminlogin [post]
 func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 
 	var adminDetails models.AdminLogin
@@ -47,6 +55,16 @@ func (ad *AdminHandler) LoginHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Get users
+// @Description Retrieve a paginated list of users
+// @Accept json
+// @Produce json
+// @Tags ADMIN
+// @security BearerTokenAuth
+// @Param page query int true "Page number for pagination"
+// @Success 200 {object} response.Response "Successfully retrieved the users"
+// @Failure 400 {object} response.Response "Page number not in the right format or could not retrieve records"
+// @Router /admin/users [get]
 func (ad *AdminHandler) Getusers(c *gin.Context) {
 
 	pageStr := c.Query("page")
@@ -68,6 +86,16 @@ func (ad *AdminHandler) Getusers(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
+// @Summary Block user
+// @Description Block a user by their ID
+// @Accept json
+// @Produce json
+// @Tags ADMIN
+// @security BearerTokenAuth
+// @Param id query string true "User ID to be blocked"
+// @Success 200 {object} response.Response "Successfully blocked the user"
+// @Failure 400 {object} response.Response "User could not be blocked"
+// @Router /admin/users/block [post]
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 
 	id := c.Query("id")
@@ -81,6 +109,16 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Unblock user
+// @Description Unblock a user by their ID
+// @Accept json
+// @Produce json
+// @Tags ADMIN
+// @security BearerTokenAuth
+// @Param id query string true "User ID to be unblocked"
+// @Success 200 {object} response.Response "Successfully unblocked the user"
+// @Failure 400 {object} response.Response "User could not be unblocked"
+// @Router /admin/users/unblock [post]
 func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 	id := c.Query("id")
 	err := ad.adminUseCase.UnBlockUser(id)
@@ -127,6 +165,16 @@ func (a *AdminHandler) ValidateRefreshTokenAndCreateNewAccess(c *gin.Context) {
 	c.JSON(200, newAccessToken)
 }
 
+// @Summary Add new payment method
+// @Description Add a new payment method using JSON payload
+// @Accept json
+// @Produce json
+// @Tags ADMIN PAYMENT MANAGEMENT
+// @security BearerTokenAuth
+// @Param method body models.NewPaymentMethod true "New payment method details in JSON format"
+// @Success 200 {object} response.Response "Successfully added payment method"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or could not add the payment method"
+// @Router /admin/payment-method [post]
 func (i *AdminHandler) NewPaymentMethod(c *gin.Context) {
 	var method models.NewPaymentMethod
 	if err := c.BindJSON(&method); err != nil {
@@ -146,6 +194,16 @@ func (i *AdminHandler) NewPaymentMethod(c *gin.Context) {
 	c.JSON(http.StatusOK, succcesRes)
 
 }
+
+// @Summary List payment methods
+// @Description Retrieve a list of all available payment methods
+// @Accept json
+// @Produce json
+// @Tags ADMIN PAYMENT MANAGEMENT
+// @security BearerTokenAuth
+// @Success 200 {object} response.Response "Successfully retrieved all payment methods"
+// @Failure 400 {object} response.Response "Cannot list the payment methods"
+// @Router /admin/payment-method [get]
 func (i *AdminHandler) ListPaymentMethods(c *gin.Context) {
 	categories, err := i.adminUseCase.ListPaymentMethods()
 	if err != nil {
@@ -157,6 +215,16 @@ func (i *AdminHandler) ListPaymentMethods(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
+// @Summary Delete payment method
+// @Description Delete a payment method by its ID
+// @Accept json
+// @Produce json
+// @Tags ADMIN PAYMENT MANAGEMENT
+// @security BearerTokenAuth
+// @Param id query int true "Payment method ID to be deleted"
+// @Success 200 {object} response.Response "Successfully deleted the payment method"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or error in deleting data"
+// @Router /admin/payment-method [delete]
 func (i *AdminHandler) DeletePaymentMethod(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
@@ -177,6 +245,15 @@ func (i *AdminHandler) DeletePaymentMethod(c *gin.Context) {
 
 }
 
+// @Summary Get dashboard details
+// @Description Retrieve details for the admin dashboard
+// @Accept json
+// @Produce json
+// @Tags ADMIN DASHBOARD
+// @security BearerTokenAuth
+// @Success 200 {object} response.Response "Successfully retrieved dashboard details"
+// @Failure 400 {object} response.Response "Error in getting dashboard details"
+// @Router /admin/dashboard [get]
 func (i *AdminHandler) DashBoard(c *gin.Context) {
 	dashboard, err := i.adminUseCase.DashBoard()
 	if err != nil {
@@ -188,6 +265,17 @@ func (i *AdminHandler) DashBoard(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
+// @Summary Get sales report
+// @Description Retrieve sales report data for a specified time period and download it as a PDF
+// @Accept json
+// @Produce pdf
+// @Tags ADMIN REPORTS
+// @security BearerTokenAuth
+// @Param period query string true "Time period for sales report (e.g., 'monthly', 'quarterly', 'yearly')"
+// @Success 200 {object} response.Response "Successfully retrieved sales report"
+// @Failure 400 {object} response.Response "Error in getting sales report"
+// @Failure 502 {object} response.Response "Error in printing invoice"
+// @Router /admin/salesreport [get]
 func (i *AdminHandler) Salesreport(c *gin.Context) {
 	timePeriod := c.Query("period")
 

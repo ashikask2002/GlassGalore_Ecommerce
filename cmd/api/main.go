@@ -1,31 +1,27 @@
 package main
 
 import (
-	"GlassGalore/docs"
+
 	config "GlassGalore/pkg/config"
 	di "GlassGalore/pkg/di"
+	_ "github.com/swaggo/files"
+	_ "github.com/swaggo/gin-swagger"
+	_ "GlassGalore/cmd/api/docs"
 
 	"log"
 )
 
+// @title Go + Gin E-Commerce API Watch Hive
+// @version 1.0.0
+// @description Watch Hive is an E-commerce platform to purchase Watch
+// @contact.name API Support
+// @securityDefinitions.apikey BearerTokenAuth
+// @in header
+// @name Authorization
+// @host localhost:8080
+// @BasePath /
+// @query.collection.format multi
 func main() {
-
-	//	@title						Go + Gin Mobile-Mart
-	//	@description				fgdh
-	//	@contact.name				API Support
-	//	@securityDefinitions.apikey	BearerTokenAuth
-	//	@in							header
-	//	@name						Authorization
-	//	@securityDefinitions.apikey	Refreshtoken
-	//	@in							header
-	//	@name						Refreshtoken
-	//	@host						localhost:8080
-	//	@BasePath					/
-	//	@query.collection.format	multi
-	// docs.SwaggerInfo.Version = "1.0"
-
-	docs.SwaggerInfo.Title = "hii"
-	docs.SwaggerInfo.Host = "localhost:3000"
 
 	config, configErr := config.LoadConfig()
 	if configErr != nil {

@@ -1,0 +1,242 @@
+definitions:
+  models.AdminLogin:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 20
+        minLength: 8
+        type: string
+    required:
+    - email
+    type: object
+  models.NewPaymentMethod:
+    properties:
+      payment_method:
+        type: string
+    type: object
+  response.Response:
+    properties:
+      data: {}
+      error: {}
+      messege:
+        type: string
+      status_code:
+        type: integer
+    type: object
+info:
+  contact:
+    name: API Support
+  description: Watch Hive is an E-commerce platform to purchase Watch
+  title: Go + Gin E-Commerce API Watch Hive
+  version: 1.0.0
+paths:
+  /admin/adminlogin:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate admin user and generate access token
+      parameters:
+      - description: Admin login details in JSON format
+        in: body
+        name: adminDetails
+        required: true
+        schema:
+          $ref: '#/definitions/models.AdminLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Admin authenticated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Invalid request format or authentication failure
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Admin login
+      tags:
+      - ADMIN
+  /admin/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details for the admin dashboard
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved dashboard details
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in getting dashboard details
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get dashboard details
+      tags:
+      - ADMIN DASHBOARD
+  /admin/payment-method:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a payment method by its ID
+      parameters:
+      - description: Payment method ID to be deleted
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted the payment method
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or error in deleting data
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Delete payment method
+      tags:
+      - ADMIN PAYMENT MANAGEMENT
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all available payment methods
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all payment methods
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Cannot list the payment methods
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: List payment methods
+      tags:
+      - ADMIN PAYMENT MANAGEMENT
+    post:
+      consumes:
+      - application/json
+      description: Add a new payment method using JSON payload
+      parameters:
+      - description: New payment method details in JSON format
+        in: body
+        name: method
+        required: true
+        schema:
+          $ref: '#/definitions/models.NewPaymentMethod'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added payment method
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not add the payment
+            method
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add new payment method
+      tags:
+      - ADMIN PAYMENT MANAGEMENT
+  /admin/users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of users
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the users
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Page number not in the right format or could not retrieve records
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get users
+      tags:
+      - ADMIN
+  /admin/users/block:
+    post:
+      consumes:
+      - application/json
+      description: Block a user by their ID
+      parameters:
+      - description: User ID to be blocked
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully blocked the user
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: User could not be blocked
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Block user
+      tags:
+      - ADMIN
+  /admin/users/unblock:
+    post:
+      consumes:
+      - application/json
+      description: Unblock a user by their ID
+      parameters:
+      - description: User ID to be unblocked
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully unblocked the user
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: User could not be unblocked
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Unblock user
+      tags:
+      - ADMIN
+securityDefinitions:
+  BearerTokenAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
