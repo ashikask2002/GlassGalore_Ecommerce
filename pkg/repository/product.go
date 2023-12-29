@@ -216,3 +216,12 @@ func (i *productRepository) UpdateProductImage(productID int, url string) error 
 	return nil
 
 }
+
+func (i *productRepository) GetImage(productID int) (string, error) {
+	var url string
+	err := i.DB.Raw("select url from images where product_id = ?", productID).Scan(&url).Error
+	if err != nil {
+		return "", err
+	}
+	return url, nil
+}

@@ -46,9 +46,10 @@ type Products struct {
 	ProductName string `json:"product_name"`
 	Size        string `json:"size"`
 	// Stock       int     `json:"stock"`
-	Price         float64 `json:"price"`
-	DiscountPrice float64 `json:"discount_price"`
-	Rating        float64 `josn:"rating"`
+	Price         float64  `json:"price"`
+	DiscountPrice float64  `json:"discount_price"`
+	Rating        float64  `josn:"rating"`
+	Image         string `json:"image"`
 }
 
 type AddToCart struct {

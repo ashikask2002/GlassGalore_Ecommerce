@@ -133,8 +133,18 @@ func (i *productUseCase) ListProductForUser(page int) ([]models.Products, error)
 		}
 		productDetails[k].Rating = productRating
 	}
+	var UpdatedProductDetails []models.Products
 
-	return productDetails, nil
+	for _, p := range productDetails {
+		img, err := i.repository.GetImage(int(p.ID))
+		if err != nil {
+			return nil, err
+		}
+		p.Image = img
+		UpdatedProductDetails = append(UpdatedProductDetails, p)
+	}
+
+	return UpdatedProductDetails, nil
 }
 
 func (i *productUseCase) FilterProducts(CategoryID int) ([]models.ProductUserResponse, error) {
@@ -218,12 +228,12 @@ func (i *productUseCase) Rating(id, productid int, rating float64) error {
 	return nil
 }
 
-func (i *productUseCase) UpdateProductImage(id int,file *multipart.FileHeader) error{
+func (i *productUseCase) UpdateProductImage(id int, file *multipart.FileHeader) error {
 	url, err := helper.AddImageToS3(file)
 	if err != nil {
 		return err
 	}
-	err = i.repository.UpdateProductImage(id,url)
+	err = i.repository.UpdateProductImage(id, url)
 	if err != nil {
 		return err
 	}
