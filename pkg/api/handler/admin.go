@@ -265,17 +265,17 @@ func (i *AdminHandler) DashBoard(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
-// @Summary Get sales report
-// @Description Retrieve sales report data for a specified time period and download it as a PDF
+// FilteredSalesReport retrieves the  current sales report for a specified time period.
+// @Summary Retrieve current sales report for a specific time period
+// @Description Retrieves sales report for the specified time period
+// @Tags ADMIN DASHBOARD
 // @Accept json
-// @Produce pdf
-// @Tags ADMIN REPORTS
+// @Produce json
 // @security BearerTokenAuth
-// @Param period query string true "Time period for sales report (e.g., 'monthly', 'quarterly', 'yearly')"
-// @Success 200 {object} response.Response "Successfully retrieved sales report"
-// @Failure 400 {object} response.Response "Error in getting sales report"
-// @Failure 502 {object} response.Response "Error in printing invoice"
-// @Router /admin/salesreport [get]
+// @Param period query string true "Time period for sales report"
+// @Success 200 {object} response.Response "Sales report retrieved successfully"
+// @Failure 500 {object} response.Response "Unable to retrieve sales report"
+// @Router /admin/salesreport  [get]
 func (i *AdminHandler) Salesreport(c *gin.Context) {
 	timePeriod := c.Query("period")
 

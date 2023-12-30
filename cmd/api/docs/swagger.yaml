@@ -1,4 +1,20 @@
 definitions:
+  domain.Category:
+    properties:
+      category:
+        type: string
+      id:
+        type: integer
+    type: object
+  models.AddToCart:
+    properties:
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      user_id:
+        type: integer
+    type: object
   models.AdminLogin:
     properties:
       email:
@@ -57,6 +73,109 @@ paths:
       summary: Admin login
       tags:
       - ADMIN
+  /admin/category:
+    delete:
+      consumes:
+      - application/json
+      description: Delete an existing category by ID
+      parameters:
+      - description: Category ID to be deleted
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted category
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not delete the
+            category
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Delete category
+      tags:
+      - CATEGORY MANAGEMENT
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all categories
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all categories
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not retrieve categories
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get categories
+      tags:
+      - CATEGORY MANAGEMENT
+    post:
+      consumes:
+      - application/json
+      description: Add a new category using JSON payload
+      parameters:
+      - description: Category details in JSON format
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added category
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not add the category
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add category
+      tags:
+      - CATEGORY MANAGEMENT
+    put:
+      consumes:
+      - application/json
+      description: Update an existing category using JSON payload
+      parameters:
+      - description: Category details in JSON format
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Category'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated category
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not update the
+            category
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Update category
+      tags:
+      - CATEGORY MANAGEMENT
   /admin/dashboard:
     get:
       consumes:
@@ -153,6 +272,33 @@ paths:
       summary: Add new payment method
       tags:
       - ADMIN PAYMENT MANAGEMENT
+  /admin/salesreport:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves sales report for the specified time period
+      parameters:
+      - description: Time period for sales report
+        in: query
+        name: period
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sales report retrieved successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Unable to retrieve sales report
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Retrieve current sales report for a specific time period
+      tags:
+      - ADMIN DASHBOARD
   /admin/users:
     get:
       consumes:
@@ -234,6 +380,67 @@ paths:
       summary: Unblock user
       tags:
       - ADMIN
+  /cart/checkout:
+    post:
+      consumes:
+      - application/json
+      description: Process the checkout for the user's shopping cart
+      parameters:
+      - description: User ID obtained from authentication
+        in: header
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully processed checkout
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: User ID retrieval failed, or error processing checkout
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Process checkout
+      tags:
+      - CHECKOUT
+  /users/cart/add-to-cart:
+    post:
+      consumes:
+      - application/json
+      description: Add a product to the user's shopping cart
+      parameters:
+      - description: User ID obtained from authentication
+        in: header
+        name: id
+        required: true
+        type: integer
+      - description: Product details to add to the cart
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddToCart'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added to the cart
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: User ID retrieval failed, or fields provided in the wrong format,
+            or error adding to the cart
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add item to cart
+      tags:
+      - CART MANAGEMENT
 securityDefinitions:
   BearerTokenAuth:
     in: header
