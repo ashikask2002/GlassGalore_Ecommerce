@@ -20,7 +20,16 @@ func NewPaymentHandler(usecase interfaces.PaymentUseCase) *PaymendHandler {
 		paymentusecase: usecase,
 	}
 }
-
+// @Summary Make payment using RazorPay
+// @Description Initiate the payment process using RazorPay for the specified user and order
+// @Accept json
+// @Produce html
+// @Tags USER
+// @Param user_id query string true "User ID for whom the payment is being made"
+// @Param order_id query string true "Order ID for which the payment is being made"
+// @Success 200 {string} html "HTML page for initiating the RazorPay payment"
+// @Failure 400 {object} response.Response "Error in the payment process"
+// @Router /users/payment [get]
 func (i *PaymendHandler) MakePaymentRazorPay(c *gin.Context) {
 	userID := c.Query("user_id")
 

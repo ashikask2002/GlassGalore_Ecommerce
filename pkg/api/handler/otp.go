@@ -19,6 +19,15 @@ func NewOtpHandler(useCase services.OtpUseCase) *OtpHandler {
 	}
 }
 
+// @Summary Send OTP
+// @Description Send a One-Time Password (OTP) to the specified phone number
+// @Accept json
+// @Produce json
+// @Tags USER
+// @Param phone body models.OTPData true "Phone number details in JSON format"
+// @Success 200 {object} response.Response "OTP sent successfully"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or could not send OTP"
+// @Router /users/otplogin [post]
 func (ot *OtpHandler) SendOTP(c *gin.Context) {
 
 	var phone models.OTPData
@@ -37,6 +46,15 @@ func (ot *OtpHandler) SendOTP(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Verify OTP
+// @Description Verify the provided One-Time Password (OTP) code
+// @Accept json
+// @Produce json
+// @Tags USER
+// @Param code body models.VerifyData true "Verification code details in JSON format"
+// @Success 200 {object} response.Response "Successfully verified OTP"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or could not verify OTP"
+// @Router /users/verifyotp [post]
 func (ot *OtpHandler) VerifyOTP(c *gin.Context) {
 
 	var code models.VerifyData

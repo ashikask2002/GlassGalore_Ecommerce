@@ -6,6 +6,23 @@ definitions:
       id:
         type: integer
     type: object
+  models.AddProducts:
+    properties:
+      category_id:
+        type: integer
+      discription:
+        type: string
+      id:
+        type: integer
+      price:
+        type: number
+      product_name:
+        type: string
+      size:
+        type: string
+      stock:
+        type: integer
+    type: object
   models.AddToCart:
     properties:
       product_id:
@@ -26,10 +43,102 @@ definitions:
     required:
     - email
     type: object
+  models.CategorytOfferResp:
+    properties:
+      category_id:
+        type: integer
+      discount_price:
+        type: integer
+      offer_name:
+        type: string
+    required:
+    - category_id
+    - discount_price
+    - offer_name
+    type: object
+  models.Coupons:
+    properties:
+      coupon:
+        type: string
+      discount_rate:
+        type: integer
+      valid:
+        type: boolean
+    type: object
+  models.EditProductDetails:
+    properties:
+      category_id:
+        type: integer
+      discription:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      size:
+        type: string
+    type: object
   models.NewPaymentMethod:
     properties:
       payment_method:
         type: string
+    type: object
+  models.OTPData:
+    properties:
+      phone:
+        type: string
+    required:
+    - phone
+    type: object
+  models.Order:
+    properties:
+      address_id:
+        type: integer
+      coupon_id:
+        type: integer
+      payment_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.Search:
+    properties:
+      limit:
+        type: integer
+      page:
+        type: integer
+      search:
+        type: string
+    type: object
+  models.UserDetails:
+    properties:
+      confirmpassword:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  models.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.VerifyData:
+    properties:
+      code:
+        type: string
+      phone:
+        type: string
+    required:
+    - code
+    - phone
     type: object
   response.Response:
     properties:
@@ -176,6 +285,107 @@ paths:
       summary: Update category
       tags:
       - CATEGORY MANAGEMENT
+  /admin/coupon:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all coupons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all coupons
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Could not get all coupons
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get all coupons
+      tags:
+      - ADMIN COUPON MANAGEMENT
+  /admin/coupons:
+    delete:
+      consumes:
+      - application/json
+      description: Mark a coupon as invalid by providing its ID
+      parameters:
+      - description: Coupon ID to be marked as invalid
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully made the coupon invalid
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in converting ID or making the coupon invalid
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Make coupon invalid
+      tags:
+      - ADMIN COUPON MANAGEMENT
+    post:
+      consumes:
+      - application/json
+      description: Create a new coupon using JSON payload
+      parameters:
+      - description: Coupon details in JSON format
+        in: body
+        name: coupon
+        required: true
+        schema:
+          $ref: '#/definitions/models.Coupons'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added the coupon
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not add the coupon
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Create new coupon
+      tags:
+      - ADMIN COUPON MANAGEMENT
+    put:
+      consumes:
+      - application/json
+      description: Reactivate a coupon by providing its ID
+      parameters:
+      - description: Coupon ID to be reactivated
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully reactivated the coupon
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in converting ID or reactivating the coupon
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Reactivate coupon
+      tags:
+      - ADMIN COUPON MANAGEMENT
   /admin/dashboard:
     get:
       consumes:
@@ -197,6 +407,137 @@ paths:
       summary: Get dashboard details
       tags:
       - ADMIN DASHBOARD
+  /admin/offers:
+    delete:
+      consumes:
+      - application/json
+      description: Expire a category offer by providing its ID
+      parameters:
+      - description: ID of the category offer to expire
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully expired the category offer
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in converting the ID or deleting the category offer
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Expire category offer
+      tags:
+      - ADMIN OFFER MANAGEMENT
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all category offers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved category offers
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in getting category offers
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get category offers
+      tags:
+      - ADMIN OFFER MANAGEMENT
+    post:
+      consumes:
+      - application/json
+      description: Add a new offer for a category using JSON payload
+      parameters:
+      - description: Category offer details in JSON format
+        in: body
+        name: CategoryOffer
+        required: true
+        schema:
+          $ref: '#/definitions/models.CategorytOfferResp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added the category offer
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Request fields in the wrong format or constraints not satisfied
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Error in adding the category offer
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add category offer
+      tags:
+      - ADMIN OFFER MANAGEMENT
+  /admin/orders:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a paginated list of orders for administrative purposes
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved admin orders
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Page number not in the right format or could not retrieve orders
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get admin orders
+      tags:
+      - ADMIN ORDER MANAGEMENT
+    patch:
+      consumes:
+      - application/json
+      description: Approve a specific order by providing its ID
+      parameters:
+      - description: ID of the order to be approved
+        in: query
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully approved the order
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Could not approve the order or incorrect order ID format
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Approve order
+      tags:
+      - ADMIN ORDER MANAGEMENT
   /admin/payment-method:
     delete:
       consumes:
@@ -272,6 +613,191 @@ paths:
       summary: Add new payment method
       tags:
       - ADMIN PAYMENT MANAGEMENT
+  /admin/products:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a product by providing the product ID
+      parameters:
+      - description: Product ID to be deleted
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted the product
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not delete the
+            product
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Delete product
+      tags:
+      - ADMIN PRODUCT MANAGEMENT
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of products for admin
+      parameters:
+      - description: Page number for pagination, default is 1
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the records
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Page number not in the right format or could not retrieve records
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: List products for admin
+      tags:
+      - ADMIN PRODUCT MANAGEMENT
+    post:
+      consumes:
+      - application/json
+      description: Add a new product using JSON payload
+      parameters:
+      - description: Product details in JSON format
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddProducts'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added product
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Form file error or could not add the product
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add product
+      tags:
+      - ADMIN PRODUCT MANAGEMENT
+  /admin/products/:id/stock:
+    put:
+      consumes:
+      - application/json
+      description: Update the stock of a product by providing the product ID and new
+        stock value
+      parameters:
+      - description: Product ID to be updated
+        in: body
+        name: product_id
+        required: true
+        schema:
+          type: string
+      - description: New stock value for the product
+        in: body
+        name: stock
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated the product stock
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not update the
+            product stock
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Update product stock
+      tags:
+      - ADMIN PRODUCT MANAGEMENT
+  /admin/products/details:
+    put:
+      consumes:
+      - application/json
+      description: Edit the details of a product by providing the product ID and updated
+        details
+      parameters:
+      - description: Product ID to be edited
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: Updated details for the product
+        in: body
+        name: details
+        required: true
+        schema:
+          $ref: '#/definitions/models.EditProductDetails'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully edited the product details
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Problems in the ID or fields provided in the wrong format or
+            could not edit the product details
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Edit product details
+      tags:
+      - ADMIN PRODUCT MANAGEMENT
+  /admin/products/upload_image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload images for a product by providing the product ID and image
+        files
+      parameters:
+      - description: Product ID for which images are to be uploaded
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      - description: Images to be uploaded for the product
+        in: formData
+        name: files
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully uploaded the images
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in converting ID, retrieving images from form, or updating
+            images
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Upload images for a product
+      tags:
+      - ADMIN PRODUCT MANAGEMENT
   /admin/salesreport:
     get:
       consumes:
@@ -441,6 +967,473 @@ paths:
       summary: Add item to cart
       tags:
       - CART MANAGEMENT
+  /users/check-out/invoice:
+    get:
+      consumes:
+      - application/json
+      description: Generate and download the invoice for a specific order by providing
+        its ID
+      parameters:
+      - description: ID of the order for which the invoice is to be printed
+        in: query
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully downloaded the invoice
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in converting order ID or printing invoice
+          schema:
+            $ref: '#/definitions/response.Response'
+        "502":
+          description: Error in printing invoice
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Print invoice
+      tags:
+      - CHECKOUT
+  /users/check-out/order:
+    post:
+      consumes:
+      - application/json
+      description: Create an order by providing order details including address, payment
+        method, and coupon
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: Order details in JSON format
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/models.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully made the order
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in getting user ID, fields provided in the wrong format,
+            or could not make the order
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Order items from cart
+      tags:
+      - CHECKOUT
+  /users/home/product:
+    get:
+      consumes:
+      - application/json
+      description: Get a paginated list of products for users
+      parameters:
+      - description: Page number for pagination, default is 1
+        in: query
+        name: page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the records
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Page number not in the right format or could not retrieve records
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: List products for user
+      tags:
+      - USER PRODUCT MANAGEMENT
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Log in a user by providing login details in JSON format
+      parameters:
+      - description: Login details in JSON format
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User successfully logged in
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or constraints not satisfied
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: User could not be logged in
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User login
+      tags:
+      - USER
+  /users/otplogin:
+    post:
+      consumes:
+      - application/json
+      description: Send a One-Time Password (OTP) to the specified phone number
+      parameters:
+      - description: Phone number details in JSON format
+        in: body
+        name: phone
+        required: true
+        schema:
+          $ref: '#/definitions/models.OTPData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP sent successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not send OTP
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Send OTP
+      tags:
+      - USER
+  /users/payment:
+    get:
+      consumes:
+      - application/json
+      description: Initiate the payment process using RazorPay for the specified user
+        and order
+      parameters:
+      - description: User ID for whom the payment is being made
+        in: query
+        name: user_id
+        required: true
+        type: string
+      - description: Order ID for which the payment is being made
+        in: query
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: HTML page for initiating the RazorPay payment
+          schema:
+            type: string
+        "400":
+          description: Error in the payment process
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Make payment using RazorPay
+      tags:
+      - USER
+  /users/products/filter:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of products filtered by category ID
+      parameters:
+      - description: Category ID for filtering products
+        in: query
+        name: category_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the product list
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in conversion or cannot retrieve the product list
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Filter products by category
+      tags:
+      - USER PRODUCT MANAGEMENT
+  /users/products/filterP:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of products within the specified price range
+      parameters:
+      - description: Minimum price for filtering products
+        in: query
+        name: price
+        required: true
+        type: integer
+      - description: Maximum price for filtering products
+        in: query
+        name: pricetwo
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the product list
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in conversion or cannot retrieve the product list
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Filter products by price range
+      tags:
+      - USER PRODUCT MANAGEMENT
+  /users/products/rating:
+    post:
+      consumes:
+      - application/json
+      description: Add or update the rating for a product by providing user ID, product
+        ID, and rating
+      parameters:
+      - description: Product ID for which rating is to be added or updated
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      - description: Rating to be added or updated for the product (float64)
+        in: query
+        name: rating
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added or updated the rating
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in converting ID, rating, or rating update
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add or update rating for a product
+      tags:
+      - USER PRODUCT MANAGEMENT
+  /users/products/search:
+    post:
+      consumes:
+      - application/json
+      description: Get a list of products based on search criteria
+      parameters:
+      - description: Page number for pagination (default is 1)
+        in: query
+        name: page
+        type: integer
+      - description: Number of items per page (default is 5)
+        in: query
+        name: limit
+        type: integer
+      - description: Search criteria in JSON format
+        in: body
+        name: search
+        required: true
+        schema:
+          $ref: '#/definitions/models.Search'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the product list
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in conversion or could not get any products
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Search products
+      tags:
+      - USER PRODUCT MANAGEMENT
+  /users/profile/orders:
+    delete:
+      consumes:
+      - application/json
+      description: Cancel a specific order by providing the order ID
+      parameters:
+      - description: ID of the order to cancel
+        in: query
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully cancelled the order
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Check your order ID again or could not cancel the order
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Cancel order
+      tags:
+      - USER ORDER MANAGEMENT
+    get:
+      consumes:
+      - application/json
+      description: Retrieve orders based on the provided order ID
+      parameters:
+      - description: Order ID to retrieve specific order, omit for all orders
+        in: query
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved orders
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Check your order ID again or could not get the orders
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get orders
+      tags:
+      - USER ORDER MANAGEMENT
+    put:
+      consumes:
+      - application/json
+      description: Initiate a return process for a specific order by providing its
+        ID
+      parameters:
+      - description: ID of the order to be returned
+        in: query
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully initiated the return process
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in converting order ID or returning order
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Return order
+      tags:
+      - USER ORDER MANAGEMENT
+  /users/profile/orders/all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all orders for the authenticated user with optional pagination
+      parameters:
+      - description: Page number for pagination, default is 1
+        in: query
+        name: page
+        type: integer
+      - description: Number of orders per page, default is 10
+        in: query
+        name: count
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all orders
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Page number or count not in the correct format or could not
+            retrieve orders
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get all orders
+      tags:
+      - USER ORDER MANAGEMENT
+  /users/signup:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user by providing user details in JSON format
+      parameters:
+      - description: User details in JSON format
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserDetails'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User successfully signed up
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or constraints not satisfied
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: User could not be signed up
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: User sign-up
+      tags:
+      - USER
+  /users/verifyotp:
+    post:
+      consumes:
+      - application/json
+      description: Verify the provided One-Time Password (OTP) code
+      parameters:
+      - description: Verification code details in JSON format
+        in: body
+        name: code
+        required: true
+        schema:
+          $ref: '#/definitions/models.VerifyData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully verified OTP
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Fields provided in the wrong format or could not verify OTP
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Verify OTP
+      tags:
+      - USER
 securityDefinitions:
   BearerTokenAuth:
     in: header

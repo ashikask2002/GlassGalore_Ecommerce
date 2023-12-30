@@ -20,6 +20,16 @@ func NewCouponHandler(use interfaces.CouponUseCase) *CouponHandler {
 	}
 }
 
+// @Summary Create new coupon
+// @Description Create a new coupon using JSON payload
+// @Accept json
+// @Produce json
+// @Tags ADMIN COUPON MANAGEMENT
+// @security BearerTokenAuth
+// @Param coupon body models.Coupons true "Coupon details in JSON format"
+// @Success 200 {object} response.Response "Successfully added the coupon"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or could not add the coupon"
+// @Router /admin/coupons [post]
 func (i *CouponHandler) CreateNewCoupen(c *gin.Context) {
 	var coupon models.Coupons
 
@@ -40,6 +50,15 @@ func (i *CouponHandler) CreateNewCoupen(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
+// @Summary Get all coupons
+// @Description Retrieve a list of all coupons
+// @Accept json
+// @Produce json
+// @Tags ADMIN COUPON MANAGEMENT
+// @security BearerTokenAuth
+// @Success 200 {object} response.Response "Successfully retrieved all coupons"
+// @Failure 400 {object} response.Response "Could not get all coupons"
+// @Router /admin/coupon [get]
 func (i *CouponHandler) GetAllCoupons(c *gin.Context) {
 
 	categories, err := i.usecase.GetAllCoupons()
@@ -52,6 +71,16 @@ func (i *CouponHandler) GetAllCoupons(c *gin.Context) {
 	c.JSON(http.StatusOK, succesres)
 }
 
+// @Summary Make coupon invalid
+// @Description Mark a coupon as invalid by providing its ID
+// @Accept json
+// @Produce json
+// @Tags ADMIN COUPON MANAGEMENT
+// @security BearerTokenAuth
+// @Param id query int true "Coupon ID to be marked as invalid"
+// @Success 200 {object} response.Response "Successfully made the coupon invalid"
+// @Failure 400 {object} response.Response "Error in converting ID or making the coupon invalid"
+// @Router /admin/coupons [delete]
 func (i *CouponHandler) MakeCouponInvalid(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
@@ -71,6 +100,16 @@ func (i *CouponHandler) MakeCouponInvalid(c *gin.Context) {
 
 }
 
+// @Summary Reactivate coupon
+// @Description Reactivate a coupon by providing its ID
+// @Accept json
+// @Produce json
+// @Tags ADMIN COUPON MANAGEMENT
+// @security BearerTokenAuth
+// @Param id query int true "Coupon ID to be reactivated"
+// @Success 200 {object} response.Response "Successfully reactivated the coupon"
+// @Failure 400 {object} response.Response "Error in converting ID or reactivating the coupon"
+// @Router /admin/coupons [put]
 func (i *CouponHandler) ReactivateCoupen(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {

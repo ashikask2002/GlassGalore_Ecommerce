@@ -27,6 +27,16 @@ func NewUserHandler(usecase services.UserUseCase) *UserHandler {
 	}
 }
 
+// @Summary User sign-up
+// @Description Register a new user by providing user details in JSON format
+// @Accept json
+// @Produce json
+// @Tags USER
+// @Param user body models.UserDetails true "User details in JSON format"
+// @Success 201 {object} response.Response "User successfully signed up"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or constraints not satisfied"
+// @Failure 500 {object} response.Response "User could not be signed up"
+// @Router /users/signup [post]
 func (u *UserHandler) UserSignUp(c *gin.Context) {
 	var user models.UserDetails
 
@@ -55,6 +65,16 @@ func (u *UserHandler) UserSignUp(c *gin.Context) {
 	c.JSON(http.StatusCreated, succesRes)
 }
 
+// @Summary User login
+// @Description Log in a user by providing login details in JSON format
+// @Accept json
+// @Produce json
+// @Tags USER
+// @Param user body models.UserLogin true "Login details in JSON format"
+// @Success 200 {object} response.Response "User successfully logged in"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or constraints not satisfied"
+// @Failure 401 {object} response.Response "User could not be logged in"
+// @Router /users/login [post]
 func (u *UserHandler) LoginHandler(c *gin.Context) {
 
 	var user models.UserLogin
@@ -162,64 +182,6 @@ func (i *UserHandler) EditDetails(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "Succesfully Edited the details", body, nil)
 	c.JSON(http.StatusOK, successRes)
 }
-
-// func (i *UserHandler) EditEmail(c *gin.Context) {
-
-// 	idString, _ := c.Get("id")
-// 	id, _ := idString.(int)
-
-// 	// id, err := strconv.Atoi(c.Query("id"))
-// 	// if err != nil {
-// 	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
-// 	// 	c.JSON(http.StatusBadRequest, errorRes)
-// 	// 	return
-// 	// }
-
-// 	var model models.EditEmail
-// 	if err := c.BindJSON(&model); err != nil {
-// 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields not in correct format", nil, err.Error())
-// 		c.JSON(http.StatusBadRequest, errorRes)
-// 		return
-// 	}
-
-// 	if err := i.userUseCase.EditEmail(id, model.Email); err != nil {
-// 		errorRes := response.ClientResponse(http.StatusBadRequest, "couldnt edit the email", nil, err.Error())
-// 		c.JSON(http.StatusBadRequest, errorRes)
-// 		return
-// 	}
-
-// 	successRes := response.ClientResponse(http.StatusOK, "email successfully edited", nil, nil)
-// 	c.JSON(http.StatusOK, successRes)
-// }
-
-// func (i *UserHandler) EditPhone(c *gin.Context) {
-// 	idString, _ := c.Get("id")
-// 	id, _ := idString.(int)
-
-// 	// id, err := strconv.Atoi(c.Query("id"))
-// 	// if err != nil {
-// 	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
-// 	// 	c.JSON(http.StatusBadRequest, errorRes)
-// 	// 	return
-// 	// }
-
-// 	var model models.EditPhone
-
-// 	if err := c.BindJSON(&model); err != nil {
-// 		errorRes := response.ClientResponse(http.StatusBadRequest, "fields are not in correct format", nil, err.Error())
-// 		c.JSON(http.StatusBadRequest, errorRes)
-// 		return
-// 	}
-
-// 	if err := i.userUseCase.EditPhone(id, model.Phone); err != nil {
-// 		errorRes := response.ClientResponse(http.StatusBadRequest, "couldnt edit  the phone", nil, err.Error())
-// 		c.JSON(http.StatusBadRequest, errorRes)
-// 		return
-// 	}
-
-// 	successRes := response.ClientResponse(http.StatusOK, "phone edited successfully", nil, nil)
-// 	c.JSON(http.StatusOK, successRes)
-// }
 
 func (i *UserHandler) ChangePassword(c *gin.Context) {
 

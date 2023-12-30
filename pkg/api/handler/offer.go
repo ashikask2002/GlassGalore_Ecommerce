@@ -22,6 +22,17 @@ func NewOfferHandler(useCase interfaces.OfferUseCase) *OfferHandler {
 	}
 }
 
+// @Summary Add category offer
+// @Description Add a new offer for a category using JSON payload
+// @Accept json
+// @Produce json
+// @Tags ADMIN OFFER MANAGEMENT
+// @security BearerTokenAuth
+// @Param CategoryOffer body models.CategorytOfferResp true "Category offer details in JSON format"
+// @Success 200 {object} response.Response "Successfully added the category offer"
+// @Failure 400 {object} response.Response "Request fields in the wrong format or constraints not satisfied"
+// @Failure 500 {object} response.Response "Error in adding the category offer"
+// @Router /admin/offers [post]
 func (i *OfferHandler) AddCategoryOffer(c *gin.Context) {
 	var CategoryOffer models.CategorytOfferResp
 
@@ -49,6 +60,15 @@ func (i *OfferHandler) AddCategoryOffer(c *gin.Context) {
 
 }
 
+// @Summary Get category offers
+// @Description Retrieve all category offers
+// @Accept json
+// @Produce json
+// @Tags ADMIN OFFER MANAGEMENT
+// @security BearerTokenAuth
+// @Success 200 {object} response.Response "Successfully retrieved category offers"
+// @Failure 400 {object} response.Response "Error in getting category offers"
+// @Router /admin/offers [get]
 func (i *OfferHandler) GetCategoryOffer(c *gin.Context) {
 	categories, err := i.OfferUseCase.GetCategoryOffer()
 	if err != nil {
@@ -61,6 +81,16 @@ func (i *OfferHandler) GetCategoryOffer(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
+// @Summary Expire category offer
+// @Description Expire a category offer by providing its ID
+// @Accept json
+// @Produce json
+// @Tags ADMIN OFFER MANAGEMENT
+// @security BearerTokenAuth
+// @Param id query int true "ID of the category offer to expire"
+// @Success 200 {object} response.Response "Successfully expired the category offer"
+// @Failure 400 {object} response.Response "Error in converting the ID or deleting the category offer"
+// @Router /admin/offers [delete]
 func (i *OfferHandler) ExpireCategoryOffer(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
@@ -74,7 +104,7 @@ func (i *OfferHandler) ExpireCategoryOffer(c *gin.Context) {
 		return
 	}
 
-	succesRes := response.ClientResponse(http.StatusOK,"successfully expired the offer",nil,nil)
-	c.JSON(http.StatusOK,succesRes)
+	succesRes := response.ClientResponse(http.StatusOK, "successfully expired the offer", nil, nil)
+	c.JSON(http.StatusOK, succesRes)
 
 }

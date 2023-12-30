@@ -20,6 +20,16 @@ func NewProductHandler(usecase services.ProductUseCase) *ProductHandler {
 	}
 }
 
+// @Summary Add product
+// @Description Add a new product using JSON payload
+// @Accept json
+// @Produce json
+// @Tags ADMIN PRODUCT MANAGEMENT
+// @security BearerTokenAuth
+// @Param product body models.AddProducts true "Product details in JSON format"
+// @Success 200 {object} response.Response "Successfully added product"
+// @Failure 400 {object} response.Response "Form file error or could not add the product"
+// @Router /admin/products [post]
 func (i *ProductHandler) AddProduct(c *gin.Context) {
 
 	var product models.AddProducts
@@ -40,6 +50,16 @@ func (i *ProductHandler) AddProduct(c *gin.Context) {
 
 }
 
+// @Summary Delete product
+// @Description Delete a product by providing the product ID
+// @Accept json
+// @Produce json
+// @Tags ADMIN PRODUCT MANAGEMENT
+// @security BearerTokenAuth
+// @Param id query string true "Product ID to be deleted"
+// @Success 200 {object} response.Response "Successfully deleted the product"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or could not delete the product"
+// @Router /admin/products [delete]
 func (i *ProductHandler) DeleteProduct(c *gin.Context) {
 
 	productID := c.Query("id")
@@ -53,6 +73,17 @@ func (i *ProductHandler) DeleteProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, successres)
 }
 
+// @Summary Update product stock
+// @Description Update the stock of a product by providing the product ID and new stock value
+// @Accept json
+// @Produce json
+// @Tags ADMIN PRODUCT MANAGEMENT
+// @security BearerTokenAuth
+// @Param product_id body string true "Product ID to be updated"
+// @Param stock body int true "New stock value for the product"
+// @Success 200 {object} response.Response "Successfully updated the product stock"
+// @Failure 400 {object} response.Response "Fields provided in the wrong format or could not update the product stock"
+// @Router /admin/products/:id/stock [put]
 func (i *ProductHandler) UpdateProduct(c *gin.Context) {
 	var p models.ProductUpdate
 
@@ -73,6 +104,17 @@ func (i *ProductHandler) UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Edit product details
+// @Description Edit the details of a product by providing the product ID and updated details
+// @Accept json
+// @Produce json
+// @Tags ADMIN PRODUCT MANAGEMENT
+// @security BearerTokenAuth
+// @Param id query int true "Product ID to be edited"
+// @Param details body models.EditProductDetails true "Updated details for the product"
+// @Success 200 {object} response.Response "Successfully edited the product details"
+// @Failure 400 {object} response.Response "Problems in the ID or fields provided in the wrong format or could not edit the product details"
+// @Router /admin/products/details [put]
 func (i *ProductHandler) EditProductDetails(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
@@ -101,6 +143,15 @@ func (i *ProductHandler) EditProductDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary List products for user
+// @Description Get a paginated list of products for users
+// @Accept json
+// @Produce json
+// @Tags USER PRODUCT MANAGEMENT
+// @Param page query int false "Page number for pagination, default is 1"
+// @Success 200 {object} response.Response "Successfully retrieved the records"
+// @Failure 400 {object} response.Response "Page number not in the right format or could not retrieve records"
+// @Router /users/home/product [get]
 func (i *ProductHandler) ListProductForUser(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
@@ -109,14 +160,6 @@ func (i *ProductHandler) ListProductForUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, errorRes)
 		return
 	}
-	// id := c.MustGet("id")
-
-	// userID, ok := id.(int)
-	// if !ok {
-	// 	errorRes := response.ClientResponse(http.StatusForbidden, "probem in identifying user from the context", nil, err.Error())
-	// 	c.JSON(http.StatusForbidden, errorRes)
-	// 	return
-	// }
 	products, err := i.ProductUseCase.ListProductForUser(page)
 	if err != nil {
 		errorRes := response.ClientResponse(http.StatusBadRequest, "could not retrieve records", nil, err.Error())
@@ -127,6 +170,17 @@ func (i *ProductHandler) ListProductForUser(c *gin.Context) {
 	successRes := response.ClientResponse(http.StatusOK, "successfully retrieved all records", products, nil)
 	c.JSON(http.StatusOK, successRes)
 }
+
+// @Summary List products for admin
+// @Description Get a paginated list of products for admin
+// @Accept json
+// @Produce json
+// @Tags ADMIN PRODUCT MANAGEMENT
+// @security BearerTokenAuth
+// @Param page query int false "Page number for pagination, default is 1"
+// @Success 200 {object} response.Response "Successfully retrieved the records"
+// @Failure 400 {object} response.Response "Page number not in the right format or could not retrieve records"
+// @Router /admin/products [get]
 func (i *ProductHandler) LisProductforAdmin(c *gin.Context) {
 	pageStr := c.Query("page")
 	page, err := strconv.Atoi(pageStr)
@@ -147,6 +201,15 @@ func (i *ProductHandler) LisProductforAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Filter products by category
+// @Description Get a list of products filtered by category ID
+// @Accept json
+// @Produce json
+// @Tags USER PRODUCT MANAGEMENT
+// @Param category_id query int true "Category ID for filtering products"
+// @Success 200 {object} response.Response "Successfully retrieved the product list"
+// @Failure 400 {object} response.Response "Error in conversion or cannot retrieve the product list"
+// @Router /users/products/filter [get]
 func (i *ProductHandler) FilterProducts(c *gin.Context) {
 	CategoryID := c.Query("category_id")
 	CategoryIDInt, err := strconv.Atoi(CategoryID)
@@ -168,6 +231,16 @@ func (i *ProductHandler) FilterProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Filter products by price range
+// @Description Get a list of products within the specified price range
+// @Accept json
+// @Produce json
+// @Tags USER PRODUCT MANAGEMENT
+// @Param price query int true "Minimum price for filtering products"
+// @Param pricetwo query int true "Maximum price for filtering products"
+// @Success 200 {object} response.Response "Successfully retrieved the product list"
+// @Failure 400 {object} response.Response "Error in conversion or cannot retrieve the product list"
+// @Router /users/products/filterP [get]
 func (i *ProductHandler) FilterProductsByPrice(c *gin.Context) {
 	Price := c.Query("price")
 	PriceInt, err := strconv.Atoi(Price)
@@ -198,6 +271,17 @@ func (i *ProductHandler) FilterProductsByPrice(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Search products
+// @Description Get a list of products based on search criteria
+// @Accept json
+// @Produce json
+// @Tags USER PRODUCT MANAGEMENT
+// @Param page query int false "Page number for pagination (default is 1)"
+// @Param limit query int false "Number of items per page (default is 5)"
+// @Param search body models.Search true "Search criteria in JSON format"
+// @Success 200 {object} response.Response "Successfully retrieved the product list"
+// @Failure 400 {object} response.Response "Error in conversion or could not get any products"
+// @Router /users/products/search [post]
 func (i *ProductHandler) SearchProducts(c *gin.Context) {
 	var search models.Search
 	pageStr := c.DefaultQuery("page", "1")
@@ -237,6 +321,17 @@ func (i *ProductHandler) SearchProducts(c *gin.Context) {
 
 }
 
+// @Summary Add or update rating for a product
+// @Description Add or update the rating for a product by providing user ID, product ID, and rating
+// @Accept json
+// @Produce json
+// @Tags USER PRODUCT MANAGEMENT
+// @security BearerTokenAuth
+// @Param product_id query int true "Product ID for which rating is to be added or updated"
+// @Param rating query number true "Rating to be added or updated for the product (float64)"
+// @Success 200 {object} response.Response "Successfully added or updated the rating"
+// @Failure 400 {object} response.Response "Error in converting ID, rating, or rating update"
+// @Router /users/products/rating [post]
 func (i *ProductHandler) Rating(c *gin.Context) {
 	idstring, _ := c.Get("id")
 	id, _ := idstring.(int)
@@ -267,6 +362,17 @@ func (i *ProductHandler) Rating(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
+// @Summary Upload images for a product
+// @Description Upload images for a product by providing the product ID and image files
+// @Accept multipart/form-data
+// @Produce json
+// @Tags ADMIN PRODUCT MANAGEMENT
+// @security BearerTokenAuth
+// @Param product_id query int true "Product ID for which images are to be uploaded"
+// @Param files formData file true "Images to be uploaded for the product"
+// @Success 200 {object} response.Response "Successfully uploaded the images"
+// @Failure 400 {object} response.Response "Error in converting ID, retrieving images from form, or updating images"
+// @Router /admin/products/upload_image [post]
 func (i *ProductHandler) UploadImage(c *gin.Context) {
 	productid := c.Query("product_id")
 
