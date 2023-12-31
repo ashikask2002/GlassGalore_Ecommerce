@@ -6,6 +6,31 @@ definitions:
       id:
         type: integer
     type: object
+  models.AddAddress:
+    properties:
+      Phone:
+        type: string
+      city:
+        type: string
+      house_name:
+        type: string
+      name:
+        type: string
+      pin:
+        type: string
+      state:
+        type: string
+      street:
+        type: string
+    required:
+    - Phone
+    - city
+    - house_name
+    - name
+    - pin
+    - state
+    - street
+    type: object
   models.AddProducts:
     properties:
       category_id:
@@ -56,6 +81,15 @@ definitions:
     - discount_price
     - offer_name
     type: object
+  models.ChangePassword:
+    properties:
+      old_password:
+        type: string
+      password:
+        type: string
+      re_password:
+        type: string
+    type: object
   models.Coupons:
     properties:
       coupon:
@@ -64,6 +98,15 @@ definitions:
         type: integer
       valid:
         type: boolean
+    type: object
+  models.EditDetailsResponse:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
     type: object
   models.EditProductDetails:
     properties:
@@ -967,6 +1010,105 @@ paths:
       summary: Add item to cart
       tags:
       - CART MANAGEMENT
+  /users/cart/get:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve the products in the shopping cart for the authenticated
+        user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Products in the shopping cart
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in retrieving the shopping cart
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get user's shopping cart
+      tags:
+      - CART MANAGEMENT
+  /users/cart/remove:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a specific product from the shopping cart for the authenticated
+        user
+      parameters:
+      - description: Cart ID
+        in: query
+        name: cart_id
+        required: true
+        type: integer
+      - description: Product ID
+        in: query
+        name: product_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully removed from cart
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in removing from cart
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Remove a product from the shopping cart
+      tags:
+      - CART MANAGEMENT
+  /users/cart/update:
+    put:
+      consumes:
+      - application/json
+      description: Update the quantity of a specific product in the shopping cart
+        for the authenticated user
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: Product ID
+        in: query
+        name: product
+        required: true
+        type: integer
+      - description: New quantity
+        in: query
+        name: quantity
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully updated the quantity
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in updating the quantity
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Update product quantity in the shopping cart
+      tags:
+      - CART MANAGEMENT
   /users/check-out/invoice:
     get:
       consumes:
@@ -1267,6 +1409,113 @@ paths:
       summary: Search products
       tags:
       - USER PRODUCT MANAGEMENT
+  /users/profile:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve addresses of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved user addresses
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in retrieving user addresses
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get user addresses
+      tags:
+      - USER PROFILE
+    put:
+      consumes:
+      - application/json
+      description: Edit details for the authenticated user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User details to be edited
+        in: body
+        name: model
+        required: true
+        schema:
+          $ref: '#/definitions/models.EditDetailsResponse'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully edited the details
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in editing the details
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Edit user details
+      tags:
+      - USER PROFILE
+  /users/profile/add:
+    post:
+      consumes:
+      - application/json
+      description: Add a new address for the authenticated user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Address details
+        in: body
+        name: address
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddAddress'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added the address
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in adding the address
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Add user address
+      tags:
+      - USER PROFILE
+  /users/profile/details:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved user details
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in retrieving user details
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get user details
+      tags:
+      - USER PROFILE
   /users/profile/orders:
     delete:
       consumes:
@@ -1378,6 +1627,39 @@ paths:
       summary: Get all orders
       tags:
       - USER ORDER MANAGEMENT
+  /users/profile/security/password:
+    put:
+      consumes:
+      - application/json
+      description: Change the password for the authenticated user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Password change details
+        in: body
+        name: ChangePassword
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password changed successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in changing the password
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Change user password
+      tags:
+      - USER PROFILE
   /users/signup:
     post:
       consumes:
@@ -1434,6 +1716,33 @@ paths:
       summary: Verify OTP
       tags:
       - USER
+  /users/wallet:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of the wallet for the authenticated user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Wallet details
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Error in retrieving wallet details
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: View user's wallet details
+      tags:
+      - Wallet
 securityDefinitions:
   BearerTokenAuth:
     in: header

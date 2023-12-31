@@ -103,6 +103,15 @@ func (u *UserHandler) LoginHandler(c *gin.Context) {
 
 }
 
+// @Summary Get user details
+// @Description Retrieve details of the authenticated user
+// @Accept json
+// @Produce json
+// @Tags USER PROFILE
+// @Security BearerTokenAuth
+// @Success 200 {object} response.Response "Successfully retrieved user details"
+// @Failure 400 {object} response.Response "Error in retrieving user details"
+// @Router /users/profile/details [get]
 func (i *UserHandler) GetUserDetails(c *gin.Context) {
 	idString, _ := c.Get("id")
 	id, _ := idString.(int)
@@ -117,15 +126,18 @@ func (i *UserHandler) GetUserDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Get user addresses
+// @Description Retrieve addresses of the authenticated user
+// @Accept json
+// @Produce json
+// @Tags USER PROFILE
+// @Security BearerTokenAuth
+// @Success 200 {object} response.Response "Successfully retrieved user addresses"
+// @Failure 400 {object} response.Response "Error in retrieving user addresses"
+// @Router /users/profile [get]
 func (i *UserHandler) GetAddresses(c *gin.Context) {
 
 	idString, _ := c.Get("id")
-	// id, err := strconv.Atoi(idString)
-	// if err != nil {
-	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "Check yout id again", nil, err.Error())
-	// 	c.JSON(http.StatusBadRequest, errorRes)
-	// 	return
-	// }
 
 	addresses, err := i.userUseCase.GetAddresses(idString.(int))
 	if err != nil {
@@ -138,6 +150,17 @@ func (i *UserHandler) GetAddresses(c *gin.Context) {
 	c.JSON(http.StatusOK, succesRes)
 }
 
+// @Summary Add user address
+// @Description Add a new address for the authenticated user
+// @Accept json
+// @Produce json
+// @Tags USER PROFILE
+// @Security BearerTokenAuth
+// @Param id path int true "User ID"
+// @Param address body models.AddAddress true "Address details"
+// @Success 200 {object} response.Response "Successfully added the address"
+// @Failure 400 {object} response.Response "Error in adding the address"
+// @Router /users/profile/add [post]
 func (i *UserHandler) AddAddress(c *gin.Context) {
 
 	id, _ := c.Get("id")
@@ -159,6 +182,17 @@ func (i *UserHandler) AddAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Edit user details
+// @Description Edit details for the authenticated user
+// @Accept json
+// @Produce json
+// @Tags USER PROFILE
+// @Security BearerTokenAuth
+// @Param id path int true "User ID"
+// @Param model body models.EditDetailsResponse true "User details to be edited"
+// @Success 200 {object} response.Response "Successfully edited the details"
+// @Failure 400 {object} response.Response "Error in editing the details"
+// @Router /users/profile [put]
 func (i *UserHandler) EditDetails(c *gin.Context) {
 
 	idString, _ := c.Get("id")
@@ -183,17 +217,21 @@ func (i *UserHandler) EditDetails(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Change user password
+// @Description Change the password for the authenticated user
+// @Accept json
+// @Produce json
+// @Tags USER PROFILE
+// @Security BearerTokenAuth
+// @Param id path int true "User ID"
+// @Param ChangePassword body models.ChangePassword true "Password change details"
+// @Success 200 {object} response.Response "Password changed successfully"
+// @Failure 400 {object} response.Response "Error in changing the password"
+// @Router /users/profile/security/password [put]
 func (i *UserHandler) ChangePassword(c *gin.Context) {
 
 	idString, _ := c.Get("id")
 	id, _ := idString.(int)
-
-	// id, err := strconv.Atoi(c.Query("id"))
-	// if err != nil {
-	// 	errorRes := response.ClientResponse(http.StatusBadRequest, "check path parameter", nil, err.Error())
-	// 	c.JSON(http.StatusBadRequest, errorRes)
-	// 	return
-	// }
 
 	var ChangePassword models.ChangePassword
 
@@ -214,6 +252,16 @@ func (i *UserHandler) ChangePassword(c *gin.Context) {
 
 }
 
+// @Summary Get user's shopping cart
+// @Description Retrieve the products in the shopping cart for the authenticated user
+// @Accept json
+// @Produce json
+// @Tags CART MANAGEMENT
+// @Security BearerTokenAuth
+// @Param id path int true "User ID"
+// @Success 200 {object} response.Response "Products in the shopping cart"
+// @Failure 400 {object} response.Response "Error in retrieving the shopping cart"
+// @Router /users/cart/get [get]
 func (i *UserHandler) GetCart(c *gin.Context) {
 	idString, _ := c.Get("id")
 	id, _ := idString.(int)
@@ -230,6 +278,17 @@ func (i *UserHandler) GetCart(c *gin.Context) {
 
 }
 
+// @Summary Remove a product from the shopping cart
+// @Description Remove a specific product from the shopping cart for the authenticated user
+// @Accept json
+// @Produce json
+// @Tags CART MANAGEMENT
+// @Security BearerTokenAuth
+// @Param cart_id query int true "Cart ID"
+// @Param product_id query int true "Product ID"
+// @Success 200 {object} response.Response "Successfully removed from cart"
+// @Failure 400 {object} response.Response "Error in removing from cart"
+// @Router /users/cart/remove [delete]
 func (i *UserHandler) RemoveFromCart(c *gin.Context) {
 	CartID, err := strconv.Atoi(c.Query("cart_id"))
 	if err != nil {
@@ -255,6 +314,18 @@ func (i *UserHandler) RemoveFromCart(c *gin.Context) {
 	c.JSON(http.StatusOK, successRes)
 }
 
+// @Summary Update product quantity in the shopping cart
+// @Description Update the quantity of a specific product in the shopping cart for the authenticated user
+// @Accept json
+// @Produce json
+// @Tags CART MANAGEMENT
+// @Security BearerTokenAuth
+// @Param id query int true "User ID"
+// @Param product query int true "Product ID"
+// @Param quantity query int true "New quantity"
+// @Success 200 {object} response.Response "Successfully updated the quantity"
+// @Failure 400 {object} response.Response "Error in updating the quantity"
+// @Router /users/cart/update [put]
 func (i *UserHandler) UpdateQuantity(c *gin.Context) {
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil {
