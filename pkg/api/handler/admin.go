@@ -95,7 +95,7 @@ func (ad *AdminHandler) Getusers(c *gin.Context) {
 // @Param id query string true "User ID to be blocked"
 // @Success 200 {object} response.Response "Successfully blocked the user"
 // @Failure 400 {object} response.Response "User could not be blocked"
-// @Router /admin/users/block [post]
+// @Router /admin/users/block [put]
 func (ad *AdminHandler) BlockUser(c *gin.Context) {
 
 	id := c.Query("id")
@@ -118,7 +118,7 @@ func (ad *AdminHandler) BlockUser(c *gin.Context) {
 // @Param id query string true "User ID to be unblocked"
 // @Success 200 {object} response.Response "Successfully unblocked the user"
 // @Failure 400 {object} response.Response "User could not be unblocked"
-// @Router /admin/users/unblock [post]
+// @Router /admin/users/unblock [put]
 func (ad *AdminHandler) UnBlockUser(c *gin.Context) {
 	id := c.Query("id")
 	err := ad.adminUseCase.UnBlockUser(id)

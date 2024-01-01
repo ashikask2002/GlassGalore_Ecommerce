@@ -1,24 +1,24 @@
 package main
 
 import (
-
+	_ "GlassGalore/cmd/api/docs"
 	config "GlassGalore/pkg/config"
 	di "GlassGalore/pkg/di"
+
 	_ "github.com/swaggo/files"
 	_ "github.com/swaggo/gin-swagger"
-	_ "GlassGalore/cmd/api/docs"
 
 	"log"
 )
 
-// @title Go + Gin E-Commerce API Watch Hive
+// @title Go + Gin E-Commerce API Glass Galore
 // @version 1.0.0
-// @description Watch Hive is an E-commerce platform to purchase Watch
+// @description Glass Galore is the platform to buy Glasses
 // @contact.name API Support
 // @securityDefinitions.apikey BearerTokenAuth
 // @in header
 // @name Authorization
-// @host localhost:8080
+// @host localhost:3000
 // @BasePath /
 // @query.collection.format multi
 func main() {

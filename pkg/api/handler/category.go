@@ -57,7 +57,7 @@ func (Cat *CategoryHandler) AddCategory(c *gin.Context) {
 // @Param category body domain.Category true "Category details in JSON format"
 // @Success 200 {object} response.Response "Successfully updated category"
 // @Failure 400 {object} response.Response "Fields provided in the wrong format or could not update the category"
-// @Router /admin/category [put]
+// @Router /admin/category [patch]
 func (Cat *CategoryHandler) UpdateCategory(c *gin.Context) {
 
 	var category domain.Category
