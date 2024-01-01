@@ -144,6 +144,13 @@ definitions:
       user_id:
         type: integer
     type: object
+  models.ProductUpdate:
+    properties:
+      product_id:
+        type: integer
+      stock:
+        type: integer
+    type: object
   models.Search:
     properties:
       limit:
@@ -195,8 +202,8 @@ definitions:
 info:
   contact:
     name: API Support
-  description: Watch Hive is an E-commerce platform to purchase Watch
-  title: Go + Gin E-Commerce API Watch Hive
+  description: Glass Galore is the platform to buy Glasses
+  title: Go + Gin E-Commerce API Glass Galore
   version: 1.0.0
 paths:
   /admin/adminlogin:
@@ -273,34 +280,7 @@ paths:
       summary: Get categories
       tags:
       - CATEGORY MANAGEMENT
-    post:
-      consumes:
-      - application/json
-      description: Add a new category using JSON payload
-      parameters:
-      - description: Category details in JSON format
-        in: body
-        name: category
-        required: true
-        schema:
-          $ref: '#/definitions/domain.Category'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully added category
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: Fields provided in the wrong format or could not add the category
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Add category
-      tags:
-      - CATEGORY MANAGEMENT
-    put:
+    patch:
       consumes:
       - application/json
       description: Update an existing category using JSON payload
@@ -328,27 +308,33 @@ paths:
       summary: Update category
       tags:
       - CATEGORY MANAGEMENT
-  /admin/coupon:
-    get:
+    post:
       consumes:
       - application/json
-      description: Retrieve a list of all coupons
+      description: Add a new category using JSON payload
+      parameters:
+      - description: Category details in JSON format
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Category'
       produces:
       - application/json
       responses:
         "200":
-          description: Successfully retrieved all coupons
+          description: Successfully added category
           schema:
             $ref: '#/definitions/response.Response'
         "400":
-          description: Could not get all coupons
+          description: Fields provided in the wrong format or could not add the category
           schema:
             $ref: '#/definitions/response.Response'
       security:
       - BearerTokenAuth: []
-      summary: Get all coupons
+      summary: Add category
       tags:
-      - ADMIN COUPON MANAGEMENT
+      - CATEGORY MANAGEMENT
   /admin/coupons:
     delete:
       consumes:
@@ -374,6 +360,26 @@ paths:
       security:
       - BearerTokenAuth: []
       summary: Make coupon invalid
+      tags:
+      - ADMIN COUPON MANAGEMENT
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a list of all coupons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved all coupons
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: Could not get all coupons
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Get all coupons
       tags:
       - ADMIN COUPON MANAGEMENT
     post:
@@ -743,18 +749,12 @@ paths:
       description: Update the stock of a product by providing the product ID and new
         stock value
       parameters:
-      - description: Product ID to be updated
+      - description: Product details in JSON format
         in: body
-        name: product_id
+        name: product
         required: true
         schema:
-          type: string
-      - description: New stock value for the product
-        in: body
-        name: stock
-        required: true
-        schema:
-          type: integer
+          $ref: '#/definitions/models.ProductUpdate'
       produces:
       - application/json
       responses:
@@ -896,7 +896,7 @@ paths:
       tags:
       - ADMIN
   /admin/users/block:
-    post:
+    put:
       consumes:
       - application/json
       description: Block a user by their ID
@@ -923,7 +923,7 @@ paths:
       tags:
       - ADMIN
   /admin/users/unblock:
-    post:
+    put:
       consumes:
       - application/json
       description: Unblock a user by their ID
@@ -949,33 +949,6 @@ paths:
       summary: Unblock user
       tags:
       - ADMIN
-  /cart/checkout:
-    post:
-      consumes:
-      - application/json
-      description: Process the checkout for the user's shopping cart
-      parameters:
-      - description: User ID obtained from authentication
-        in: header
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully processed checkout
-          schema:
-            $ref: '#/definitions/response.Response'
-        "400":
-          description: User ID retrieval failed, or error processing checkout
-          schema:
-            $ref: '#/definitions/response.Response'
-      security:
-      - BearerTokenAuth: []
-      summary: Process checkout
-      tags:
-      - CHECKOUT
   /users/cart/add-to-cart:
     post:
       consumes:
@@ -1109,6 +1082,33 @@ paths:
       summary: Update product quantity in the shopping cart
       tags:
       - CART MANAGEMENT
+  /users/check-out:
+    get:
+      consumes:
+      - application/json
+      description: Process the checkout for the user's shopping cart
+      parameters:
+      - description: User ID obtained from authentication
+        in: header
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully processed checkout
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: User ID retrieval failed, or error processing checkout
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
+      summary: Process checkout
+      tags:
+      - CHECKOUT
   /users/check-out/invoice:
     get:
       consumes:
@@ -1197,6 +1197,8 @@ paths:
           description: Page number not in the right format or could not retrieve records
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
       summary: List products for user
       tags:
       - USER PRODUCT MANAGEMENT
@@ -1309,6 +1311,8 @@ paths:
           description: Error in conversion or cannot retrieve the product list
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
       summary: Filter products by category
       tags:
       - USER PRODUCT MANAGEMENT
@@ -1339,6 +1343,8 @@ paths:
           description: Error in conversion or cannot retrieve the product list
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
       summary: Filter products by price range
       tags:
       - USER PRODUCT MANAGEMENT
@@ -1376,7 +1382,7 @@ paths:
       tags:
       - USER PRODUCT MANAGEMENT
   /users/products/search:
-    post:
+    get:
       consumes:
       - application/json
       description: Get a list of products based on search criteria
@@ -1406,6 +1412,8 @@ paths:
           description: Error in conversion or could not get any products
           schema:
             $ref: '#/definitions/response.Response'
+      security:
+      - BearerTokenAuth: []
       summary: Search products
       tags:
       - USER PRODUCT MANAGEMENT

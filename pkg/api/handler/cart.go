@@ -65,7 +65,7 @@ func (i *CartHandler) AddToCart(c *gin.Context) {
 // @Param id header int true "User ID obtained from authentication"
 // @Success 200 {object} response.Response "Successfully processed checkout"
 // @Failure 400 {object} response.Response "User ID retrieval failed, or error processing checkout"
-// @Router /cart/checkout [post]
+// @Router /users/check-out [get]
 func (i *CartHandler) CheckOut(c *gin.Context) {
 	userID, _ := c.Get("id")
 

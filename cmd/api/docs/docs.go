@@ -90,49 +90,6 @@ const docTemplate = `{
                     }
                 }
             },
-            "put": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
-                "description": "Update an existing category using JSON payload",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "CATEGORY MANAGEMENT"
-                ],
-                "summary": "Update category",
-                "parameters": [
-                    {
-                        "description": "Category details in JSON format",
-                        "name": "category",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/domain.Category"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully updated category",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "Fields provided in the wrong format or could not update the category",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
@@ -216,9 +173,52 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Update an existing category using JSON payload",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CATEGORY MANAGEMENT"
+                ],
+                "summary": "Update category",
+                "parameters": [
+                    {
+                        "description": "Category details in JSON format",
+                        "name": "category",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Category"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully updated category",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Fields provided in the wrong format or could not update the category",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
             }
         },
-        "/admin/coupon": {
+        "/admin/coupons": {
             "get": {
                 "security": [
                     {
@@ -250,9 +250,7 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/admin/coupons": {
+            },
             "put": {
                 "security": [
                     {
@@ -885,21 +883,12 @@ const docTemplate = `{
                 "summary": "Update product stock",
                 "parameters": [
                     {
-                        "description": "Product ID to be updated",
-                        "name": "product_id",
+                        "description": "Product details in JSON format",
+                        "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "New stock value for the product",
-                        "name": "stock",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/models.ProductUpdate"
                         }
                     }
                 ],
@@ -1108,7 +1097,7 @@ const docTemplate = `{
             }
         },
         "/admin/users/block": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "BearerTokenAuth": []
@@ -1151,7 +1140,7 @@ const docTemplate = `{
             }
         },
         "/admin/users/unblock": {
-            "post": {
+            "put": {
                 "security": [
                     {
                         "BearerTokenAuth": []
@@ -1186,49 +1175,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "User could not be unblocked",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/cart/checkout": {
-            "post": {
-                "security": [
-                    {
-                        "BearerTokenAuth": []
-                    }
-                ],
-                "description": "Process the checkout for the user's shopping cart",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "CHECKOUT"
-                ],
-                "summary": "Process checkout",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID obtained from authentication",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully processed checkout",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "400": {
-                        "description": "User ID retrieval failed, or error processing checkout",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1438,6 +1384,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/check-out": {
+            "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
+                "description": "Process the checkout for the user's shopping cart",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CHECKOUT"
+                ],
+                "summary": "Process checkout",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID obtained from authentication",
+                        "name": "id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully processed checkout",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "User ID retrieval failed, or error processing checkout",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/users/check-out/invoice": {
             "get": {
                 "security": [
@@ -1541,6 +1530,11 @@ const docTemplate = `{
         },
         "/users/home/product": {
             "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
                 "description": "Get a paginated list of products for users",
                 "consumes": [
                     "application/json"
@@ -1709,6 +1703,11 @@ const docTemplate = `{
         },
         "/users/products/filter": {
             "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
                 "description": "Get a list of products filtered by category ID",
                 "consumes": [
                     "application/json"
@@ -1747,6 +1746,11 @@ const docTemplate = `{
         },
         "/users/products/filterP": {
             "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
                 "description": "Get a list of products within the specified price range",
                 "consumes": [
                     "application/json"
@@ -1841,7 +1845,12 @@ const docTemplate = `{
             }
         },
         "/users/products/search": {
-            "post": {
+            "get": {
+                "security": [
+                    {
+                        "BearerTokenAuth": []
+                    }
+                ],
                 "description": "Get a list of products based on search criteria",
                 "consumes": [
                     "application/json"
@@ -2637,6 +2646,17 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ProductUpdate": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "integer"
+                },
+                "stock": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.Search": {
             "type": "object",
             "properties": {
@@ -2726,8 +2746,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Go + Gin E-Commerce API Watch Hive",
-	Description:      "Watch Hive is an E-commerce platform to purchase Watch",
+	Title:            "Go + Gin E-Commerce API Glass Galore",
+	Description:      "Glass Galore is the platform to buy Glasses",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

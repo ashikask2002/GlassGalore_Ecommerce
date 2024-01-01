@@ -58,7 +58,7 @@ func (i *CouponHandler) CreateNewCoupen(c *gin.Context) {
 // @security BearerTokenAuth
 // @Success 200 {object} response.Response "Successfully retrieved all coupons"
 // @Failure 400 {object} response.Response "Could not get all coupons"
-// @Router /admin/coupon [get]
+// @Router /admin/coupons [get]
 func (i *CouponHandler) GetAllCoupons(c *gin.Context) {
 
 	categories, err := i.usecase.GetAllCoupons()

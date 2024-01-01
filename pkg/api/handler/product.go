@@ -79,8 +79,7 @@ func (i *ProductHandler) DeleteProduct(c *gin.Context) {
 // @Produce json
 // @Tags ADMIN PRODUCT MANAGEMENT
 // @security BearerTokenAuth
-// @Param product_id body string true "Product ID to be updated"
-// @Param stock body int true "New stock value for the product"
+// @Param product body models.ProductUpdate true "Product details in JSON format"
 // @Success 200 {object} response.Response "Successfully updated the product stock"
 // @Failure 400 {object} response.Response "Fields provided in the wrong format or could not update the product stock"
 // @Router /admin/products/:id/stock [put]
@@ -148,6 +147,7 @@ func (i *ProductHandler) EditProductDetails(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags USER PRODUCT MANAGEMENT
+// @security BearerTokenAuth
 // @Param page query int false "Page number for pagination, default is 1"
 // @Success 200 {object} response.Response "Successfully retrieved the records"
 // @Failure 400 {object} response.Response "Page number not in the right format or could not retrieve records"
@@ -206,6 +206,7 @@ func (i *ProductHandler) LisProductforAdmin(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags USER PRODUCT MANAGEMENT
+// @security BearerTokenAuth
 // @Param category_id query int true "Category ID for filtering products"
 // @Success 200 {object} response.Response "Successfully retrieved the product list"
 // @Failure 400 {object} response.Response "Error in conversion or cannot retrieve the product list"
@@ -236,6 +237,7 @@ func (i *ProductHandler) FilterProducts(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags USER PRODUCT MANAGEMENT
+// @security BearerTokenAuth
 // @Param price query int true "Minimum price for filtering products"
 // @Param pricetwo query int true "Maximum price for filtering products"
 // @Success 200 {object} response.Response "Successfully retrieved the product list"
@@ -276,6 +278,7 @@ func (i *ProductHandler) FilterProductsByPrice(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Tags USER PRODUCT MANAGEMENT
+// @security BearerTokenAuth
 // @Param page query int false "Page number for pagination (default is 1)"
 // @Param limit query int false "Number of items per page (default is 5)"
 // @Param search body models.Search true "Search criteria in JSON format"
