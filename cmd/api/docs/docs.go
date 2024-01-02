@@ -1845,7 +1845,7 @@ const docTemplate = `{
             }
         },
         "/users/products/search": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BearerTokenAuth": []
@@ -1953,13 +1953,6 @@ const docTemplate = `{
                 "summary": "Edit user details",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "User details to be edited",
                         "name": "model",
                         "in": "body",
@@ -2004,13 +1997,6 @@ const docTemplate = `{
                 ],
                 "summary": "Add user address",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "description": "Address details",
                         "name": "address",
@@ -2264,13 +2250,6 @@ const docTemplate = `{
                 "summary": "Change user password",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "Password change details",
                         "name": "ChangePassword",
                         "in": "body",
@@ -2400,15 +2379,6 @@ const docTemplate = `{
                     "Wallet"
                 ],
                 "summary": "View user's wallet details",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Wallet details",

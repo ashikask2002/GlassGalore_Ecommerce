@@ -284,7 +284,7 @@ func (i *ProductHandler) FilterProductsByPrice(c *gin.Context) {
 // @Param search body models.Search true "Search criteria in JSON format"
 // @Success 200 {object} response.Response "Successfully retrieved the product list"
 // @Failure 400 {object} response.Response "Error in conversion or could not get any products"
-// @Router /users/products/search [get]
+// @Router /users/products/search [post]
 func (i *ProductHandler) SearchProducts(c *gin.Context) {
 	var search models.Search
 	pageStr := c.DefaultQuery("page", "1")

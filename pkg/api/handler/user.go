@@ -156,7 +156,6 @@ func (i *UserHandler) GetAddresses(c *gin.Context) {
 // @Produce json
 // @Tags USER PROFILE
 // @Security BearerTokenAuth
-// @Param id path int true "User ID"
 // @Param address body models.AddAddress true "Address details"
 // @Success 200 {object} response.Response "Successfully added the address"
 // @Failure 400 {object} response.Response "Error in adding the address"
@@ -188,7 +187,6 @@ func (i *UserHandler) AddAddress(c *gin.Context) {
 // @Produce json
 // @Tags USER PROFILE
 // @Security BearerTokenAuth
-// @Param id path int true "User ID"
 // @Param model body models.EditDetailsResponse true "User details to be edited"
 // @Success 200 {object} response.Response "Successfully edited the details"
 // @Failure 400 {object} response.Response "Error in editing the details"
@@ -223,7 +221,6 @@ func (i *UserHandler) EditDetails(c *gin.Context) {
 // @Produce json
 // @Tags USER PROFILE
 // @Security BearerTokenAuth
-// @Param id path int true "User ID"
 // @Param ChangePassword body models.ChangePassword true "Password change details"
 // @Success 200 {object} response.Response "Password changed successfully"
 // @Failure 400 {object} response.Response "Error in changing the password"

@@ -1382,7 +1382,7 @@ paths:
       tags:
       - USER PRODUCT MANAGEMENT
   /users/products/search:
-    get:
+    post:
       consumes:
       - application/json
       description: Get a list of products based on search criteria
@@ -1443,11 +1443,6 @@ paths:
       - application/json
       description: Edit details for the authenticated user
       parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: User details to be edited
         in: body
         name: model
@@ -1476,11 +1471,6 @@ paths:
       - application/json
       description: Add a new address for the authenticated user
       parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: Address details
         in: body
         name: address
@@ -1641,11 +1631,6 @@ paths:
       - application/json
       description: Change the password for the authenticated user
       parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: Password change details
         in: body
         name: ChangePassword
@@ -1729,12 +1714,6 @@ paths:
       consumes:
       - application/json
       description: Retrieve details of the wallet for the authenticated user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:

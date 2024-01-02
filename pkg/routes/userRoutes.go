@@ -71,15 +71,15 @@ func UserRoutes(engine *gin.RouterGroup,
 		{
 			checkout.GET("", cartHandler.CheckOut)
 			checkout.POST("/order", orderHandler.OrderItemsFromCart)
-			checkout.GET("/invoice",orderHandler.PrintInvoice )
+			checkout.GET("/invoice", orderHandler.PrintInvoice)
 		}
 
 		products := engine.Group("/products")
 		{
-			products.GET("/search", productHandler.SearchProducts)
+			products.POST("/search", productHandler.SearchProducts)
 			products.GET("/filter", productHandler.FilterProducts)
-			products.GET("filterP",productHandler.FilterProductsByPrice)
-			products.POST("/rating",productHandler.Rating)
+			products.GET("filterP", productHandler.FilterProductsByPrice)
+			products.POST("/rating", productHandler.Rating)
 		}
 
 		wallet := engine.Group("wallet")
@@ -89,8 +89,8 @@ func UserRoutes(engine *gin.RouterGroup,
 
 		coupon := engine.Group("coupon")
 		{
-			coupon.GET("",couponHandler.GetAllCoupons)
-			
+			coupon.GET("", couponHandler.GetAllCoupons)
+
 		}
 
 	}
