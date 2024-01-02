@@ -295,6 +295,6 @@ func AddImageToS3(file *multipart.FileHeader) (string, error) {
 		fmt.Println("error 2", err)
 		return "", err
 	}
-	url := fmt.Sprintf("https://d2jkb5eqmpty2t.cloudfront.net/%s", file.Filename)
+	url := fmt.Sprintf("https://glassgalore.s3.ap-south-1.amazonaws.com/%s", file.Filename)
 	return url, nil
 }
