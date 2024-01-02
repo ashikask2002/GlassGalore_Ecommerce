@@ -28,7 +28,6 @@ func NewOrderHandler(useCase services.OrderUseCase) *OrderHandler {
 // @Produce json
 // @Tags CHECKOUT
 // @security BearerTokenAuth
-// @Param id query int true "User ID"
 // @Param order body models.Order true "Order details in JSON format"
 // @Success 200 {object} response.Response "Successfully made the order"
 // @Failure 400 {object} response.Response "Error in getting user ID, fields provided in the wrong format, or could not make the order"

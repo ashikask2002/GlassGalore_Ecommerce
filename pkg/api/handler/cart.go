@@ -26,7 +26,6 @@ func NewCartHandler(usecase interfaces.CartUseCase) *CartHandler {
 // @Produce json
 // @Tags CART MANAGEMENT
 // @security BearerTokenAuth
-// @Param id header int true "User ID obtained from authentication"
 // @Param model body models.AddToCart true "Product details to add to the cart"
 // @Success 200 {object} response.Response "Successfully added to the cart"
 // @Failure 400 {object} response.Response "User ID retrieval failed, or fields provided in the wrong format, or error adding to the cart"
@@ -62,7 +61,6 @@ func (i *CartHandler) AddToCart(c *gin.Context) {
 // @Produce json
 // @Tags CHECKOUT
 // @security BearerTokenAuth
-// @Param id header int true "User ID obtained from authentication"
 // @Success 200 {object} response.Response "Successfully processed checkout"
 // @Failure 400 {object} response.Response "User ID retrieval failed, or error processing checkout"
 // @Router /users/check-out [get]

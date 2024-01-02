@@ -1202,13 +1202,6 @@ const docTemplate = `{
                 "summary": "Add item to cart",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "User ID obtained from authentication",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "Product details to add to the cart",
                         "name": "model",
                         "in": "body",
@@ -1252,15 +1245,6 @@ const docTemplate = `{
                     "CART MANAGEMENT"
                 ],
                 "summary": "Get user's shopping cart",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Products in the shopping cart",
@@ -1348,7 +1332,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "User ID",
+                        "description": "Cart ID",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -1402,15 +1386,6 @@ const docTemplate = `{
                     "CHECKOUT"
                 ],
                 "summary": "Process checkout",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID obtained from authentication",
-                        "name": "id",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Successfully processed checkout",
@@ -1495,13 +1470,6 @@ const docTemplate = `{
                 ],
                 "summary": "Order items from cart",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "description": "Order details in JSON format",
                         "name": "order",

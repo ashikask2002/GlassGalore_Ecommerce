@@ -955,11 +955,6 @@ paths:
       - application/json
       description: Add a product to the user's shopping cart
       parameters:
-      - description: User ID obtained from authentication
-        in: header
-        name: id
-        required: true
-        type: integer
       - description: Product details to add to the cart
         in: body
         name: model
@@ -989,12 +984,6 @@ paths:
       - application/json
       description: Retrieve the products in the shopping cart for the authenticated
         user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
@@ -1051,7 +1040,7 @@ paths:
       description: Update the quantity of a specific product in the shopping cart
         for the authenticated user
       parameters:
-      - description: User ID
+      - description: Cart ID
         in: query
         name: id
         required: true
@@ -1087,12 +1076,6 @@ paths:
       consumes:
       - application/json
       description: Process the checkout for the user's shopping cart
-      parameters:
-      - description: User ID obtained from authentication
-        in: header
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
@@ -1148,11 +1131,6 @@ paths:
       description: Create an order by providing order details including address, payment
         method, and coupon
       parameters:
-      - description: User ID
-        in: query
-        name: id
-        required: true
-        type: integer
       - description: Order details in JSON format
         in: body
         name: order

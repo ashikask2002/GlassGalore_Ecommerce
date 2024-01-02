@@ -255,7 +255,6 @@ func (i *UserHandler) ChangePassword(c *gin.Context) {
 // @Produce json
 // @Tags CART MANAGEMENT
 // @Security BearerTokenAuth
-// @Param id path int true "User ID"
 // @Success 200 {object} response.Response "Products in the shopping cart"
 // @Failure 400 {object} response.Response "Error in retrieving the shopping cart"
 // @Router /users/cart/get [get]
@@ -317,7 +316,7 @@ func (i *UserHandler) RemoveFromCart(c *gin.Context) {
 // @Produce json
 // @Tags CART MANAGEMENT
 // @Security BearerTokenAuth
-// @Param id query int true "User ID"
+// @Param id query int true "Cart ID"
 // @Param product query int true "Product ID"
 // @Param quantity query int true "New quantity"
 // @Success 200 {object} response.Response "Successfully updated the quantity"
