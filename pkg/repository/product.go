@@ -116,7 +116,7 @@ func (i *productRepository) ListProducts(page int) ([]models.Products, error) {
 
 	var productDetails []models.Products
 
-	if err := i.DB.Raw("select id,category_id,product_name,size,stock,price from products limit $1 offset $2", 10, offset).Scan(&productDetails).Error; err != nil {
+	if err := i.DB.Raw("select id,category_id,product_name,size,stock,price,discription from products limit $1 offset $2", 10, offset).Scan(&productDetails).Error; err != nil {
 		return []models.Products{}, err
 	}
 
