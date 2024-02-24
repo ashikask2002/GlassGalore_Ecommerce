@@ -82,7 +82,7 @@ func (i *paymentUseCaseImpl) SavePaymentDetails(paymenID, razorID, orderID strin
 		if err != nil {
 			return err
 		}
-
+		fmt.Println("ertyuiyutruiytui")
 		err = i.paymentRepository.UpdatePaymentStatus(true, orderID)
 		if err != nil {
 			return err
