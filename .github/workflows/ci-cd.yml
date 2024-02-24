@@ -38,4 +38,4 @@ jobs:
             cd GlassGalore_Ecommerce
             git pull
             go build -o api ./cmd/api
-            sudo systemctl restart myapp.service
+            sudo systemctl restart glassgalore.service
