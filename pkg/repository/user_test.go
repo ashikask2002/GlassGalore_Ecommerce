@@ -12,60 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// func Test_GetUserDetails(t *testing.T) {
-// 	tests := []struct {
-// 		name    string
-// 		args    int
-// 		stub    func(mockSQL sqlmock.Sqlmock)
-// 		want    models.UserDetailsResponse
-// 		wantErr error
-// 	}{
-// 		{
-// 			name: "success",
-// 			args: 1,
-// 			stub: func(mockSQL sqlmock.Sqlmock) {
-// 				expectQuery := `^select\s+id\s*,\s*name\s*,\s*email\s*,\s*phone\s+from\s+users.*$`
 
-// 				mockSQL.ExpectQuery(expectQuery).WillReturnRows(sqlmock.NewRows([]string{"id", "name", "email", "phone"}).AddRow(1, "ashik", "ashik@gmail.com", "7510468623"))
-// 			},
-// 			want: models.UserDetailsResponse{
-// 				Id:    1,
-// 				Name:  "ashik",
-// 				Email: "ashik@gmail.com",
-// 				Phone: "7510468623",
-// 			},
-// 			wantErr: nil,
-// 		},
-// 		{
-// 			name: "error",
-// 			args: 1,
-// 			stub: func(mockSQL sqlmock.Sqlmock) {
-// 				expectQuery := `^select\s+id\s*,\s*name\s*,\s*email\s*,\s*phone\s+from\s+users.*$
-// 				`
-// 				mockSQL.ExpectQuery(expectQuery).WillReturnError(sqlmock.ErrCancelled)
-
-// 			},
-// 			want:    models.UserDetailsResponse{},
-// 			wantErr: errors.New("could not get the user  details"),
-// 		},
-// 	}
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			mockDB, mockSQL, _ := sqlmock.New()
-// 			defer mockDB.Close()
-// 			gormDB, _ := gorm.Open(postgres.New(postgres.Config{
-// 				Conn: mockDB,
-// 			}), &gorm.Config{})
-// 			tt.stub(mockSQL)
-// 			u := NewUserRepository(gormDB)
-// 			result, err := u.GetUserDetails(tt.args)
-// 			assert.Equal(t, tt.want, result)
-// 			assert.Equal(t, tt.wantErr, err)
-
-// 		})
-// 	}
-
-// }
 
 func Test_CheckUserAvailability(t *testing.T) {
 	tests := []struct {
@@ -252,8 +199,7 @@ func Test_Addaddress(t *testing.T) {
 			},
 			wanterr: nil,
 		},
-		{
-			name: "error",
+		{			name: "error",
 			args: models.AddAddress{
 				Name:      "Ashik",
 				HouseName: "kizhakoodan",

@@ -1,4 +1,4 @@
-package repository
+ package repository
 
 import (
 	"GlassGalore/pkg/domain"
@@ -21,7 +21,7 @@ func NewUserRepository(DB *gorm.DB) interfaces.UserRepository {
 func (c *userDatabase) UserSignUp(user models.UserDetails) (models.UserDetailsResponse, error) {
 
 	var UserDetails models.UserDetailsResponse
-	err := c.DB.Raw("`INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?) RETURNING id, name, email, phone", user.Name, user.Email, user.Password, user.Phone).Scan(&UserDetails).Error
+	err := c.DB.Raw("INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?) RETURNING id, name, email, phone", user.Name, user.Email, user.Password, user.Phone).Scan(&UserDetails).Error
 
 	if err != nil {
 		return models.UserDetailsResponse{}, err
