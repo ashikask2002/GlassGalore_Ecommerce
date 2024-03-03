@@ -1,0 +1,7 @@
+#Environment File
+.env 
+
+
+#kubernetes secret and config
+postgres-secret.yaml
+postgres-config.yaml

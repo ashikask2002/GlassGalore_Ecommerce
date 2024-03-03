@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: glassgalore-depl
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: glassgalore
+    template:
+        metadata:
+            labels:
+                app: glassgalore
+        spec:
+            containers:
+                - name: glassgalore
+                  image: ashikks123/glassgalore
+                  env:
+                    - name: DB_USER
+                      value: user
+                    - name: DB_PASSWORD
+                      value: montyxgreen
+                    - name: DB_NAME
+                      value: glassglore
+                    - name: DB_HOST
+                      value: postgres-service
+                    - name: DB_PORT
+                      value: "5432"
+                    - name: DB_AUTHTOKEN
+                      value: 18f4bf2220c3dcb1c52cd498aceff258
+                    - name: DB_ACCOUNTSID
+                      value: ACb0d275df559351741f174d93848a0e62
+                    - name: DB_SERVICESID
+                      value: VA2d3ba30c00031d88237bf53ae6cde334
+                    - name: RAZOR_ID
+                      value: rzp_test_5K9ErTOEvk0TLA
+                    - name: kEY_SECRET
+                      value: OmjlL1D5Px5CqonGNzyzhFgM
+                    - name: REGION
+                      value: ap-south-1
+                    - name: AWS_ACCESS_KEY_ID
+                      value: AKIARZR6JQ4UUZB4RVVC
+                    - name: AWS_SECRET_ACCESS_KEY
+                      value: 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
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: glassgalore-srv
+spec:
+    selector:
+        app: glassgalore
+    ports:
+        - name: glassgalore
+          protocol: TCP
+          port: 3000
+          targetPort: 3000
+

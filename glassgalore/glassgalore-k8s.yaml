@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glassgalore
+  labels:
+    app: glassgalore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: glassgalore
+  template:
+    metadata:
+      labels:
+        app: glassgalore
+    spec:
+      containers:
+        - name: glassgalore
+          image: ashikks123/glassgalore:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-password
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: postgres-db
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres-host
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres-port
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glassgalore-service
+spec:
+  selector:
+    app: glassgalore
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 30001
